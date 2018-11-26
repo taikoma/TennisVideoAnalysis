@@ -7,6 +7,8 @@ import pandas as pd
 from tkinter import ttk
 import tkinter.messagebox
 import csv
+import time
+#import PIL.Image,PIL.ImageTk
 
 
 class Video():#ビデオファイルの読み込み
@@ -14,8 +16,49 @@ class Video():#ビデオファイルの読み込み
         self.videoFileName = videoFileName
         self.video = cv2.VideoCapture(self.videoFileName)
         self.frame_count=int(self.video.get(cv2.CAP_PROP_FRAME_COUNT))
+
+        self.fps=self.video.get(cv2.CAP_PROP_FPS)
+        self.start_frame=0
+        self.end_frame=self.video.get(cv2.CAP_PROP_FRAME_COUNT)
+        self.start_frame
+
+
     def close(self):
         self.video.release()
+
+    def set_start_frame(self,start_frame):#再生開始フレームの値をセット
+        if(start_frame<=self.end_frame):
+            self.start_frame=start_frame
+
+    def set_end_frame(self,end_frame):#再生終了フレームの値をセット
+        if(end_frame>=self.start_frame):
+            self.end_frame=end_frame
+    
+    def set_frame(self):#再生開始フレーム位置をセット
+        if self.video.isOpened():
+            self.video.set(1,self.start_frame)
+            ret, frame = self.video.read()
+            if ret:
+                return (ret, cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+            else:
+                return(ret,None)
+        else:
+            return(ret,None)
+
+    def get_frame(self):#再生するフレームを読み込む
+        if self.video.isOpened():
+            ret, frame = self.video.read()
+            self.frame_no = int(self.video.get(cv2.CAP_PROP_POS_FRAMES))
+            
+            if self.frame_no<=self.end_frame:
+                if ret:
+                    return (ret, cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+                else:
+                    return(ret,None)
+            else:
+                return(False,None)
+        else:
+            return(ret,None)
         
         
 class Score():
@@ -546,6 +589,7 @@ class Application(tkinter.Frame):
     def __init__(self,score, master=None):
         super().__init__(master)
         self.score=score
+        self.master=master
         
         self.pack()
         
@@ -554,11 +598,19 @@ class Application(tkinter.Frame):
         
         self.firstServer = tkinter.IntVar()
         self.firstServer.set(score.firstServer)
+
+        self.delay=33
         
-    def loadVideo(self,video):
-        self.video=video.video
-        self.frame_count=video.frame_count
+    def loadVideo(self,vid):
+        self.vid=vid
+        self.video=vid.video
+        self.frame_count=vid.frame_count
         self.score.arrayFrameEnd[len(self.score.arrayFrameEnd)-1]=self.frame_count
+
+        self.vid.set_start_frame(self.vid.start_frame)
+        self.vid.set_end_frame(self.vid.end_frame)
+        self.delay=int(1000/self.vid.fps/2)
+        print("self.delay",self.delay)
 
     def create_widgets(self,score,w,h):#ウィジェット作成
         #print(score.playerA,score.playerB)
@@ -831,7 +883,22 @@ class Application(tkinter.Frame):
         im = Image.fromarray(image_change)
         self.imgtk = ImageTk.PhotoImage(image=im)
         self.panel.configure(image=self.imgtk)
-        self.panel.image = self.imgtk  
+        self.panel.image = self.imgtk
+
+    def update(self):
+        ret, frame = self.vid.get_frame()
+        if ret:
+            frame=cv2.resize(frame, (self.h, self.w))
+            im = Image.fromarray(frame)
+            self.imgtk = ImageTk.PhotoImage(image = im)            
+            self.panel.configure(image=self.imgtk)
+            self.panel.image = self.imgtk
+
+            #self.myval.set(self.myval.get() + 1)
+            #これ入れると処理に時間かかる 非同期処理にしたい
+
+        self.master.after(self.delay, self.update)
+
         
     def create_button(self):
         Button_backward100 = tkinter.Button(text=u'100←', width=10)
@@ -1167,7 +1234,9 @@ class Application(tkinter.Frame):
         self.myval.set(self.myval.get() + 1)
         
     def play(self,event):
-        print("play")
+        self.vid.set_start_frame(self.myval.get())
+        self.vid.set_end_frame(score.arrayFrameEnd[score.number])
+        self.update()
 
     def button_backward1(self,event):
         self.myval.set(self.myval.get() - 1)
@@ -1301,7 +1370,7 @@ if __name__ == "__main__":
     #videoFile="bandicam 2018-08-03 21-47-25-401.mp4"
     #videoFile="shutterstock_v23221066.mov"
     videoFile="djoko01.mp4"
-    video=Video(videoFile) 
+    vid=Video(videoFile) 
 
     score=Score(0)
     score.setPlayerName("ジョコビッチ","錦織")
@@ -1313,9 +1382,9 @@ if __name__ == "__main__":
     root = tkinter.Tk()
     root.title("TennisTracing"),
     app = Application(score,master=root)
-    app.loadVideo(video)
+    app.loadVideo(vid)
 
     app.create_widgets(score,360, 640)
 
     app.mainloop()
-    video.close()
+    vid.close()
