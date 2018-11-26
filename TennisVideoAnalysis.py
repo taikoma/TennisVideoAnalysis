@@ -368,63 +368,10 @@ class Database():
     def __init__(self,dbName,score):
         self.dbName=dbName
         
-#         self.playerA=""
-#         self.playerB=""
-#         self.playerName = [self.playerA, self.playerB]
         self.patternString = ["サービスエース", "ストロークウィナー", "ボレーウィナー",
                          "リターンエラー", "ストロークエラー", "ボレーエラー", "フォルト", "ダブルフォルト"]
         self.firstSecondString = ["", "1st", "2nd"]
         
-#         self.pointXYNum = 0
-#         self.arrayPointXY = []  # コートのXY座標
-#         self.arrayPointXY.append([0, 0])
-#         self.arrayPointXY.append([0, 0])
-#         self.arrayPointXY.append([0, 0])
-#         self.arrayPointXY.append([0, 0])
-#         self.arrayCourt = [[], [], [], []]
-#         self.arrayCourt[0].append([0, 0])
-#         self.arrayCourt[1].append([0, 0])
-#         self.arrayCourt[2].append([0, 0])
-#         self.arrayCourt[3].append([0, 0])
-#         self.arrayContactServe = []
-#         self.arrayContactServe.append([0, 0])
-        
-#         self.arrayFrameStart=[]
-#         self.arrayFrameStart.append(0)
-#         self.arrayFrameEnd=[]
-#         self.arrayFrameEnd.append(0)
-#         self.arraySet = []  # セット
-#         self.arraySet.append("")
-#         self.arrayGame = []  # ゲーム
-#         self.arrayGame.append("")
-#         self.arrayScore = []  # スコア
-#         self.arrayScore.append("")
-#         self.arrayScoreResult = []  # スコア結果
-#         self.arrayScoreResult.append("")
-#         self.arrayServer = []  # サーバー
-#         self.arrayServer.append("")
-#         self.arrayPointWinner = []  # ウィナーの名前
-#         self.arrayPointWinner.append("")
-        
-#         self.pointWin=[]
-#         self.pointA = []
-#         self.pointB = []
-#         self.pointA.append(0)
-#         self.pointB.append(0)
-#         self.pointWin.append(self.pointA)  # pointA 勝ったら1を格納
-#         self.pointWin.append(self.pointB)  # pointB 勝ったら1を格納
-        
-#         self.arrayPointPattern = []  # ポイントパターン
-#         self.arrayPointPattern.append("")
-#         self.arrayFirstSecond = []  # 最初のゲームのサーバー
-#         self.arrayFirstSecond.append(0)
-#         self.arrayForeBack = []  # サーバー
-#         self.arrayForeBack.append("")
-        
-#         self.faultFlug=0
-#         self.number = 0
-#         self.totalGame = 0
-#         self.mode = 1 
         self.arrayFrameStart=score.arrayFrameStart
         self.arrayFrameEnd=score.arrayFrameEnd
         self.arraySet=score.arraySet
@@ -826,8 +773,6 @@ class Application(tkinter.Frame):
             cv2.circle(img_copy, (event.x - 2, event.y - 2),2, (0, 255, 0), -1)
             score.arrayPointXY2[score.pointXYNum][0] = event.x - 2
             score.arrayPointXY2[score.pointXYNum][1] = event.y - 2
-            #score.arrayCourt2[score.pointXYNum][score.number][0] = event.x - 2
-            #score.arrayCourt2[score.pointXYNum][score.number][1] = event.y - 2
             score.pointXYNum=score.pointXYNum + 1
             if(score.pointXYNum < 4):
                 image = cv2.cvtColor(img_copy, cv2.COLOR_BGR2RGB)
@@ -1050,20 +995,16 @@ class Application(tkinter.Frame):
             score.faultFlug=1
             score.arrayFirstSecond[score.number] = 1#1srフォルト
             score.arrayPointPattern[score.number] = score.patternString[6]
-            #score.arrayPointWinner.insert(score.number, "")  # ポイント勝者
-            #score.pointWin[0].insert(score.number, 2)
-            #score.pointWin[1].insert(score.number, 2)
             score.arrayPointWinner[score.number]=""
             score.pointWin[0][score.number]=2
             score.pointWin[1][score.number]=2
             
-            score.calcScore()  # test確認
+            score.calcScore()
 
         elif(score.faultFlug == 1):
             score.faultFlug=0
             score.arrayFirstSecond[score.number] = 2#2ndフォルト=ダブルフォルト
             score.arrayPointPattern[score.number] = score.patternString[7]
-            #disabledPatternButton()
             score.pointWin[(score.firstServer + score.totalGame) % 2][score.number] = 0
             score.pointWin[(score.firstServer + score.totalGame + 1) % 2][score.number] = 1
             score.arrayPointWinner[score.number] = score.playerName[(score.firstServer + score.totalGame + 1) % 2]
@@ -1081,7 +1022,6 @@ class Application(tkinter.Frame):
                 self.secondFault()                
             else:
                 self.firstFault()
-        #score.arrayServer[score.number] = score.playerName[(score.firstServer + score.totalGame) % 2]
         print(score.arrayFault)
         print(score.arrayFirstSecond)
         
@@ -1174,7 +1114,6 @@ class Application(tkinter.Frame):
     def button_save(self,event):
         msg = tkinter.messagebox.askyesno('save','データを保存しますか？')
         if msg == 1: #true
-            #database.saveDatabase()
             db=Database("tennis1.db",self.score)
             db.saveDatabase()
         
@@ -1182,7 +1121,6 @@ class Application(tkinter.Frame):
         print("button_load")
         msg = tkinter.messagebox.askyesno('save','データを読み込みますか？')
         if msg == 1: #true
-            #database.saveDatabase()
             db=Database("tennis1.db",self.score)
             db.loadDatabase()
             score=db.dbToScore()
@@ -1192,8 +1130,6 @@ class Application(tkinter.Frame):
     def change_state(self):
         score.winner=self.winner.get()
         score.firstServer=self.firstServer.get()
-        #print(score.winner,score.firstServer)
-        #print(score.firstServer,score.totalGame)
         if (score.winner != (score.firstServer + score.totalGame+1) % 2):
             self.Button1.configure(state="normal")
             self.Button4.configure(state="normal")
@@ -1273,11 +1209,8 @@ class Application(tkinter.Frame):
                 self.secondPattern()
             else:
                 self.firstPattern()
-                
-        #self.setButtonFault()#test
         
         self.setTree()
-        #score.faultFlug=0  # ポイント後は必ずフォルトを0にリセット
         print("number",score.number)
         print("arrayFault",score.arrayFault)
         print("arrayFirstSecond",score.arrayFirstSecond)
@@ -1320,14 +1253,12 @@ class Application(tkinter.Frame):
                 
     def secondPattern(self):
         print("secondPattern")
-        #score.arrayFault[score.number]=1
         score.arrayFault[score.number]=0
         score.arrayFirstSecond[score.number]=2
         if(score.number==(len(score.arrayFault)-1)):
             score.faultFlug=1
         
     def setPattern22(self,pattern):
-        #disabledPatternButton()
         score.pointWin[score.winner][score.number] = 1
         score.pointWin[(score.winner + 1) % 2][score.number] = 0
         score.calcScore()  # arrayScoreにスコアを格納
@@ -1342,7 +1273,6 @@ class Application(tkinter.Frame):
             if(score.number==(len(score.arrayFault)-1)):
                 score.faultFlug=0
         self.setTree()
-        #score.faultFlug=0  # ポイント後は必ずフォルトを0にリセット
 
                 
     def setTree(self):
@@ -1358,26 +1288,17 @@ class Application(tkinter.Frame):
         
     def select(self,event):
         curItem = self.tree.focus()
-        #self.tree.selection_set(self.tree.focus())
-        #print("select",self.tree.item(curItem)["values"])
         score.number=int(self.tree.item(curItem)["values"][0])
         self.myval.set(int(self.tree.item(curItem)["values"][1]))
-        #normalPatternButton()
         
-        #print(score.number)
 
 if __name__ == "__main__":      
-    #videoFile="bandicam 2018-08-03 21-47-25-401.mp4"
-    #videoFile="shutterstock_v23221066.mov"
     videoFile="djoko01.mp4"
     vid=Video(videoFile) 
 
     score=Score(0)
     score.setPlayerName("ジョコビッチ","錦織")
     print(score.playerA,score.playerB)
-
-    #database=Database("tennis.db")
-    #database.saveDatabase()
 
     root = tkinter.Tk()
     root.title("TennisTracing"),
