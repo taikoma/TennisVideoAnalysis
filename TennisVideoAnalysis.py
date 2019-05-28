@@ -10,6 +10,8 @@ import tkinter.messagebox
 import csv
 import threading
 from tkinter import filedialog
+import json
+import os
 
 
 class Video():  # ビデオファイルの読み込み
@@ -1592,27 +1594,43 @@ class Application(tkinter.Frame):
         if(self.vid):
             self.vid.close()
 
+class Setting():  # 設定ファイル読込
+    def __init__(self):
+        
+        fileName="settings.json"
+        jsonFile=open(fileName,'r')
+        jsonDict=json.load(jsonFile)
+        self.playerA=jsonDict["playerA"]
+        self.playerB=jsonDict["playerB"]
+        self.firstServer=jsonDict["firstServer"]
 
 
 if __name__ == "__main__":
     # videoFile="djoko01.mp4"
     # vid=Video(videoFile)
+    #print('getcwd:      ', os.getcwd())
+    #print('dirname:     ', os.path.dirname(__file__))
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
+    settings=Setting()
 
-    score = Score(0)
-    score.setPlayerName("ジョコビッチ", "錦織")
+    score = Score(settings.firstServer)
+    score.setPlayerName(settings.playerA,settings.playerB)
     print(score.playerA, score.playerB)
 
     root = tkinter.Tk()
-    root.title("Tennis Video Analytics"),
+    root.title("Tennis Video Analytics")
+
+    sub_win=Toplevel()
+    sub_win.geometry("300x200")
+
+
     app = Application(score, master=root)
     # app.loadVideo(vid)
-
     app.create_widgets(score, 360, 640)
 
     app.bind("a", app.keyA)
     app.focus_set()
     app.pack()
-    
     app.mainloop()
 
 
