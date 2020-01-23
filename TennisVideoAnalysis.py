@@ -10,573 +10,12 @@ import tkinter.messagebox
 import csv
 import threading
 from tkinter import filedialog
-import json
 import os
-
-
-class Video():  # ビデオファイルの読み込み
-    def __init__(self, videoFileName):
-        self.videoFileName = videoFileName
-        self.video = cv2.VideoCapture(self.videoFileName)
-        self.frame_count = int(self.video.get(cv2.CAP_PROP_FRAME_COUNT))
-
-        self.fps = self.video.get(cv2.CAP_PROP_FPS)
-        self.start_frame = 0
-        self.end_frame = self.video.get(cv2.CAP_PROP_FRAME_COUNT)
-        self.start_frame
-
-    def close(self):
-        self.video.release()
-
-    def set_start_frame(self, start_frame):  # 再生開始フレームの値をセット
-        if(start_frame <= self.end_frame):
-            self.start_frame = start_frame
-
-    def set_end_frame(self, end_frame):  # 再生終了フレームの値をセット
-        if(end_frame >= self.start_frame):
-            self.end_frame = end_frame
-
-    def set_frame(self):  # 再生開始フレーム位置をセット
-        if self.video.isOpened():
-            self.video.set(1, self.start_frame)
-            ret, frame = self.video.read()
-            if ret:
-                return (ret, cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
-            else:
-                return(ret, None)
-        else:
-            return(ret, None)
-
-    def get_frame(self):  # 再生するフレームを読み込む
-        if self.video.isOpened():
-            ret, frame = self.video.read()
-            self.frame_no = int(self.video.get(cv2.CAP_PROP_POS_FRAMES))
-
-            if self.frame_no <= self.end_frame:
-                if ret:
-                    return (ret, cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
-                else:
-                    return(ret, None)
-            else:
-                return(False, None)
-        else:
-            return(ret, None)
-
-
-class Score():
-    def __init__(self, firstSever):
-        self.firstServer = firstSever
-
-        self.setPlayerName("PlayerA", "PlayerB")
-        self.patternString = [
-            "サービスエース",
-            "ストロークウィナー",
-            "ボレーウィナー",
-            "リターンエラー",
-            "ストロークエラー",
-            "ボレーエラー",
-            "フォルト",
-            "ダブルフォルト"]
-        self.firstSecondString = ["", "1st", "2nd"]
-
-        self.pointXYNum = 0
-        self.arrayPointXY = []  # コートのXY座標
-        self.arrayPointXY.append([0, 0])
-        self.arrayPointXY.append([0, 0])
-        self.arrayPointXY.append([0, 0])
-        self.arrayPointXY.append([0, 0])
-
-        self.arrayPointXY2 = []  # コートのXY座標
-        self.arrayPointXY2.append([0, 0])
-        self.arrayPointXY2.append([0, 0])
-        self.arrayPointXY2.append([0, 0])
-        self.arrayPointXY2.append([0, 0])
-
-        self.arrayCourt = [[], [], [], []]
-        self.arrayCourt[0].append([0, 0])
-        self.arrayCourt[1].append([0, 0])
-        self.arrayCourt[2].append([0, 0])
-        self.arrayCourt[3].append([0, 0])
-        self.arrayContactServe = []
-        self.arrayContactServe.append([0, 0])
-
-        self.arrayFrameStart = []
-        self.arrayFrameStart.append(0)
-        self.arrayFrameEnd = []
-        self.arrayFrameEnd.append(0)
-        self.arraySet = []  # セット
-        self.arraySet.append("")
-        self.arrayGame = []  # ゲーム
-        self.arrayGame.append("")
-        self.arrayScore = []  # スコア
-        self.arrayScore.append("")
-        self.arrayScoreResult = []  # スコア結果
-        self.arrayScoreResult.append("")
-        self.arrayServer = []  # サーバー
-        self.arrayServer.append("")
-        self.arrayPointWinner = []  # ウィナーの名前
-        self.arrayPointWinner.append("")
-
-        self.pointWin = []
-        self.pointWin = []
-        self.pointA = []
-        self.pointB = []
-        self.pointA.append(0)
-        self.pointB.append(0)
-        self.pointWin.append(self.pointA)  # pointA 勝ったら1を格納
-        self.pointWin.append(self.pointB)  # pointB 勝ったら1を格納
-
-        self.arrayPointPattern = []  # ポイントパターン
-        self.arrayPointPattern.append("")
-        self.arrayFirstSecond = []  # 最初のゲームのサーバー
-        self.arrayFirstSecond.append(0)
-        self.arrayForeBack = []  # サーバー
-        self.arrayForeBack.append("")
-
-        self.arrayFault = []  # フォルト
-        self.arrayFault.append(0)
-
-        self.faultFlug = 0
-        self.number = 0
-        self.totalGame = 0
-        self.mode = 1
-        self.winner = 0
-
-        #追加
-        self.arrayContactBalls = []  # 初期化のappendは必要なし
-        self.arrayContactBalls.append([])
-
-    def setPlayerName(self, playerA, playerB):
-        self.playerA = playerA
-        self.playerB = playerB
-        self.playerName = [self.playerA, self.playerB]
-
-    def calcScore_buckup(self):  # 最初のポイントからすべて計算する
-        p = []
-        p.append(0)
-        p.append(0)
-        g = []
-        g.append(0)
-        g.append(0)
-        s = []
-        s.append(0)
-        s.append(0)
-        scoreA = ""
-        scoreB = ""
-        nextScore = "0-0"
-        nextGame = "0-0"
-        nextSet = "0-0"
-        self.totalGame = 0
-
-        for i in range(len(self.pointWin[0])):  # ポイント間も含め全ポイントを計算する　
-            if(self.pointWin[0][i] == 2):  # ポイント間で、winデータなし
-                self.arrayScore[i] = ""
-                self.arrayScoreResult[i] = ""
-                self.arrayGame[i] = ""
-                self.arraySet[i] = ""
-            else:
-                self.arrayScore[i] = nextScore
-                self.arrayGame[i] = nextGame
-                self.arraySet[i] = nextSet
-                if(self.pointWin[0][i] == 1):
-                    p[0] += 1
-                if(self.pointWin[1][i] == 1):
-                    p[1] += 1
-                scoreA, scoreB, p[0], p[1], g[0], g[1], s[0], s[1] = self.convertScore(
-                    p[0], p[1], g[0], g[1], s[0], s[1])
-                nextScore = scoreA + "-" + scoreB
-                nextGame = str(g[0]) + "-" + str(g[1])
-                nextSet = str(s[0]) + "-" + str(s[1])
-                if(self.arrayPointPattern[i] == self.patternString[6]):  # フォルトのとき
-                    self.arrayScoreResult[i] = ""
-                else:
-                    self.arrayScoreResult[i] = nextScore
-        if((p[0] + p[1]) != 0):
-            self.arrayServer[self.number] = self.playerName[(
-                self.firstServer + g[0] + g[1]) % 2]
-        else:
-            self.arrayServer[self.number] = self.playerName[(
-                self.firstServer + g[0] + g[1] + 1) % 2]
-
-    def calcScore(self):  # 最初のポイントからすべて計算する
-        print("calcScore")
-        p = []
-        p.append(0)
-        p.append(0)
-        g = []
-        g.append(0)
-        g.append(0)
-        s = []
-        s.append(0)
-        s.append(0)
-        scoreA = ""
-        scoreB = ""
-        nextScore = "0-0"
-        nextGame = "0-0"
-        nextSet = "0-0"
-        self.totalGame = 0
-
-        for i in range(len(self.pointWin[0])):  # ポイント間も含め全ポイントを計算する
-
-            #todo ボタン記録されていない箇所（最終行）は計算しないようにしたい
-            if(self.pointWin[0][i] != 2):
-                self.arrayServer[i] = self.playerName[(
-                    self.firstServer + g[0] + g[1]) % 2]  # step1 サーバーの計算
-
-                #step2 どちらがポイントを取得したか
-                if(self.arrayFault[i] == 1):  # フォルトの場合
-                    self.arrayScore[i] = ""
-                    self.arrayScoreResult[i] = ""
-                    self.arrayGame[i] = ""
-                    self.arraySet[i] = ""
-                    self.arrayFirstSecond[i] = 1
-
-                elif(self.arrayFault[i] == 2):  # ダブルフォルトの場合
-                    self.arrayFirstSecond[i] = 2
-                    self.calcScore2(
-                        i,
-                        nextScore,
-                        nextGame,
-                        nextSet,
-                        p,
-                        g,
-                        s,
-                        scoreA,
-                        scoreB)
-
-                elif(self.arrayFault[i] == 0):  # フォルトなしの場合
-                    if(i > 0):
-                        if(self.arrayFault[i - 1] == 1):  # 前のポイントがフォルト
-                            self.arrayFirstSecond[i] = 2
-                        else:
-                            self.arrayFirstSecond[i] = 1
-                    self.calcScore2(
-                        i,
-                        nextScore,
-                        nextGame,
-                        nextSet,
-                        p,
-                        g,
-                        s,
-                        scoreA,
-                        scoreB)
-        #print("arrayFault", self.arrayFault)
-        #print("arrayFirstSecond", self.arrayFirstSecond)
-
-    def calcScore2(
-            self,
-            i,
-            nextScore,
-            nextGame,
-            nextSet,
-            p,
-            g,
-            s,
-            scoreA,
-            scoreB):
-        self.arrayScore[i] = nextScore
-        self.arrayGame[i] = nextGame
-        self.arraySet[i] = nextSet
-        if(self.pointWin[0][i] == 1):
-            p[0] += 1
-        if(self.pointWin[1][i] == 1):
-            p[1] += 1
-        scoreA, scoreB, p[0], p[1], g[0], g[1], s[0], s[1] = self.convertScore(
-            p[0], p[1], g[0], g[1], s[0], s[1])
-        nextScore = scoreA + "-" + scoreB
-        nextGame = str(g[0]) + "-" + str(g[1])
-        nextSet = str(s[0]) + "-" + str(s[1])
-        self.arrayScoreResult[i] = nextScore
-
-    def convertScore(self, gamePointA, gamePointB, gameA, gameB, setA, setB):  # ポイント数からスコアに変換
-        if((gameA == 6) and (gameB == 6)):
-            if(gamePointA > 5 and gamePointB > 5):
-                if((gamePointA - gamePointB) > 1):
-                    scoreA = "0"
-                    scoreB = "0"
-                    gamePointA = 0
-                    gamePointB = 0
-                    gameA += 1
-                    #totalGame.set(totalGame.get() + 1)
-                    self.totalGame += 1
-                elif((gamePointB - gamePointA) > 1):
-                    scoreA = "0"
-                    scoreB = "0"
-                    gamePointA = 0
-                    gamePointB = 0
-                    gameB += 1
-                    #totalGame.set(totalGame.get() + 1)
-                    self.totalGame += 1
-                else:
-                    scoreA = str(gamePointA)
-                    scoreB = str(gamePointB)
-
-            else:
-                scoreA = str(gamePointA)
-                scoreB = str(gamePointB)
-
-        else:
-            if(gamePointA > 2 and gamePointB > 2):  # 40-40以降
-                if((gamePointA - gamePointB) > 1):
-                    scoreA = "0"
-                    scoreB = "0"
-                    gamePointA = 0
-                    gamePointB = 0
-                    gameA += 1
-                    #totalGame.set(totalGame.get() + 1)
-                    self.totalGame += 1
-                elif((gamePointB - gamePointA) > 1):
-                    scoreA = "0"
-                    scoreB = "0"
-                    gamePointA = 0
-                    gamePointB = 0
-                    gameB += 1
-                    #totalGame.set(totalGame.get() + 1)
-                    self.totalGame += 1
-                elif((gamePointA - gamePointB) == 1):
-                    scoreA = "Ad"
-                    scoreB = "40"
-                elif((gamePointB - gamePointA) == 1):
-                    scoreA = "40"
-                    scoreB = "Ad"
-                else:
-                    scoreA = "40"
-                    scoreB = "40"
-            else:
-                if(gamePointA == 0):
-                    scoreA = "0"
-                if(gamePointB == 0):
-                    scoreB = "0"
-                if(gamePointA == 1):
-                    scoreA = "15"
-                if(gamePointB == 1):
-                    scoreB = "15"
-                if(gamePointA == 2):
-                    scoreA = "30"
-                if(gamePointB == 2):
-                    scoreB = "30"
-                if(gamePointA == 3):
-                    scoreA = "40"
-                if(gamePointB == 3):
-                    scoreB = "40"
-                if(gamePointA > 3 and gamePointB < 3):
-                    scoreA = "0"
-                    scoreB = "0"
-                    gamePointA = 0
-                    gamePointB = 0
-                    gameA += 1
-                    #totalGame.set(totalGame.get() + 1)
-                    self.totalGame += 1
-                elif(gamePointB > 3 and gamePointA < 3):
-                    scoreA = "0"
-                    scoreB = "0"
-                    gamePointA = 0
-                    gamePointB = 0
-                    gameB += 1
-                    #totalGame.set(totalGame.get() + 1)
-                    self.totalGame += 1
-
-        gameA, gameB, setA, setB = self.convertSet(gameA, gameB, setA, setB)
-
-        return scoreA, scoreB, gamePointA, gamePointB, gameA, gameB, setA, setB
-
-    def convertSet(self, gameA, gameB, setA, setB):
-        if(gameA > 5 and gameB < 5):
-            setA += 1
-            gameA = 0
-            gameB = 0
-        elif(gameB > 5 and gameA < 5):
-            setB += 1
-            gameA = 0
-            gameB = 0
-        elif(gameA > 5 and gameB > 5):
-            if(gameA == 7):
-                setA += 1
-                gameA = 0
-                gameB = 0
-            elif(gameB == 7):
-                setB += 1
-                gameA = 0
-                gameB = 0
-        return gameA, gameB, setA, setB
-
-
-class Database():
-    def __init__(self, dbName, score):
-        self.dbName = dbName
-
-        self.patternString = [
-            "サービスエース",
-            "ストロークウィナー",
-            "ボレーウィナー",
-            "リターンエラー",
-            "ストロークエラー",
-            "ボレーエラー",
-            "フォルト",
-            "ダブルフォルト"]
-        self.firstSecondString = ["", "1st", "2nd"]
-
-        self.arrayFrameStart = score.arrayFrameStart
-        self.arrayFrameEnd = score.arrayFrameEnd
-        self.arraySet = score.arraySet
-        self.arrayGame = score.arrayGame
-        self.arrayScore = score.arrayScore
-        self.arrayScoreResult = score.arrayScoreResult
-        self.arrayFirstSecond = score.arrayFirstSecond
-        self.arrayServer = score.arrayServer
-
-        self.arrayPointWinner = score.arrayPointWinner
-        self.pointWin = score.pointWin
-        self.arrayPointPattern = score.arrayPointPattern
-        self.arrayForeBack = score.arrayForeBack
-
-        self.arrayContactServe = score.arrayContactServe
-        self.arrayCourt = score.arrayCourt
-
-        self.playerA = score.playerA
-        self.playerB = score.playerB
-        self.number = score.number
-        self.totalGame = score.totalGame
-        self.faultFlug = score.faultFlug
-        self.arrayContactBalls = score.arrayContactBalls
-        self.arrayFault = score.arrayFault
-
-    def saveDatabase(self):
-        #print("saveDatabase", self.dbName)
-        #print("saveDatabase", self.arrayFrameEnd)
-        conn = sqlite3.connect(self.dbName)
-        c = conn.cursor()
-
-        df = pd.DataFrame({'StartFrame': self.arrayFrameStart, 'EndFrame': self.arrayFrameEnd, 'Set': self.arraySet, 'Game': self.arrayGame,
-                           'Score': self.arrayScore, 'ScoreResult': self.arrayScoreResult, 'FirstSecond': self.arrayFirstSecond, 'Server': self.arrayServer,
-                           'PointWinner': self.arrayPointWinner, 'PointWinA': self.pointWin[0], 'PointWinB': self.pointWin[1],
-                           'PointPattern': self.arrayPointPattern, 'ForeBack': self.arrayForeBack, 'Fault': self.arrayFault,
-                           'ContactServeX': list(np.array(self.arrayContactServe)[:, 0]), 'ContactServeY': list(np.array(self.arrayContactServe)[:, 1]),
-                           'Court1X': list(np.array(self.arrayCourt)[0][:, 0]), 'Court1Y': list(np.array(self.arrayCourt)[0][:, 1]),
-                           'Court2X': list(np.array(self.arrayCourt)[1][:, 0]), 'Court2Y': list(np.array(self.arrayCourt)[1][:, 1]),
-                           'Court3X': list(np.array(self.arrayCourt)[2][:, 0]), 'Court3Y': list(np.array(self.arrayCourt)[2][:, 1]),
-                           'Court4X': list(np.array(self.arrayCourt)[3][:, 0]), 'Court4Y': list(np.array(self.arrayCourt)[3][:, 1])
-                           })
-        df_basic = pd.DataFrame({'playerA': self.playerA,
-                                 'playerB': self.playerB,
-                                 'number': self.number,
-                                 'totalGame': self.totalGame,
-                                 'faultFlug': self.faultFlug},
-                                index=[0])
-        with open('contactBalls.csv', 'w') as f:
-            writer = csv.writer(f, lineterminator='\n')  # 改行コード（\n）を指定しておく
-            writer.writerows(self.arrayContactBalls)  # 2次元配列も書き込める
-
-        df.to_sql("score", conn, if_exists="replace")
-        df_basic.to_sql("match", conn, if_exists="replace")
-
-        conn.close()
-
-    def loadDatabase(self):
-        self.arrayFrameStart.clear()
-        self.arrayFrameEnd.clear()
-        self.arraySet.clear()
-        self.arrayGame.clear()
-        self.arrayScore.clear()
-        self.arrayScoreResult.clear()
-        self.arrayFirstSecond.clear()
-        self.arrayServer.clear()
-        self.arrayPointWinner.clear()
-        self.arrayPointPattern.clear()
-        self.arrayForeBack.clear()
-        self.pointWin[0].clear()
-        self.pointWin[1].clear()
-        self.arrayContactServe.clear()
-        self.arrayCourt.clear()
-        self.arrayContactServe.clear()
-        self.arrayContactBalls.clear()
-        self.arrayFault.clear()
-
-        conn = sqlite3.connect(self.dbName)
-        c = conn.cursor()
-        df = pd.read_sql("select * from score", conn)
-        self.arrayFrameStart.extend(df['StartFrame'].values.tolist())
-        self.arrayFrameEnd.extend(df['EndFrame'].values.tolist())
-        self.arraySet.extend(df['Set'].values.tolist())
-        self.arrayGame.extend(df['Game'].values.tolist())
-        self.arrayScore.extend(df['Score'].values.tolist())
-        self.arrayScoreResult.extend(df['ScoreResult'].values.tolist())
-        self.arrayFirstSecond.extend(df['FirstSecond'].values.tolist())
-        self.arrayServer.extend(df['Server'].values.tolist())
-        self.arrayPointWinner.extend(df['PointWinner'].values.tolist())
-        self.arrayPointPattern.extend(df['PointPattern'].values.tolist())
-        self.arrayForeBack.extend(df['ForeBack'].values.tolist())
-        self.arrayFault.extend(df['Fault'].values.tolist())
-
-        self.pointWin[0].extend(df['PointWinA'].values.tolist())
-        self.pointWin[1].extend(df['PointWinB'].values.tolist())
-
-        for i in range(len(df['ContactServeX'].values.tolist())):
-            self.arrayContactServe.append([df['ContactServeX'].values.tolist()[
-                i], df['ContactServeY'].values.tolist()[i]])
-        self.arrayCourt.append([])
-        self.arrayCourt.append([])
-        self.arrayCourt.append([])
-        self.arrayCourt.append([])
-        for i in range(len(df['Court1X'].values.tolist())):
-            self.arrayCourt[0].insert(i, [df['Court1X'].values.tolist()[
-                i], df['Court1Y'].values.tolist()[i]])
-            self.arrayCourt[1].insert(i, [df['Court2X'].values.tolist()[
-                i], df['Court2Y'].values.tolist()[i]])
-            self.arrayCourt[2].insert(i, [df['Court3X'].values.tolist()[
-                i], df['Court3Y'].values.tolist()[i]])
-            self.arrayCourt[3].insert(i, [df['Court4X'].values.tolist()[
-                i], df['Court4Y'].values.tolist()[i]])
-
-        df_basic = pd.read_sql("select * from match", conn)
-        #self.playerA.set(df_basic['playerA'].values)
-        #self.playerB.set(df_basic['playerB'].values)
-        self.playerA = df_basic['playerA'].values
-        self.playerB = df_basic['playerB'].values
-
-#         self.number.set(len(df) - 1)
-#         self.totalGame.set(df_basic['totalGame'].values[0])
-#         self.faultFlug.set(df_basic['faultFlug'].values[0])
-
-        self.number = len(df) - 1
-        self.totalGame = df_basic['totalGame'].values[0]
-        self.faultFlug = df_basic['faultFlug'].values[0]
-
-        with open('contactBalls.csv') as f:
-            self.arrayContactBalls = list(csv.reader(f))
-        #print(self.arrayContactBalls)
-
-        conn.close()
-
-    def dbToScore(self):
-        print("dbToScore")
-        score.arrayFrameStart = self.arrayFrameStart
-        score.arrayFrameEnd = self.arrayFrameEnd
-        score.arraySet = self.arraySet
-        score.arrayGame = self.arrayGame
-        score.arrayScore = self.arrayScore
-        score.arrayScoreResult = self.arrayScoreResult
-        score.arrayFirstSecond = self.arrayFirstSecond
-        score.arrayServer = self.arrayServer
-
-        score.arrayPointWinner = self.arrayPointWinner
-        score.pointWin = self.pointWin
-        score.arrayPointPattern = self.arrayPointPattern
-        score.arrayForeBack = self.arrayForeBack
-
-        score.arrayContactServe = self.arrayContactServe
-        score.arrayCourt = self.arrayCourt
-
-        score.playerA = self.playerA
-        score.playerB = self.playerB
-        score.number = self.number
-        score.totalGame = self.totalGame
-        score.faultFlug = self.faultFlug
-        score.arrayContactBalls = self.arrayContactBalls
-        score.arrayFault = self.arrayFault
-
-        return score
-
+import score
+import setting
+import video
+import database
+# import application
 
 class Application(tkinter.Frame):
     #GUIウィンドウの設定と画像描画
@@ -886,9 +325,10 @@ class Application(tkinter.Frame):
                 self.setTree()
 
     def mouseclicked(self, event):  # mouseevent 着弾点をマウスでクリック
-        if(score.mode == 0):
+        print("mouseclicked!")
+        if(score.mode == 0):#初期設定はscore.mode=1
             gimg = self.readImage(self.myval.get())
-            pts, dilation = calcCourtPoints(gimg)
+            pts, dilation = calcCourtPoints(gimg)#
             img_copy = np.copy(gimg)
             cv2.polylines(img_copy, [pts], True, (0, 255, 0), 2)
             h, w = img_copy.shape[0], img_copy.shape[1]
@@ -1057,7 +497,7 @@ class Application(tkinter.Frame):
         print(fld)
 
         videoFile = fld
-        vid = Video(videoFile)
+        vid = video.Video(videoFile)
         self.loadVideo(vid)
         self.imageShow()
         self.sc.configure(to=self.frame_count)
@@ -1071,7 +511,7 @@ class Application(tkinter.Frame):
             msg = tkinter.messagebox.askyesno('save', 'データを読み込みますか？')
             if msg == 1:  # true
                 #db=Database("tennis1.db",self.score)
-                db = Database(self.fld, self.score)
+                db = database.Database(self.fld, self.score)
                 db.loadDatabase()
                 score = db.dbToScore()
                 self.drawContact()
@@ -1087,7 +527,7 @@ class Application(tkinter.Frame):
                 initialdir=dir, filetypes=[
                     ('Db Files', ('.db'))])
             if(self.fld):
-                db = Database(self.fld, self.score)
+                db = database.Database(self.fld, self.score)
                 db.saveDatabase()
 
     def save_data_as(self):
@@ -1096,7 +536,7 @@ class Application(tkinter.Frame):
             initialdir=dir, filetypes=[
                 ('Db Files', ('.db'))])
         if(self.fld):
-            db = Database(self.fld, self.score)
+            db = database.Database(self.fld, self.score)
             db.saveDatabase()
 
     def create_menu_bar(self):
@@ -1238,7 +678,7 @@ class Application(tkinter.Frame):
         self.pw1_4_3.add(self.Button6)
 
     def create_tree(self):
-        self.tree = ttk.Treeview(root, selectmode="browse")
+        self.tree = ttk.Treeview(root, selectmode="browse",takefocus=1)
         self.tree["columns"] = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14)
         self.tree["show"] = "headings"
         self.tree.column(1, width=30)
@@ -1414,8 +854,12 @@ class Application(tkinter.Frame):
             self.Button1.configure(state="disabled")
             self.Button4.configure(state="disabled")
 
+    def key_activate(self):
+        self.focus_set()
+
     def button1_clicked(self, event):  # Ace
         self.setPattern(0)
+
 
     def button2_clicked(self, event):  # STW
         self.setPattern(1)
@@ -1437,9 +881,11 @@ class Application(tkinter.Frame):
 
     def button_backward10(self, event):
         self.myval.set(self.myval.get() - 10)
-
+    
+    
     def button_forward1(self, event):
         self.myval.set(self.myval.get() + 1)
+        self.focus_set()
 
     def play(self, event):
         self.vid.set_start_frame(self.myval.get())
@@ -1448,6 +894,9 @@ class Application(tkinter.Frame):
         self.update()
     def keyA(self,event):
         print("test!")
+
+    def key(self,event):
+        print("pressed", repr(event.keysym))
 
     def stop(self, event):
         # self.vid.set_start_frame(self.myval.get())
@@ -1586,24 +1035,15 @@ class Application(tkinter.Frame):
         self.tree.selection_set(self.tree.get_children()[score.number])
 
     def select(self, event):
+        print("tree_select")
         curItem = self.tree.focus()
         score.number = int(self.tree.item(curItem)["values"][0])
         self.myval.set(int(self.tree.item(curItem)["values"][1]))
+        self.key_activate()
 
     def close(self):
         if(self.vid):
             self.vid.close()
-
-class Setting():  # 設定ファイル読込
-    def __init__(self):
-        
-        fileName="settings.json"
-        jsonFile=open(fileName,'r')
-        jsonDict=json.load(jsonFile)
-        self.playerA=jsonDict["playerA"]
-        self.playerB=jsonDict["playerB"]
-        self.firstServer=jsonDict["firstServer"]
-
 
 if __name__ == "__main__":
     # videoFile="djoko01.mp4"
@@ -1611,28 +1051,35 @@ if __name__ == "__main__":
     #print('getcwd:      ', os.getcwd())
     #print('dirname:     ', os.path.dirname(__file__))
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
-    settings=Setting()
+    settings=setting.Setting()#initでsettings.json読込
 
-    score = Score(settings.firstServer)
+    score = score.Score(settings.firstServer)
     score.setPlayerName(settings.playerA,settings.playerB)
-    print(score.playerA, score.playerB)
+    # print(score.playerA, score.playerB)
 
-    root = tkinter.Tk()
+    root = tkinter.Tk()#root
     root.title("Tennis Video Analytics")
 
-    sub_win=Toplevel()
-    sub_win.geometry("300x200")
-
+    # sub_win=tkinter.Toplevel(root)
+    # sub_win.geometry("300x200")
 
     app = Application(score, master=root)
     # app.loadVideo(vid)
     app.create_widgets(score, 360, 640)
 
-    app.bind("a", app.keyA)
+    # app.bind("<Key>", app.key)
+    # app.focus_set()
+
+    app.bind("<Right>", app.button_forward1)#右矢印をクリックしたらフレーム+1
+    app.bind("<Control-Right>", app.button_forward10)#ctrf+右矢印をクリックしたらフレーム+10
+    app.bind("<Shift-Right>", app.button_forward10)#shift+右矢印をクリックしたらフレーム+100
+    app.bind("<Left>", app.button_backward1)#左矢印をクリックしたらフレーム+1
+    app.bind("<Control-Left>", app.button_backward10)#ctrf+左矢印をクリックしたらフレーム+10
+    app.bind("<Shift-Left>", app.button_backward100)
+    app.bind("p",app.play)
+    app.bind("s",app.stop)
     app.focus_set()
     app.pack()
     app.mainloop()
-
-
 
     # vid.close()
