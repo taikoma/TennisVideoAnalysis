@@ -78,7 +78,7 @@ class Score():
 
         self.arrayPointPattern = []  # ポイントパターン
         self.arrayPointPattern.append("")
-        self.arrayFirstSecond = []  # 最初のゲームのサーバー
+        self.arrayFirstSecond = []  # 0    1    2
         self.arrayFirstSecond.append(0)
         self.arrayForeBack = []  # サーバー
         self.arrayForeBack.append("")
@@ -101,52 +101,52 @@ class Score():
         self.playerB = playerB
         self.playerName = [self.playerA, self.playerB]
 
-    def calcScore_buckup(self):  # 最初のポイントからすべて計算する
-        p = []
-        p.append(0)
-        p.append(0)
-        g = []
-        g.append(0)
-        g.append(0)
-        s = []
-        s.append(0)
-        s.append(0)
-        scoreA = ""
-        scoreB = ""
-        nextScore = "0-0"
-        nextGame = "0-0"
-        nextSet = "0-0"
-        self.totalGame = 0
+    # def calcScore_buckup(self):  # 最初のポイントからすべて計算する
+    #     p = []
+    #     p.append(0)
+    #     p.append(0)
+    #     g = []
+    #     g.append(0)
+    #     g.append(0)
+    #     s = []
+    #     s.append(0)
+    #     s.append(0)
+    #     scoreA = ""
+    #     scoreB = ""
+    #     nextScore = "0-0"
+    #     nextGame = "0-0"
+    #     nextSet = "0-0"
+    #     self.totalGame = 0
 
-        for i in range(len(self.pointWin[0])):  # ポイント間も含め全ポイントを計算する　
-            if(self.pointWin[0][i] == 2):  # ポイント間で、winデータなし
-                self.arrayScore[i] = ""
-                self.arrayScoreResult[i] = ""
-                self.arrayGame[i] = ""
-                self.arraySet[i] = ""
-            else:
-                self.arrayScore[i] = nextScore
-                self.arrayGame[i] = nextGame
-                self.arraySet[i] = nextSet
-                if(self.pointWin[0][i] == 1):
-                    p[0] += 1
-                if(self.pointWin[1][i] == 1):
-                    p[1] += 1
-                scoreA, scoreB, p[0], p[1], g[0], g[1], s[0], s[1] = self.convertScore(
-                    p[0], p[1], g[0], g[1], s[0], s[1])
-                nextScore = scoreA + "-" + scoreB
-                nextGame = str(g[0]) + "-" + str(g[1])
-                nextSet = str(s[0]) + "-" + str(s[1])
-                if(self.arrayPointPattern[i] == self.patternString[6]):  # フォルトのとき
-                    self.arrayScoreResult[i] = ""
-                else:
-                    self.arrayScoreResult[i] = nextScore
-        if((p[0] + p[1]) != 0):
-            self.arrayServer[self.number] = self.playerName[(
-                self.firstServer + g[0] + g[1]) % 2]
-        else:
-            self.arrayServer[self.number] = self.playerName[(
-                self.firstServer + g[0] + g[1] + 1) % 2]
+    #     for i in range(len(self.pointWin[0])):  # ポイント間も含め全ポイントを計算する　
+    #         if(self.pointWin[0][i] == 2):  # ポイント間で、winデータなし
+    #             self.arrayScore[i] = ""
+    #             self.arrayScoreResult[i] = ""
+    #             self.arrayGame[i] = ""
+    #             self.arraySet[i] = ""
+    #         else:
+    #             self.arrayScore[i] = nextScore
+    #             self.arrayGame[i] = nextGame
+    #             self.arraySet[i] = nextSet
+    #             if(self.pointWin[0][i] == 1):
+    #                 p[0] += 1
+    #             if(self.pointWin[1][i] == 1):
+    #                 p[1] += 1
+    #             scoreA, scoreB, p[0], p[1], g[0], g[1], s[0], s[1] = self.convertScore(
+    #                 p[0], p[1], g[0], g[1], s[0], s[1])
+    #             nextScore = scoreA + "-" + scoreB
+    #             nextGame = str(g[0]) + "-" + str(g[1])
+    #             nextSet = str(s[0]) + "-" + str(s[1])
+    #             if(self.arrayPointPattern[i] == self.patternString[6]):  # フォルトのとき
+    #                 self.arrayScoreResult[i] = ""
+    #             else:
+    #                 self.arrayScoreResult[i] = nextScore
+    #     if((p[0] + p[1]) != 0):
+    #         self.arrayServer[self.number] = self.playerName[(
+    #             self.firstServer + g[0] + g[1]) % 2]
+    #     else:
+    #         self.arrayServer[self.number] = self.playerName[(
+    #             self.firstServer + g[0] + g[1] + 1) % 2]
 
     def calcScore(self):  # 最初のポイントからすべて計算する
         print("calcScore")
@@ -183,7 +183,7 @@ class Score():
 
                 elif(self.arrayFault[i] == 2):  # ダブルフォルトの場合
                     self.arrayFirstSecond[i] = 2
-                    self.calcScore2(
+                    nextScore,nextGame,nextSet,p,g,s,scoreA,scoreB=self.calcScore2(
                         i,
                         nextScore,
                         nextGame,
@@ -200,7 +200,7 @@ class Score():
                             self.arrayFirstSecond[i] = 2
                         else:
                             self.arrayFirstSecond[i] = 1
-                    self.calcScore2(
+                    nextScore,nextGame,nextSet,p,g,s,scoreA,scoreB=self.calcScore2(
                         i,
                         nextScore,
                         nextGame,
@@ -212,6 +212,7 @@ class Score():
                         scoreB)
         #print("arrayFault", self.arrayFault)
         #print("arrayFirstSecond", self.arrayFirstSecond)
+        #print("score arrayScore",self.arrayScore)
 
     def calcScore2(
             self,
@@ -237,6 +238,9 @@ class Score():
         nextGame = str(g[0]) + "-" + str(g[1])
         nextSet = str(s[0]) + "-" + str(s[1])
         self.arrayScoreResult[i] = nextScore
+
+
+        return nextScore,nextGame,nextSet,p,g,s,scoreA,scoreB
 
     def convertScore(self, gamePointA, gamePointB, gameA, gameB, setA, setB):  # ポイント数からスコアに変換
         if((gameA == 6) and (gameB == 6)):

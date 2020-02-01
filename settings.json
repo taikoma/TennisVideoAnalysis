@@ -1,5 +1,6 @@
 {
-    "playerA": "Djokovic",
-    "playerB": "Nishikori",
-    "firstServer": 0
+    "playerA": "Nishikori",
+    "playerB": "Medvedev",
+    "firstServer": 1,
+    "videoFile": "C:/Users/taku/Documents/Python/TennisVideoAnalysis/nishikori-med.mp4"
 }

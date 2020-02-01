@@ -15,7 +15,6 @@ import score
 import setting
 import video
 import database
-# import application
 
 class Application(tkinter.Frame):
     #GUIウィンドウの設定と画像描画
@@ -30,12 +29,15 @@ class Application(tkinter.Frame):
         self.winner.set(0)
 
         self.firstServer = tkinter.IntVar()
-        self.firstServer.set(score.firstServer)
+        self.firstServer.set(self.score.firstServer)
 
         self.delay = 33
         self.frame_count = 1
         self.mode = 0
         self.courtsize=360/27.77
+
+        self.pts = np.array([[0,0]],dtype=int)
+        print("pts:",len(self.pts))
 
     def loadVideo(self, vid):
         self.vid = vid
@@ -49,8 +51,8 @@ class Application(tkinter.Frame):
         self.delay = int(1000 / self.vid.fps / 2)
         print("self.delay", self.delay)
 
-    def create_widgets(self, score, w, h):  # ウィジェット作成
-
+    # def create_widgets(self, score, w, h):  # ウィジェット作成
+    def create_widgets(self, w, h):  # ウィジェット作成
         self.create_menu_bar()
 
         self.w = w
@@ -76,8 +78,8 @@ class Application(tkinter.Frame):
         self.canvas1 = tkinter.Canvas(self.pwRightUp, width = 195, height = 380)#テニスコート用のcanvas作成
         self.createCourt(self.canvas1,self.courtsize,self.pwRightUp)#テニスコート
 
-        self.canvas2 = tkinter.Canvas(self.pwRightUp, width = 195, height = 380)#テニスコート用のcanvas作成
-        self.createCourt(self.canvas2,self.courtsize,self.pwRightUp)#テニスコート
+        # self.canvas2 = tkinter.Canvas(self.pwRightUp, width = 195, height = 380)#テニスコート用のcanvas作成
+        # self.createCourt(self.canvas2,self.courtsize,self.pwRightUp)#テニスコート
 
 
         self.pwLeftDown = tkinter.PanedWindow(self.pwLeft, orient='horizontal') # 左画面の下側
@@ -137,75 +139,110 @@ class Application(tkinter.Frame):
         canvas.place(x=0,y=0)
         pw.add(canvas,pady=10)
 
-    def drawContact(self):
-        print("drawContact",len(self.score.arrayContactServe))
+    def drawContactPlayerName(self):
+        #print(self.canvas1.width)
+        width=195
+        height=380
+        x=int(width/2)
+        y1=70
+        y2=int(height-70-20)
+        y3=int(height-30)
+        self.canvas1.create_text(x,10,text = "ServeImpactPoints")
+        self.canvas1.create_text(x,y1,txt = "Nishikori")
+        self.canvas1.create_text(x,y2,text = "Medvedev")
+
+        self.canvas1.create_text(x+20,y3,text = "2nd")
+        self.canvas1.create_text(x-50,y3,text = "1st")
+        x4=x
+        y4=y3
+        x5=x-70
+        r=2
+        self.canvas1.create_oval(x4-r, y3-r, x4+r, y3+r, tag="oval",fill='#FFFF00',width=0)
+        self.canvas1.create_oval(x5-r, y3-r, x5+r, y3+r, tag="oval",fill='#FF0000',width=0)
+
+
+    def drawContactAll(self):
+        #print("drawContact",len(self.score.arrayContactServe))
         self.canvas1.delete("all")
         self.createCourt(self.canvas1,self.courtsize,self.pwRightUp)
         r=1*1
         s=self.courtsize        
         for i in range(len(self.score.arrayContactServe)):
-            if(self.score.arrayContactServe[i][0]+self.score.arrayContactServe[i][1]>0):#サーブ以外のポイントは排除
-                print(i)
-                p1=[float(self.score.arrayCourt[1][i][0]),float(self.score.arrayCourt[1][i][1])]
-                p2=[float(self.score.arrayCourt[2][i][0]),float(self.score.arrayCourt[2][i][1])]
-                p3=[float(self.score.arrayCourt[3][i][0]),float(self.score.arrayCourt[3][i][1])]
-                p4=[float(self.score.arrayCourt[0][i][0]),float(self.score.arrayCourt[0][i][1])]
+            self.drawContact(i,r,s)
+        self.drawContactPlayerName()
 
-                c1,c2,c3,c4=[0, 0],[0, 23.78],[8.23, 23.78],[8.23, 0]
+            
+    def drawContact(self,i,r,s):      
+        if(self.score.arrayContactServe[i][0]+self.score.arrayContactServe[i][1]>0):#サーブ以外のポイントは排除
+            #print(i)
+            p1=[float(self.score.arrayCourt[1][i][0]),float(self.score.arrayCourt[1][i][1])]
+            p2=[float(self.score.arrayCourt[2][i][0]),float(self.score.arrayCourt[2][i][1])]
+            p3=[float(self.score.arrayCourt[3][i][0]),float(self.score.arrayCourt[3][i][1])]
+            p4=[float(self.score.arrayCourt[0][i][0]),float(self.score.arrayCourt[0][i][1])]
 
-                src_pts = np.float32([p1,p2,p3,p4]).reshape(-1,1,2)
-                dst_pts = np.float32([c1,c2,c3,c4]).reshape(-1,1,2)
+            c1,c2,c3,c4=[0, 0],[0, 23.78],[8.23, 23.78],[8.23, 0]#シングルスコートの4隅
 
-                M,mask=cv2.findHomography(src_pts, dst_pts, cv2.RANSAC,5.0)
-                pts=np.array([[[float(self.score.arrayContactServe[i][0]),
-                    float(self.score.arrayContactServe[i][1])]]])
-                # print(float(self.score.arrayCourt[0][i][0]))
-                # print(pts)
-                # print(src_pts)
-                # print(dst_pts)
-                dst = cv2.perspectiveTransform(pts,M)
+            src_pts = np.float32([p1,p2,p3,p4]).reshape(-1,1,2)
+            dst_pts = np.float32([c1,c2,c3,c4]).reshape(-1,1,2)
 
-                x_temp=dst[0][0][0]
-                y_temp=dst[0][0][1]
+            M,mask=cv2.findHomography(src_pts, dst_pts, cv2.RANSAC,5.0)
+            pts=np.array([[[float(self.score.arrayContactServe[i][0]),
+                float(self.score.arrayContactServe[i][1])]]])
+            # print(float(self.score.arrayCourt[0][i][0]))
+            # print(pts)
+            # print(src_pts)
+            # print(dst_pts)
+            dst = cv2.perspectiveTransform(pts,M)
 
-                if(self.score.arrayServer[i]==self.score.playerName[0]):
-                    #print(self.score.arrayFirstSecond[i])
-                    if(y_temp<11.89):#上半分の場合、そのまま表示
-                        x=x_temp*s+2*s+1.37*s
-                        y=y_temp*s+2*s
-                        if(score.arrayFirstSecond[i] == 0):
-                            self.canvas1.create_oval(x-r, y-r, x+r, y+r, tag="oval",fill='#FF0000',width=0)
-                        elif(score.arrayFirstSecond[i] == 1):
-                            self.canvas1.create_oval(x-r, y-r, x+r, y+r, tag="oval",fill='#FFFF00',width=0)
-                    else:#下半分の場合、反転して上側に表示
-                        x=(8.23-x_temp)*s+2*s+1.37*s
-                        y=(23.78-y_temp)*s+2*s
-                        if(score.arrayFirstSecond[i] == 0):
-                            self.canvas1.create_oval(x-r, y-r, x+r, y+r, tag="oval",fill='#FF0000',width=0)
-                        elif(score.arrayFirstSecond[i] == 1):
-                            self.canvas1.create_oval(x-r, y-r, x+r, y+r, tag="oval",fill='#FFFF00',width=0)
-                elif(self.score.arrayServer[i]==self.score.playerName[1]):
-                    print("arrayFirstSecond",score.arrayFirstSecond[i])
-                    if(y_temp>=11.89):#下半分の場合、そのまま表示
-                        x=x_temp*s+2*s+1.37*s
-                        y=y_temp*s+2*s
-                        if(score.arrayFirstSecond[i] == 1):
-                            self.canvas1.create_oval(x-r, y-r, x+r, y+r, tag="oval",fill='#FF0000',width=0)#赤色
-                        elif(score.arrayFirstSecond[i] == 2):
-                            self.canvas1.create_oval(x-r, y-r, x+r, y+r, tag="oval",fill='#FFFF00',width=0)#黄色
-                    else:#上半分の場合、反転して下側に表示
-                        x=(8.23-x_temp)*s+2*s+1.37*s
-                        y=(23.78-y_temp)*s+2*s
-                        if(score.arrayFirstSecond[i] == 1):
-                           self.canvas1.create_oval(x-r, y-r, x+r, y+r, tag="oval",fill='#FF0000',width=0)
-                        elif(score.arrayFirstSecond[i] == 2):
-                           self.canvas1.create_oval(x-r, y-r, x+r, y+r, tag="oval",fill='#FFFF00',width=0)
-                #print("dst",x,y)
+            x_temp=dst[0][0][0]
+            y_temp=dst[0][0][1]
 
-                #print(i,self.score.arrayContactServe[i][0],self.score.arrayContactServe[i][1])
+            print("i",i)
+            print("server",self.score.arrayServer[i])
+            #print("playerName[0]",self.score.playerName[0])
+            #print("playerName[1]",self.score.playerName[1])
+            #print(x_temp,y_temp)#4.538057930289974 4.405105323121075
+            server=self.score.arrayServer[i]
+            if(server == ""):
+                #print(self.score.firstServer)
+                #print(self.score.totalGame)
+                server=self.score.playerName[(self.score.firstServer + self.score.totalGame) % 2]
 
-        
-        
+            if(server==self.score.playerName[0]):
+                print("playerAのサーブ:",self.score.arrayFirstSecond[i])
+                if(y_temp<11.89):#上半分の場合、そのまま表示
+                    x=x_temp*s+2*s+1.37*s
+                    y=y_temp*s+2*s
+                    if(self.score.arrayFirstSecond[i] == 1):
+                        self.canvas1.create_oval(x-r, y-r, x+r, y+r, tag="oval",fill='#FF0000',width=0)
+                    elif(self.score.arrayFirstSecond[i] == 2):
+                        self.canvas1.create_oval(x-r, y-r, x+r, y+r, tag="oval",fill='#FFFF00',width=0)
+                else:#下半分の場合、反転して上側に表示
+                    x=(8.23-x_temp)*s+2*s+1.37*s
+                    y=(23.78-y_temp)*s+2*s
+                    if(self.score.arrayFirstSecond[i] == 1):
+                        self.canvas1.create_oval(x-r, y-r, x+r, y+r, tag="oval",fill='#FF0000',width=0)
+                    elif(self.score.arrayFirstSecond[i] == 2):
+                        self.canvas1.create_oval(x-r, y-r, x+r, y+r, tag="oval",fill='#FFFF00',width=0)
+            elif(server==self.score.playerName[1]):
+                print("playerBのサーブ:",self.score.arrayFirstSecond[i])
+                if(y_temp>=11.89):#下半分の場合、そのまま表示
+                    x=x_temp*s+2*s+1.37*s
+                    y=y_temp*s+2*s
+                    if(self.score.arrayFirstSecond[i] == 1):
+                        self.canvas1.create_oval(x-r, y-r, x+r, y+r, tag="oval",fill='#FF0000',width=0)#赤色
+                    elif(self.score.arrayFirstSecond[i] == 2):
+                        self.canvas1.create_oval(x-r, y-r, x+r, y+r, tag="oval",fill='#FFFF00',width=0)#黄色
+                else:#上半分の場合、反転して下側に表示
+                    x=(8.23-x_temp)*s+2*s+1.37*s
+                    y=(23.78-y_temp)*s+2*s
+                    if(self.score.arrayFirstSecond[i] == 1):
+                        self.canvas1.create_oval(x-r, y-r, x+r, y+r, tag="oval",fill='#FF0000',width=0)
+                    elif(self.score.arrayFirstSecond[i] == 2):
+                        self.canvas1.create_oval(x-r, y-r, x+r, y+r, tag="oval",fill='#FFFF00',width=0)
+            #print(x_temp,y_temp)
+            #print(x,y)
+
 
     def create_scale(self):
         self.myval = tkinter.DoubleVar()
@@ -216,12 +253,12 @@ class Application(tkinter.Frame):
         self.pwLeft.add(self.sc, padx=10)
 
     def value_changed(self, *args):  # scaleの値が変化したとき
-        if(self.myval.get() > score.arrayFrameEnd[score.number]):
-            score.number += 1
-            self.tree.selection_set(self.tree.get_children()[score.number])
-        elif(self.myval.get() < score.arrayFrameStart[score.number]):
-            score.number -= 1
-            self.tree.selection_set(self.tree.get_children()[score.number])
+        if(self.myval.get() > self.score.arrayFrameEnd[self.score.number]):
+            self.score.number += 1
+            self.tree.selection_set(self.tree.get_children()[self.score.number])
+        elif(self.myval.get() < self.score.arrayFrameStart[self.score.number]):
+            self.score.number -= 1
+            self.tree.selection_set(self.tree.get_children()[self.score.number])
         if(self.mode == 0):
             self.imageShow()
 
@@ -236,15 +273,30 @@ class Application(tkinter.Frame):
         self.panel = tkinter.Label(self, image=self.imgtk)
         self.panel.bind("<Button-1>", self.mouseclicked)
         self.pwLeftUp.add(self.panel, padx=10, pady=10)
+    def drawLine(self,img_copy,ph,inv_M):
+        dst_inv=cv2.perspectiveTransform(ph,inv_M)
+        cv2.line(img_copy, (int(dst_inv[0][0][0]),int(dst_inv[0][0][1])),
+            (int(dst_inv[0][1][0]),int(dst_inv[0][1][1])), (0, 255, 0),1)#中央の横ライン
+    def drawCourtLine(self,pts,img_copy,inv_M):
+        cv2.polylines(img_copy, [pts], True, (0, 255, 0), 1)
+        ph=np.array([[[0,11.89],[8.23,11.89]]],dtype='float32')
+        phup=np.array([[[0,11.89/2],[8.23,11.89/2]]],dtype='float32')
+        phdown=np.array([[[0,23.78*3/4],[8.23,23.78*3/4]]],dtype='float32')
+        centerLine=np.array([[[8.23/2,11.89/2],[8.23/2,23.78*3/4]]],dtype='float32')
+        self.drawLine(img_copy,ph,inv_M)
+        self.drawLine(img_copy,phup,inv_M)
+        self.drawLine(img_copy,phdown,inv_M)
+        self.drawLine(img_copy,centerLine,inv_M)
+        
 
-    def mouseclicked_buckup(self, event):  # mouseevent 着弾点をマウスでクリック
-        if((score.arrayContactServe[score.number][0] > 0) and(score.arrayContactServe[score.number][1] > 0)):
+    def mouseclicked(self, event):  # mouseevent 着弾点をマウスでクリック
+        if((self.score.arrayContactServe[self.score.number][0] > 0) and(self.score.arrayContactServe[self.score.number][1] > 0)):
             msg = tkinter.messagebox.askyesno('serve', 'サーブ座標データを上書きしますか？')
             if msg == 1:  # true
-                score.arrayContactServe[number] = [0, 0]
+                self.score.arrayContactServe[self.score.number] = [0, 0]
         else:
             if(score.mode == 0):
-                print("mode", score.mode)
+                print("mode", self.score.mode)
                 gimg = self.readImage(self.myval.get())
                 pts, dilation = calcCourtPoints(gimg)
                 img_copy = np.copy(gimg)
@@ -259,56 +311,70 @@ class Application(tkinter.Frame):
                 imgtk = ImageTk.PhotoImage(image=im)
                 self.panel.configure(image=imgtk)
                 self.panel.image = imgtk
-            elif(score.mode == 1):
-                print("mode", score.mode)
+            elif(self.score.mode == 1):#
                 gimg = self.readImage(self.myval.get())
                 img_copy = np.copy(gimg)
                 cv2.circle(img_copy, (event.x - 2, event.y - 2),
                            2, (0, 255, 0), -1)
-                score.arrayPointXY[score.pointXYNum][0] = event.x - 2
-                score.arrayPointXY[score.pointXYNum][1] = event.y - 2
+                self.score.arrayPointXY[self.score.pointXYNum][0] = event.x - 2
+                self.score.arrayPointXY[self.score.pointXYNum][1] = event.y - 2
 
-                # arrayCourt[0]
-                score.arrayCourt[score.pointXYNum][score.number][0] = event.x - 2
-                score.arrayCourt[score.pointXYNum][score.number][1] = event.y - 2
+ 
+                self.score.arrayCourt[self.score.pointXYNum][self.score.number][0] = event.x - 2
+                self.score.arrayCourt[self.score.pointXYNum][self.score.number][1] = event.y - 2
+                self.score.pointXYNum = self.score.pointXYNum + 1
 
-                #score.pointXYNum.set(score.pointXYNum + 1)
-                score.pointXYNum = score.pointXYNum + 1
-
-                if(score.pointXYNum < 4):
+                if(self.score.pointXYNum < 4):
                     image = cv2.cvtColor(img_copy, cv2.COLOR_BGR2RGB)
                     im = Image.fromarray(image)
                     imgtk = ImageTk.PhotoImage(image=im)
                     self.panel.configure(image=imgtk)
                     self.panel.image = imgtk
                 else:
-                    pts = np.array([score.arrayPointXY[0],
-                                    score.arrayPointXY[1],
-                                    score.arrayPointXY[2],
-                                    score.arrayPointXY[3]],
+                    self.pts = np.array([self.score.arrayPointXY[0],
+                                    self.score.arrayPointXY[1],
+                                    self.score.arrayPointXY[2],
+                                    self.score.arrayPointXY[3]],
                                    dtype=int)
-                    # print(pts)
-                    cv2.polylines(img_copy, [pts], True, (0, 255, 0), 2)
-                    image = cv2.cvtColor(img_copy, cv2.COLOR_BGR2RGB)
-                    im = Image.fromarray(image)
-                    imgtk = ImageTk.PhotoImage(image=im)
-                    self.panel.configure(image=imgtk)
-                    self.panel.image = imgtk
 
-                    score.pointXYNum = 0
-                    #score.mode.set(2)
-                    score.mode = 2
-            elif(score.mode == 2):
-                print("mode", score.mode)
+                    p1=np.array(self.score.arrayPointXY[0])
+                    p2=np.array(self.score.arrayPointXY[1])
+                    p3=np.array(self.score.arrayPointXY[2])
+                    p4=np.array(self.score.arrayPointXY[3])
+
+                    centerLineLeft=np.array((np.array(self.score.arrayPointXY[1])+np.array(self.score.arrayPointXY[2]))/2,dtype=int)
+                    centerLineRignt=np.array((np.array(self.score.arrayPointXY[0])+np.array(self.score.arrayPointXY[3]))/2,dtype=int)
+                    c1,c2,c3,c4=[8.23, 0],[0, 0],[0, 23.78],[8.23, 23.78]#シングルスコートの4隅
+                    src_pts = np.float32([p1,p2,p3,p4]).reshape(-1,1,2)
+                    dst_pts = np.float32([c1,c2,c3,c4]).reshape(-1,1,2)
+
+                    M,mask=cv2.findHomography(src_pts, dst_pts, cv2.RANSAC,5.0)
+                    pts_sub=np.array([[centerLineLeft,centerLineRignt]],dtype='float32')
+                    self.inv_M=np.linalg.inv(M)
+                    # self.drawCourtLine(self.pts,img_copy,self.inv_M)
+                        # image = cv2.cvtColor(img_copy, cv2.COLOR_BGR2RGB)
+                        # im = Image.fromarray(image)
+                        # imgtk = ImageTk.PhotoImage(image=im)
+                        # self.panel.configure(image=imgtk)
+                        # self.panel.image = imgtk
+                    self.imageShow()
+
+                    self.score.pointXYNum = 0
+                    self.score.mode = 2
+            elif(self.score.mode == 2):#
+                print("mode", self.score.mode)
                 gimg = self.readImage(self.myval.get())
-                pts = np.array([score.arrayPointXY[0],
-                                score.arrayPointXY[1],
-                                score.arrayPointXY[2],
-                                score.arrayPointXY[3]],
-                               dtype=int)
+                # pts = np.array([score.arrayPointXY[0],
+                #                 score.arrayPointXY[1],
+                #                 score.arrayPointXY[2],
+                #                 score.arrayPointXY[3]],
+                #                dtype=int)
+
                 img_copy = np.copy(gimg)
-                cv2.polylines(img_copy, [pts], True, (0, 255, 0), 2)
+                #cv2.polylines(img_copy, [self.pts], True, (0, 255, 0), 2)
+                self.drawCourtLine(self.pts,img_copy,self.inv_M)
                 h, w = img_copy.shape[0], img_copy.shape[1]
+                
                 cv2.line(img_copy, (event.x - 2, 0),
                          (event.x - 2, h - 1), (255, 0, 0))
                 cv2.line(img_copy, (0, event.y - 2),
@@ -318,15 +384,23 @@ class Application(tkinter.Frame):
                 imgtk = ImageTk.PhotoImage(image=im)
                 self.panel.configure(image=imgtk)
                 self.panel.image = imgtk
-                score.mode = 1
+                self.score.mode = 1
 
-                score.arrayContactServe[score.number] = [
+                self.score.arrayContactServe[self.score.number] = [
                     event.x - 2, event.y - 2]
+
+                self.drawContactAll()
                 self.setTree()
 
-    def mouseclicked(self, event):  # mouseevent 着弾点をマウスでクリック
+    def mouseclicked_buckup(self, event):  # mouseevent 着弾点をマウスでクリック
+        #0 
+        #1 サーブのコート選択モード
+        #2 サーブの着地点選択モード
+        #3 ショットのコート選択モード
+        #4 ショットの着地点選択モード
+
         print("mouseclicked!")
-        if(score.mode == 0):#初期設定はscore.mode=1
+        if(self.score.mode == 0):#初期設定はscore.mode=1
             gimg = self.readImage(self.myval.get())
             pts, dilation = calcCourtPoints(gimg)#
             img_copy = np.copy(gimg)
@@ -341,27 +415,27 @@ class Application(tkinter.Frame):
             imgtk = ImageTk.PhotoImage(image=im)
             self.panel.configure(image=imgtk)
             self.panel.image = imgtk
-        elif(score.mode == 1):  # コート範囲選択（4点選択）
+        elif(self.score.mode == 1):  # コート範囲選択（4点選択）
             gimg = self.readImage(self.myval.get())
             img_copy = np.copy(gimg)
             cv2.circle(
                 img_copy, (event.x - 2, event.y - 2), 2, (0, 255, 0), -1)
-            score.arrayPointXY[score.pointXYNum][0] = event.x - 2
-            score.arrayPointXY[score.pointXYNum][1] = event.y - 2
-            score.arrayCourt[score.pointXYNum][score.number][0] = event.x - 2
-            score.arrayCourt[score.pointXYNum][score.number][1] = event.y - 2
-            score.pointXYNum = score.pointXYNum + 1
-            if(score.pointXYNum < 4):
+            self.score.arrayPointXY[self.score.pointXYNum][0] = event.x - 2
+            self.score.arrayPointXY[self.score.pointXYNum][1] = event.y - 2
+            self.score.arrayCourt[self.score.pointXYNum][self.score.number][0] = event.x - 2
+            self.score.arrayCourt[self.score.pointXYNum][self.score.number][1] = event.y - 2
+            self.score.pointXYNum = self.score.pointXYNum + 1
+            if(self.score.pointXYNum < 4):#1～4の点
                 image = cv2.cvtColor(img_copy, cv2.COLOR_BGR2RGB)
                 im = Image.fromarray(image)
                 imgtk = ImageTk.PhotoImage(image=im)
                 self.panel.configure(image=imgtk)
                 self.panel.image = imgtk
-            else:
-                pts = np.array([score.arrayPointXY[0],
-                                score.arrayPointXY[1],
-                                score.arrayPointXY[2],
-                                score.arrayPointXY[3]],
+            else:#4つ点をプロットしたあと
+                pts = np.array([self.score.arrayPointXY[0],
+                                self.score.arrayPointXY[1],
+                                self.score.arrayPointXY[2],
+                                self.score.arrayPointXY[3]],
                                dtype=int)
                 cv2.polylines(img_copy, [pts], True, (0, 255, 0), 2)
                 image = cv2.cvtColor(img_copy, cv2.COLOR_BGR2RGB)
@@ -369,14 +443,14 @@ class Application(tkinter.Frame):
                 imgtk = ImageTk.PhotoImage(image=im)
                 self.panel.configure(image=imgtk)
                 self.panel.image = imgtk
-                score.pointXYNum = 0
-                score.mode = 2
-        elif(score.mode == 2):  # サーブの着地点を検出
+                self.score.pointXYNum = 0
+                self.score.mode = 2
+        elif(self.score.mode == 2):  # サーブの着地点を検出
             gimg = self.readImage(self.myval.get())
-            pts = np.array([score.arrayPointXY[0],
-                            score.arrayPointXY[1],
-                            score.arrayPointXY[2],
-                            score.arrayPointXY[3]],
+            pts = np.array([self.score.arrayPointXY[0],
+                            self.score.arrayPointXY[1],
+                            self.score.arrayPointXY[2],
+                            self.score.arrayPointXY[3]],
                            dtype=int)
             img_copy = np.copy(gimg)
             cv2.polylines(img_copy, [pts], True, (0, 255, 0), 2)
@@ -390,28 +464,28 @@ class Application(tkinter.Frame):
             imgtk = ImageTk.PhotoImage(image=im)
             self.panel.configure(image=imgtk)
             self.panel.image = imgtk
-            score.mode = 3
-            score.arrayContactServe[score.number] = [event.x - 2, event.y - 2]
+            self.score.mode = 3
+            self.score.arrayContactServe[self.score.number] = [event.x - 2, event.y - 2]
             self.setTree()
-        elif(score.mode == 3):  # コート範囲選択（4点選択）
+        elif(self.score.mode == 3):  # コート範囲選択（4点選択）
             gimg = self.readImage(self.myval.get())
             img_copy = np.copy(gimg)
             cv2.circle(
                 img_copy, (event.x - 2, event.y - 2), 2, (0, 255, 0), -1)
-            score.arrayPointXY2[score.pointXYNum][0] = event.x - 2
-            score.arrayPointXY2[score.pointXYNum][1] = event.y - 2
-            score.pointXYNum = score.pointXYNum + 1
-            if(score.pointXYNum < 4):
+            self.score.arrayPointXY2[self.score.pointXYNum][0] = event.x - 2
+            self.score.arrayPointXY2[self.score.pointXYNum][1] = event.y - 2
+            self.score.pointXYNum = self.score.pointXYNum + 1
+            if(self.score.pointXYNum < 4):
                 image = cv2.cvtColor(img_copy, cv2.COLOR_BGR2RGB)
                 im = Image.fromarray(image)
                 imgtk = ImageTk.PhotoImage(image=im)
                 self.panel.configure(image=imgtk)
                 self.panel.image = imgtk
             else:
-                pts = np.array([score.arrayPointXY2[0],
-                                score.arrayPointXY2[1],
-                                score.arrayPointXY2[2],
-                                score.arrayPointXY2[3]],
+                pts = np.array([self.score.arrayPointXY2[0],
+                                self.score.arrayPointXY2[1],
+                                self.score.arrayPointXY2[2],
+                                self.score.arrayPointXY2[3]],
                                dtype=int)
                 cv2.polylines(img_copy, [pts], True, (0, 255, 0), 2)
                 image = cv2.cvtColor(img_copy, cv2.COLOR_BGR2RGB)
@@ -419,14 +493,14 @@ class Application(tkinter.Frame):
                 imgtk = ImageTk.PhotoImage(image=im)
                 self.panel.configure(image=imgtk)
                 self.panel.image = imgtk
-                score.pointXYNum = 0
-                score.mode = 4
-        elif(score.mode == 4):
+                self.score.pointXYNum = 0
+                self.score.mode = 4
+        elif(self.score.mode == 4):
             gimg = self.readImage(self.myval.get())
-            pts = np.array([score.arrayPointXY2[0],
-                            score.arrayPointXY2[1],
-                            score.arrayPointXY2[2],
-                            score.arrayPointXY2[3]],
+            pts = np.array([self.score.arrayPointXY2[0],
+                            self.score.arrayPointXY2[1],
+                            self.score.arrayPointXY2[2],
+                            self.score.arrayPointXY2[3]],
                            dtype=int)
             img_copy = np.copy(gimg)
             cv2.polylines(img_copy, [pts], True, (0, 255, 0), 2)
@@ -440,20 +514,20 @@ class Application(tkinter.Frame):
             imgtk = ImageTk.PhotoImage(image=im)
             self.panel.configure(image=imgtk)
             self.panel.image = imgtk
-            score.arrayContactBalls[score.number].append([score.number,
+            self.score.arrayContactBalls[self.score.number].append([self.score.number,
                                                           self.myval.get(),
-                                                          score.arrayPointXY2[0][0],
-                                                          score.arrayPointXY2[0][1],
-                                                          score.arrayPointXY2[1][0],
-                                                          score.arrayPointXY2[1][1],
-                                                          score.arrayPointXY2[2][0],
-                                                          score.arrayPointXY2[2][1],
-                                                          score.arrayPointXY2[3][0],
-                                                          score.arrayPointXY2[3][1],
+                                                          self.score.arrayPointXY2[0][0],
+                                                          self.score.arrayPointXY2[0][1],
+                                                          self.score.arrayPointXY2[1][0],
+                                                          self.score.arrayPointXY2[1][1],
+                                                          self.score.arrayPointXY2[2][0],
+                                                          self.score.arrayPointXY2[2][1],
+                                                          self.score.arrayPointXY2[3][0],
+                                                          self.score.arrayPointXY2[3][1],
                                                           event.x - 2,
                                                           event.y - 2])
-            print("arrayContactBalls", score.arrayContactBalls)
-            score.mode = 3
+            print("arrayContactBalls", self.score.arrayContactBalls)
+            self.score.mode = 3
 
     def readImage(self, frameIndex):
         self.video.set(cv2.CAP_PROP_POS_FRAMES, frameIndex)
@@ -463,6 +537,9 @@ class Application(tkinter.Frame):
     def imageShow(self):  # 画像描画
         gimg = self.readImage(self.myval.get())
         img_copy = np.copy(gimg)
+        if(len(self.pts)==4):
+            self.drawCourtLine(self.pts,img_copy,self.inv_M)#todo test
+
         image_change = cv2.cvtColor(img_copy, cv2.COLOR_BGR2RGB)
         im = Image.fromarray(image_change)
         self.imgtk = ImageTk.PhotoImage(image=im)
@@ -489,7 +566,6 @@ class Application(tkinter.Frame):
             self.myval.set(self.frame_no)
 
     def open_video(self):
-        print("openvideo!")
         dir = 'C:\\'
         fld = filedialog.askopenfilename(
             initialdir=dir, filetypes=[
@@ -508,13 +584,13 @@ class Application(tkinter.Frame):
             initialdir=dir, filetypes=[
                 ('Db Files', ('.db'))])
         if(self.fld):
-            msg = tkinter.messagebox.askyesno('save', 'データを読み込みますか？')
+            msg = tkinter.messagebox.askyesno('save', '現在のデータ上書きします。データを読み込みますか？')
             if msg == 1:  # true
                 #db=Database("tennis1.db",self.score)
                 db = database.Database(self.fld, self.score)
                 db.loadDatabase()
-                score = db.dbToScore()
-                self.drawContact()
+                self.score = db.dbToScore()
+                self.drawContactAll()
                 self.setTree()
                 curItem = self.tree.get_children()[score.number]
                 self.myval.set(int(self.tree.item(curItem)["values"][1]))
@@ -539,6 +615,68 @@ class Application(tkinter.Frame):
             db = database.Database(self.fld, self.score)
             db.saveDatabase()
 
+    def button_edit_save(self,enent):
+        self.score.playerA=self.tw_txtA.get()
+        self.score.playerB=self.tw_txtB.get()
+        #self.score.firstServer==0
+        self.score.firstServer = self.firstServer.get()
+
+        if(self.score.firstServer==0):
+            self.label_firstServer["text"]="1stServer:"+self.score.playerA
+        else:
+            self.label_firstServer["text"]="1stServer:"+self.score.playerB
+
+        settings=setting.Setting()
+        settings.save_data(self.score.playerA,self.score.playerB,self.score.firstServer)
+
+        self.sub_win.destroy()
+        self.updata_button()
+
+        
+
+    def button_edit_cancel(self,event):
+        self.sub_win.destroy()
+
+    def edit_setting(self):
+        self.sub_win=tkinter.Toplevel(root)    
+        self.sub_win.title('Edit Settings')
+        self.sub_win.geometry("600x200")
+
+        label_playerA=tkinter.Label(self.sub_win, text = "PlayerA : ")
+        
+        label_playerA.grid(row=0,column=0, padx=5, pady=5)
+
+        self.tw_txtA = tkinter.Entry(self.sub_win,width=20)
+        self.tw_txtA.insert(tkinter.END,self.score.playerA)
+        self.tw_txtA.grid(row=0,column=1, padx=5, pady=5)
+
+        label_playerB=tkinter.Label(self.sub_win, text = "PlayerB : ")
+        label_playerB.grid(row=2,column=0, padx=5, pady=5)
+
+        self.tw_txtB = tkinter.Entry(self.sub_win,width=20)
+        self.tw_txtB.insert(tkinter.END,self.score.playerB)
+        self.tw_txtB.grid(row=2,column=1, padx=5, pady=5)
+
+
+        self.firstServer.set(self.score.firstServer)
+        labelExample = tkinter.Label(self.sub_win, text = "First Server")
+        labelExample.grid(row=3,column=0, padx=5, pady=5)
+        radio3 = tkinter.Radiobutton(self.sub_win,text=score.playerA,
+            variable=self.firstServer,value=0,command=self.change_state)
+        radio3.grid(row=4,column=0, padx=5, pady=5)
+        radio4 = tkinter.Radiobutton(self.sub_win,text=score.playerB,
+            variable=self.firstServer,value=1,command=self.change_state)
+        radio4.grid(row=4,column=1, padx=5, pady=5)
+
+        button_save = tkinter.Button(self.sub_win,text=u'Save', width=10)
+        button_save.bind("<Button-1>", self.button_edit_save)
+        button_save.grid(row=5,column=0, padx=5, pady=5)
+
+        button_cancel = tkinter.Button(self.sub_win,text=u'Cancel', width=10)
+        button_cancel.bind("<Button-1>", self.button_edit_cancel)
+        button_cancel.grid(row=5,column=1, padx=5, pady=5)
+        
+
     def create_menu_bar(self):
         self.menu_bar = Menu(self.master)  # Menuオブジェクト作成
         self.master.configure(menu=self.menu_bar)  # rootオブジェクトにMenuオブジェクトを設定
@@ -548,6 +686,7 @@ class Application(tkinter.Frame):
         self.file_menu.add_command(label='Open Data', command=self.open_data)
         self.file_menu.add_command(label='Save Data', command=self.save_data)
         self.file_menu.add_command(label='Save Data As', command=self.save_data_as)
+        self.file_menu.add_command(label='Settings', command=self.edit_setting)
         self.menu_bar.add_cascade(label='File', menu=self.file_menu)
 
         self.stats_menu = Menu(self.menu_bar, tearoff=0)
@@ -596,29 +735,29 @@ class Application(tkinter.Frame):
 
     def create_button3(self):
         if(self.score.firstServer==0):
-            firstServer=tkinter.Label(text="1stServer:"+self.score.playerA)
+            self.label_firstServer=tkinter.Label(text="1stServer:"+self.score.playerA)
         else:
-            firstServer=tkinter.Label(text="1stServer:"+self.score.playerB)
+            self.label_firstServer=tkinter.Label(text="1stServer:"+self.score.playerB)
         
-        self.pw1_3.add(firstServer)
+        self.pw1_3.add(self.label_firstServer)
 
         self.pw1_3_1 = tkinter.PanedWindow(
             self.pwLeft, orient='vertical')  # ラジオボタン whichポイント
         self.pw1_3.add(self.pw1_3_1)
 
-        self.winner.set(score.winner)
-        radio1 = tkinter.Radiobutton(
-            text=score.playerA,
+        self.winner.set(self.score.winner)
+        self.radio1 = tkinter.Radiobutton(
+            text=self.score.playerA,
             variable=self.winner,
             value=0,
             command=self.change_state)
-        self.pw1_3_1.add(radio1)
-        radio2 = tkinter.Radiobutton(
-            text=score.playerB,
+        self.pw1_3_1.add(self.radio1)
+        self.radio2 = tkinter.Radiobutton(
+            text=self.score.playerB,
             variable=self.winner,
             value=1,
             command=self.change_state)
-        self.pw1_3_1.add(radio2)
+        self.pw1_3_1.add(self.radio2)
 
         label1 = tkinter.Label(text=u'のポイント')
         self.pw1_3.add(label1)
@@ -630,23 +769,23 @@ class Application(tkinter.Frame):
         Button_end.bind("<Button-1>", self.button_end)
         self.pw1_3.add(Button_end)
 
-        self.pw1_3_2 = tkinter.PanedWindow(
-            self.pwLeft, orient='vertical')  # ラジオボタン サーバー
-        self.pw1_3.add(self.pw1_3_2)
+        # self.pw1_3_2 = tkinter.PanedWindow(
+        #     self.pwLeft, orient='vertical')  # ラジオボタン サーバー
+        # self.pw1_3.add(self.pw1_3_2)
 
-        self.firstServer.set(score.firstServer)
-        radio3 = tkinter.Radiobutton(
-            text=score.playerA,
-            variable=self.firstServer,
-            value=0,
-            command=self.change_state)
-        self.pw1_3_2.add(radio3)
-        radio4 = tkinter.Radiobutton(
-            text=score.playerB,
-            variable=self.firstServer,
-            value=1,
-            command=self.change_state)
-        self.pw1_3_2.add(radio4)
+        # self.firstServer.set(score.firstServer)
+        # radio3 = tkinter.Radiobutton(
+        #     text=score.playerA,
+        #     variable=self.firstServer,
+        #     value=0,
+        #     command=self.change_state)
+        # self.pw1_3_2.add(radio3)
+        # radio4 = tkinter.Radiobutton(
+        #     text=score.playerB,
+        #     variable=self.firstServer,
+        #     value=1,
+        #     command=self.change_state)
+        # self.pw1_3_2.add(radio4)
 
     def create_button4(self,pw):
         self.pw1_4_1 = tkinter.PanedWindow(self.pw1_4, orient='vertical')
@@ -676,6 +815,11 @@ class Application(tkinter.Frame):
         self.Button6 = tkinter.Button(text=u'ボレーエラー(6)', width=20)
         self.Button6.bind("<Button-1>", self.button6_clicked)
         self.pw1_4_3.add(self.Button6)
+
+    def updata_button(self):
+        self.radio1["text"]=self.score.playerA
+        self.radio2["text"]=self.score.playerB
+
 
     def create_tree(self):
         self.tree = ttk.Treeview(root, selectmode="browse",takefocus=1)
@@ -712,40 +856,40 @@ class Application(tkinter.Frame):
         self.pwRightDown.add(self.tree)
 
     def buttonFault_clicked2(self, event):
-        if(score.faultFlug == 0):
-            score.faultFlug = 1
-            score.arrayFirstSecond[score.number] = 1  # 1stフォルト
-            score.arrayPointPattern[score.number] = score.patternString[6]
-            score.arrayPointWinner[score.number] = ""
-            score.pointWin[0][score.number] = 2
-            score.pointWin[1][score.number] = 2
+        if(self.score.faultFlug == 0):
+            self.score.faultFlug = 1
+            self.score.arrayFirstSecond[self.score.number] = 1  # 1stフォルト
+            self.score.arrayPointPattern[self.score.number] = self.score.patternString[6]
+            self.score.arrayPointWinner[self.score.number] = ""
+            self.score.pointWin[0][self.score.number] = 2
+            self.score.pointWin[1][self.score.number] = 2
 
-            score.calcScore()
+            self.score.calcScore()
 
-        elif(score.faultFlug == 1):
-            score.faultFlug = 0
-            score.arrayFirstSecond[score.number] = 2  # 2ndフォルト=ダブルフォルト
-            score.arrayPointPattern[score.number] = score.patternString[7]
-            score.pointWin[(score.firstServer + score.totalGame) %
-                           2][score.number] = 0
-            score.pointWin[(score.firstServer + score.totalGame + 1) %
-                           2][score.number] = 1
-            score.arrayPointWinner[score.number] = score.playerName[(
-                score.firstServer + score.totalGame + 1) % 2]
+        elif(self.score.faultFlug == 1):
+            self.score.faultFlug = 0
+            self.score.arrayFirstSecond[self.score.number] = 2  # 2ndフォルト=ダブルフォルト
+            self.score.arrayPointPattern[self.score.number] = self.score.patternString[7]
+            self.score.pointWin[(self.score.firstServer + self.score.totalGame) %
+                           2][self.score.number] = 0
+            self.score.pointWin[(self.score.firstServer + self.score.totalGame + 1) %
+                           2][self.score.number] = 1
+            self.score.arrayPointWinner[self.score.number] = self.score.playerName[(
+                self.score.firstServer + self.score.totalGame + 1) % 2]
 
-            score.calcScore()  # arrayScoreにスコアを格納
-        score.arrayServer[score.number] = score.playerName[(
-            score.firstServer + score.totalGame) % 2]
+            self.score.calcScore()  # arrayScoreにスコアを格納
+        self.score.arrayServer[self.score.number] = self.score.playerName[(
+            self.score.firstServer + self.score.totalGame) % 2]
         self.setTree()
 
     
 
     def buttonFault_clicked(self, event):
 
-        if(score.number == 0):
+        if(self.score.number == 0):
             self.firstFault()
         else:
-            if(score.arrayFault[score.number - 1] == 1):  # 前のポイントが1stフォルト
+            if(self.score.arrayFault[self.score.number - 1] == 1):  # 前のポイントが1stフォルト
                 self.secondFault()
             else:
                 self.firstFault()
@@ -753,104 +897,104 @@ class Application(tkinter.Frame):
         #print(score.arrayFirstSecond)
 
         self.calcFaultAll()
-        score.calcScore()
+        self.score.calcScore()
 
         self.setTree()
         #disabledPatternButton()
 
     def calcFaultAll(self):
-        for i in range(len(score.arrayFault)):
+        for i in range(len(self.score.arrayFault)):
             if(i > 0):
-                if(score.arrayFault[i - 1] == 1):  # 前のポイントがフォルト
-                    if(score.arrayFault[i] == 0):  # 現在ポイントがフォルト以外
+                if(self.score.arrayFault[i - 1] == 1):  # 前のポイントがフォルト
+                    if(self.score.arrayFault[i] == 0):  # 現在ポイントがフォルト以外
                         print("1")
-                        score.arrayFirstSecond[i] = 1
+                        self.score.arrayFirstSecond[i] = 1#0じゃない？
                     else:  # 現在ポイントがフォルトorダブルフォルト
                         print("2")
-                        score.arrayFault[i] = 2  # ダブルフォルトにする
+                        self.score.arrayFault[i] = 2  # ダブルフォルトにする
                 else:  # 前のポイントがフォルト以外
                     if(score.arrayFault[i] == 0):  # 現在ポイントがフォルト以外
                         print("3")
                     else:  # 現在ポイントがフォルトorダブルフォルト
                         print("4")
-                        score.arrayFault[i] = 1
+                        self.score.arrayFault[i] = 1
 
     def firstFault(self):
         print("firstFault")
-        score.arrayFault[score.number] = 1  # 2⇒ダブルフォルト 1⇒フォルト 0⇒フォルトなし
-        score.arrayFirstSecond[score.number] = 1
-        score.arrayPointWinner[score.number] = ""
-        score.pointWin[0][score.number] = 2
-        score.pointWin[1][score.number] = 2
-        score.arrayPointPattern[score.number] = score.patternString[6]
-        score.calcScore()
-        if(score.number == (len(score.arrayFault) - 1)):
-            score.faultFlug = 1
+        self.score.arrayFault[self.score.number] = 1  # 2⇒ダブルフォルト 1⇒フォルト 0⇒フォルトなし
+        self.score.arrayFirstSecond[self.score.number] = 1
+        self.score.arrayPointWinner[self.score.number] = ""
+        self.score.pointWin[0][self.score.number] = 2
+        self.score.pointWin[1][self.score.number] = 2
+        self.score.arrayPointPattern[self.score.number] = self.score.patternString[6]
+        self.score.calcScore()
+        if(self.score.number == (len(self.score.arrayFault) - 1)):
+            self.score.faultFlug = 1
 
     def secondFault(self):
         print("secondFault")
-        score.arrayFault[score.number] = 2  # 2⇒ダブルフォルト 1⇒フォルト 0⇒フォルトなし
-        score.arrayFirstSecond[score.number] = 2
-        score.arrayPointPattern[score.number] = score.patternString[7]
-        score.pointWin[(score.firstServer + score.totalGame) %
-                       2][score.number] = 0
-        score.pointWin[(score.firstServer + score.totalGame + 1) %
-                       2][score.number] = 1
-        score.arrayPointWinner[score.number] = score.playerName[(
-            score.firstServer + score.totalGame + 1) % 2]
-        if(score.number == (len(score.arrayFault) - 1)):
-            score.faultFlug = 0
+        self.score.arrayFault[self.score.number] = 2  # 2⇒ダブルフォルト 1⇒フォルト 0⇒フォルトなし
+        self.score.arrayFirstSecond[self.score.number] = 2
+        self.score.arrayPointPattern[self.score.number] = self.score.patternString[7]
+        self.score.pointWin[(self.score.firstServer + self.score.totalGame) %
+                       2][self.score.number] = 0
+        self.score.pointWin[(self.score.firstServer + self.score.totalGame + 1) %
+                       2][self.score.number] = 1
+        self.score.arrayPointWinner[self.score.number] = self.score.playerName[(
+            self.score.firstServer + self.score.totalGame + 1) % 2]
+        if(self.score.number == (len(self.score.arrayFault) - 1)):
+            self.score.faultFlug = 0
 
     def button_end(self, event):
-        if(self.myval.get() > score.arrayFrameStart[score.number]):
-            end = score.arrayFrameEnd[score.number]  # 次のフレームに行く前に終了フレームを一時記憶
-            score.arrayFrameEnd[score.number] = int(
+        if(self.myval.get() > self.score.arrayFrameStart[self.score.number]):
+            end = self.score.arrayFrameEnd[self.score.number]  # 次のフレームに行く前に終了フレームを一時記憶
+            self.score.arrayFrameEnd[self.score.number] = int(
                 self.myval.get() - 1)  # 終了フレーム
             #normalPatternButton()
-            if(score.faultFlug == 1):
+            if(self.score.faultFlug == 1):
                 self.Button_fault["text"] = "ダブルフォルト"
             else:
                 self.Button_fault["text"] = "フォルト"
 
             #number.set(number.get() + 1)  # 次のシーン
-            score.number += 1
-            score.arrayFrameStart.insert(
-                score.number, int(
+            self.score.number += 1
+            self.score.arrayFrameStart.insert(
+                self.score.number, int(
                     self.myval.get()))  # 開始フレーム
-            score.arrayFrameEnd.insert(score.number, end)
-            score.arrayPointPattern.insert(score.number, "")  # パターン
-            score.arrayPointWinner.insert(score.number, "")  # ポイント勝者+
-            score.pointWin[0].insert(score.number, 2)
-            score.pointWin[1].insert(score.number, 2)
-            score.arraySet.insert(score.number, "")  # スコア
-            score.arrayGame.insert(score.number, "")  # スコア
-            score.arrayScore.insert(score.number, "")  # スコア
-            score.arrayScoreResult.insert(score.number, "")  # スコア
-            score.arrayFirstSecond.insert(score.number, 0)  # 1st2nd
-            score.arrayServer.insert(score.number, "")  # サーバー
-            score.arrayForeBack.insert(score.number, "")  # フォアバック
-            score.arrayCourt[0].insert(score.number, [0, 0])
-            score.arrayCourt[1].insert(score.number, [0, 0])
-            score.arrayCourt[2].insert(score.number, [0, 0])
-            score.arrayCourt[3].insert(score.number, [0, 0])
-            score.arrayContactServe.insert(score.number, [0, 0])
-            score.arrayContactBalls.insert(score.number, [])
+            self.score.arrayFrameEnd.insert(self.score.number, end)
+            self.score.arrayPointPattern.insert(self.score.number, "")  # パターン
+            self.score.arrayPointWinner.insert(self.score.number, "")  # ポイント勝者+
+            self.score.pointWin[0].insert(self.score.number, 2)
+            self.score.pointWin[1].insert(self.score.number, 2)
+            self.score.arraySet.insert(self.score.number, "")  # スコア
+            self.score.arrayGame.insert(self.score.number, "")  # スコア
+            self.score.arrayScore.insert(self.score.number, "")  # スコア
+            self.score.arrayScoreResult.insert(self.score.number, "")  # スコア
+            self.score.arrayFirstSecond.insert(self.score.number, 0)  # 1st2nd
+            self.score.arrayServer.insert(self.score.number, "")  # サーバー
+            self.score.arrayForeBack.insert(self.score.number, "")  # フォアバック
+            self.score.arrayCourt[0].insert(self.score.number, [0, 0])
+            self.score.arrayCourt[1].insert(self.score.number, [0, 0])
+            self.score.arrayCourt[2].insert(self.score.number, [0, 0])
+            self.score.arrayCourt[3].insert(self.score.number, [0, 0])
+            self.score.arrayContactServe.insert(self.score.number, [0, 0])
+            self.score.arrayContactBalls.insert(self.score.number, [])
 
-            score.arrayFault.insert(score.number, 0)
+            self.score.arrayFault.insert(self.score.number, 0)
 
             self.setButtonFault()
 
-            score.mode = 1
+            self.score.mode = 1
 
             self.setTree()
 
     def change_state(self):
-        score.winner = self.winner.get()
-        score.firstServer = self.firstServer.get()
-        if (score.winner != (score.firstServer + score.totalGame + 1) % 2):
+        self.score.winner = self.winner.get()
+        # score.firstServer = self.firstServer.get()
+        if (self.score.winner != (self.score.firstServer + self.score.totalGame + 1) % 2):
             self.Button1.configure(state="normal")
             self.Button4.configure(state="normal")
-        elif (score.winner == (score.firstServer + score.totalGame + 1) % 2):
+        elif (self.score.winner == (self.score.firstServer + self.score.totalGame + 1) % 2):
             self.Button1.configure(state="disabled")
             self.Button4.configure(state="disabled")
 
@@ -906,7 +1050,7 @@ class Application(tkinter.Frame):
 
     def play_scene(self, event):
         self.vid.set_start_frame(self.myval.get())
-        self.vid.set_end_frame(score.arrayFrameEnd[score.number])
+        self.vid.set_end_frame(self.score.arrayFrameEnd[self.score.number])
         self.mode = 1
         self.update()
 
@@ -921,7 +1065,7 @@ class Application(tkinter.Frame):
 
     def setPattern(self, pattern):
         #self.setScore()
-        if(score.arrayPointPattern[score.number] == ""):
+        if(self.score.arrayPointPattern[self.score.number] == ""):
             self.setPattern2(pattern)
         else:
             msg = tkinter.messagebox.askyesno('data', 'データを上書きしますか？')
@@ -929,50 +1073,50 @@ class Application(tkinter.Frame):
                 self.setPattern2(pattern)
 
     def setPattern2(self, pattern):
-
-        score.pointWin[score.winner][score.number] = 1
-        score.pointWin[(score.winner + 1) % 2][score.number] = 0
-        score.calcScore()  # arrayScoreにスコアを格納
+        self.score.pointWin[self.score.winner][self.score.number] = 1
+        self.score.pointWin[(self.score.winner + 1) % 2][self.score.number] = 0
+        self.score.calcScore()  # arrayScoreにスコアを格納
 
         # 勝者の名前を格納
-        score.arrayPointWinner[score.number] = score.playerName[score.winner]
+        self.score.arrayPointWinner[self.score.number] = self.score.playerName[self.score.winner]
         # パターンを格納
-        score.arrayPointPattern[score.number] = score.patternString[pattern]
-        if(score.number == 0):
+        self.score.arrayPointPattern[self.score.number] = self.score.patternString[pattern]
+        if(self.score.number == 0):
             self.firstPattern()
         else:
-            if(score.arrayFault[score.number - 1] == 1):  # 前のポイントが1stフォルト
+            if(self.score.arrayFault[self.score.number - 1] == 1):  # 前のポイントが1stフォルト
                 self.secondPattern()
             else:
                 self.firstPattern()
 
         self.setTree()
-        print("number", score.number)
-        print("arrayFault", score.arrayFault)
-        print("arrayFirstSecond", score.arrayFirstSecond)
+        print("number", self.score.number)
+        print("arrayFault", self.score.arrayFault)
+        print("arrayFirstSecond", self.score.arrayFirstSecond)
+        print("arrayScore", self.score.arrayScore)
 
     def setButtonFault(self):
         print("setButtonFault")
-        print("arrayFault", score.arrayFault)
-        print("score.number", score.number)
+        print("arrayFault", self.score.arrayFault)
+        print("score.number", self.score.number)
 
-        if(score.number == 0):
-            score.faultFlug = 0
-        elif(score.number == 1):
-            if(score.arrayFault[0] == 0):
-                score.faultFlug = 0
+        if(self.score.number == 0):
+            self.score.faultFlug = 0
+        elif(self.score.number == 1):
+            if(self.score.arrayFault[0] == 0):
+                self.score.faultFlug = 0
             else:
-                score.faultFlug = 1
+                self.score.faultFlug = 1
         else:
-            if((score.arrayFault[score.number - 1] - score.arrayFault[score.number - 2]) == 1):
+            if((self.score.arrayFault[self.score.number - 1] - self.score.arrayFault[self.score.number - 2]) == 1):
                 print("ダブルフォルト")
-                score.faultFlug = 1  # ダブルフォルト
+                self.score.faultFlug = 1  # ダブルフォルト
             else:
                 print("フォルト")
-                score.faultFlug = 0  # フォルト
+                self.score.faultFlug = 0  # フォルト
 
-        print("score.faultFlug", score.faultFlug)
-        if(score.faultFlug == 1):
+        print("score.faultFlug", self.score.faultFlug)
+        if(self.score.faultFlug == 1):
             print("ダブルフォルト")
             self.Button_fault["text"] = "ダブルフォルト"
         else:
@@ -981,58 +1125,58 @@ class Application(tkinter.Frame):
 
     def firstPattern(self):
         print("firstPattern")
-        score.arrayFault[score.number] = 0
-        score.arrayFirstSecond[score.number] = 1
-        if(score.number == (len(score.arrayFault) - 1)):
-            score.faultFlug = 0
+        self.score.arrayFault[self.score.number] = 0
+        self.score.arrayFirstSecond[self.score.number] = 1
+        if(self.score.number == (len(self.score.arrayFault) - 1)):
+            self.score.faultFlug = 0
 
     def secondPattern(self):
         print("secondPattern")
-        score.arrayFault[score.number] = 0
-        score.arrayFirstSecond[score.number] = 2
-        if(score.number == (len(score.arrayFault) - 1)):
-            score.faultFlug = 1
+        self.score.arrayFault[self.score.number] = 0
+        self.score.arrayFirstSecond[self.score.number] = 2
+        if(self.score.number == (len(self.score.arrayFault) - 1)):
+            self.score.faultFlug = 1
 
     def setPattern22(self, pattern):
-        score.pointWin[score.winner][score.number] = 1
-        score.pointWin[(score.winner + 1) % 2][score.number] = 0
-        score.calcScore()  # arrayScoreにスコアを格納
+        self.score.pointWin[self.score.winner][self.score.number] = 1
+        self.score.pointWin[(self.score.winner + 1) % 2][self.score.number] = 0
+        self.score.calcScore()  # arrayScoreにスコアを格納
 
         # 勝者の名前を格納
-        score.arrayPointWinner[score.number] = score.playerName[score.winner]
+        self.score.arrayPointWinner[self.score.number] = self.score.playerName[self.score.winner]
         # パターンを格納
-        score.arrayPointPattern[score.number] = score.patternString[pattern]
-        if(score.faultFlug == 1):  # 前のポイントでフォルトをしていた場合
-            score.arrayFirstSecond[score.number] = 2
+        self.score.arrayPointPattern[self.score.number] = self.score.patternString[pattern]
+        if(self.score.faultFlug == 1):  # 前のポイントでフォルトをしていた場合
+            self.score.arrayFirstSecond[self.score.number] = 2
 
-        elif(score.faultFlug == 0):
-            score.arrayFirstSecond[score.number] = 1
-            if(score.number == (len(score.arrayFault) - 1)):
-                score.faultFlug = 0
+        elif(self.score.faultFlug == 0):
+            self.score.arrayFirstSecond[self.score.number] = 1
+            if(self.score.number == (len(self.score.arrayFault) - 1)):
+                self.score.faultFlug = 0
         self.setTree()
 
     def setTree(self):
-        print("setTree", len(score.arrayFrameStart))
+        print("setTree", len(self.score.arrayFrameStart))
         for i, t in enumerate(self.tree.get_children()):
             self.tree.delete(t)
-        for i in range(len(score.arrayFrameStart)):
+        for i in range(len(self.score.arrayFrameStart)):
             self.tree.insert("",
                              i,
                              values=(i,
-                                     score.arrayFrameStart[i],
-                                     score.arrayFrameEnd[i],
-                                     score.arraySet[i],
-                                     score.arrayGame[i],
-                                     score.arrayScore[i],
-                                     score.arrayScoreResult[i],
-                                     score.firstSecondString[score.arrayFirstSecond[i]],
-                                     score.arrayServer[i],
-                                     score.arrayPointWinner[i],
-                                     score.arrayPointPattern[i],
+                                     self.score.arrayFrameStart[i],
+                                     self.score.arrayFrameEnd[i],
+                                     self.score.arraySet[i],
+                                     self.score.arrayGame[i],
+                                     self.score.arrayScore[i],
+                                     self.score.arrayScoreResult[i],
+                                     self.score.firstSecondString[self.score.arrayFirstSecond[i]],
+                                     self.score.arrayServer[i],
+                                     self.score.arrayPointWinner[i],
+                                     self.score.arrayPointPattern[i],
                                      "",
-                                     score.arrayContactServe[i][0],
-                                     score.arrayContactServe[i][1]))
-        self.tree.selection_set(self.tree.get_children()[score.number])
+                                     self.score.arrayContactServe[i][0],
+                                     self.score.arrayContactServe[i][1]))
+        self.tree.selection_set(self.tree.get_children()[self.score.number])
 
     def select(self, event):
         print("tree_select")
@@ -1055,24 +1199,30 @@ if __name__ == "__main__":
 
     score = score.Score(settings.firstServer)
     score.setPlayerName(settings.playerA,settings.playerB)
-    # print(score.playerA, score.playerB)
-
+    
+    print(score.playerA, score.playerB)
+    
     root = tkinter.Tk()#root
     root.title("Tennis Video Analytics")
 
-    # sub_win=tkinter.Toplevel(root)
+    # sub_win=tkinter.Toplevel(root)    
     # sub_win.geometry("300x200")
 
     app = Application(score, master=root)
     # app.loadVideo(vid)
-    app.create_widgets(score, 360, 640)
-
-    # app.bind("<Key>", app.key)
-    # app.focus_set()
+    app.create_widgets(360, 640)
+    
+    print("videoFile:",settings.videoFile)
+    if(settings.videoFile!=""):
+        videoFile = settings.videoFile
+        vid = video.Video(videoFile)
+        app.loadVideo(vid)
+        app.imageShow()
+        app.sc.configure(to=app.frame_count)
 
     app.bind("<Right>", app.button_forward1)#右矢印をクリックしたらフレーム+1
     app.bind("<Control-Right>", app.button_forward10)#ctrf+右矢印をクリックしたらフレーム+10
-    app.bind("<Shift-Right>", app.button_forward10)#shift+右矢印をクリックしたらフレーム+100
+    app.bind("<Shift-Right>", app.button_forward100)#shift+右矢印をクリックしたらフレーム+100
     app.bind("<Left>", app.button_backward1)#左矢印をクリックしたらフレーム+1
     app.bind("<Control-Left>", app.button_backward10)#ctrf+左矢印をクリックしたらフレーム+10
     app.bind("<Shift-Left>", app.button_backward100)
@@ -1081,5 +1231,7 @@ if __name__ == "__main__":
     app.focus_set()
     app.pack()
     app.mainloop()
+
+    
 
     # vid.close()
