@@ -80,8 +80,10 @@ class Score():
         self.arrayPointPattern.append("")
         self.arrayFirstSecond = []  # 0    1    2
         self.arrayFirstSecond.append(0)
-        self.arrayForeBack = []  # サーバー
-        self.arrayForeBack.append("")
+        # self.arrayForeBack = []  # サーバー
+        # self.arrayForeBack.append("")
+
+        
 
         self.arrayFault = []  # フォルト
         self.arrayFault.append(0)
@@ -91,62 +93,41 @@ class Score():
         self.totalGame = 0
         self.mode = 1
         self.winner = 0
+        self.rally=0
 
         #追加
-        self.arrayContactBalls = []  # 初期化のappendは必要なし
-        self.arrayContactBalls.append([])
+        # self.arrayRally=[]
+        # self.arrayRally.append([])
+        self.arrayHitPlayer=[]
+        self.arrayHitPlayer.append([])
+        self.arrayBounceHit=[]
+        self.arrayBounceHit.append([])
+        self.arrayForeBack=[]
+        self.arrayForeBack.append([])
+        self.arrayDirection=[]
+        self.arrayDirection.append([])
+
+        self.arrayBallPosition = []
+        self.arrayBallPosition.append([])
+        self.arrayPlayerAPosition = []
+        self.arrayPlayerAPosition.append([])
+        self.arrayPlayerBPosition = []
+        self.arrayPlayerBPosition.append([])
+
+    def nextAppend(self):
+        self.rally=0
+        self.arrayPlayerAPosition.append([])
+        self.arrayPlayerBPosition.append([])
+        self.arrayBallPosition.append([])
+        self.arrayHitPlayer.append([])
+        self.arrayBounceHit.append([])
+        self.arrayForeBack.append([])
+        self.arrayDirection.append([])
 
     def setPlayerName(self, playerA, playerB):
         self.playerA = playerA
         self.playerB = playerB
         self.playerName = [self.playerA, self.playerB]
-
-    # def calcScore_buckup(self):  # 最初のポイントからすべて計算する
-    #     p = []
-    #     p.append(0)
-    #     p.append(0)
-    #     g = []
-    #     g.append(0)
-    #     g.append(0)
-    #     s = []
-    #     s.append(0)
-    #     s.append(0)
-    #     scoreA = ""
-    #     scoreB = ""
-    #     nextScore = "0-0"
-    #     nextGame = "0-0"
-    #     nextSet = "0-0"
-    #     self.totalGame = 0
-
-    #     for i in range(len(self.pointWin[0])):  # ポイント間も含め全ポイントを計算する　
-    #         if(self.pointWin[0][i] == 2):  # ポイント間で、winデータなし
-    #             self.arrayScore[i] = ""
-    #             self.arrayScoreResult[i] = ""
-    #             self.arrayGame[i] = ""
-    #             self.arraySet[i] = ""
-    #         else:
-    #             self.arrayScore[i] = nextScore
-    #             self.arrayGame[i] = nextGame
-    #             self.arraySet[i] = nextSet
-    #             if(self.pointWin[0][i] == 1):
-    #                 p[0] += 1
-    #             if(self.pointWin[1][i] == 1):
-    #                 p[1] += 1
-    #             scoreA, scoreB, p[0], p[1], g[0], g[1], s[0], s[1] = self.convertScore(
-    #                 p[0], p[1], g[0], g[1], s[0], s[1])
-    #             nextScore = scoreA + "-" + scoreB
-    #             nextGame = str(g[0]) + "-" + str(g[1])
-    #             nextSet = str(s[0]) + "-" + str(s[1])
-    #             if(self.arrayPointPattern[i] == self.patternString[6]):  # フォルトのとき
-    #                 self.arrayScoreResult[i] = ""
-    #             else:
-    #                 self.arrayScoreResult[i] = nextScore
-    #     if((p[0] + p[1]) != 0):
-    #         self.arrayServer[self.number] = self.playerName[(
-    #             self.firstServer + g[0] + g[1]) % 2]
-    #     else:
-    #         self.arrayServer[self.number] = self.playerName[(
-    #             self.firstServer + g[0] + g[1] + 1) % 2]
 
     def calcScore(self):  # 最初のポイントからすべて計算する
         print("calcScore")
@@ -243,7 +224,7 @@ class Score():
         return nextScore,nextGame,nextSet,p,g,s,scoreA,scoreB
 
     def convertScore(self, gamePointA, gamePointB, gameA, gameB, setA, setB):  # ポイント数からスコアに変換
-        if((gameA == 6) and (gameB == 6)):
+        if((gameA == 6) and (gameB == 6)):#タイブレーク
             if(gamePointA > 5 and gamePointB > 5):
                 if((gamePointA - gamePointB) > 1):
                     scoreA = "0"
@@ -266,8 +247,25 @@ class Score():
                     scoreB = str(gamePointB)
 
             else:
-                scoreA = str(gamePointA)
-                scoreB = str(gamePointB)
+                if(gamePointA==7):
+                    scoreA = "0"
+                    scoreB = "0"
+                    gamePointA = 0
+                    gamePointB = 0
+                    gameA += 1
+                    #totalGame.set(totalGame.get() + 1)
+                    self.totalGame += 1
+                elif(gamePointB==7):
+                    scoreA = "0"
+                    scoreB = "0"
+                    gamePointA = 0
+                    gamePointB = 0
+                    gameB += 1
+                    #totalGame.set(totalGame.get() + 1)
+                    self.totalGame += 1
+                else:
+                    scoreA = str(gamePointA)
+                    scoreB = str(gamePointB)
 
         else:
             if(gamePointA > 2 and gamePointB > 2):  # 40-40以降
