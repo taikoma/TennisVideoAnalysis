@@ -1,3 +1,10 @@
-contactBalls.csv
-test.py
-test2.py
+/contactBalls.csv
+/test.py
+/test2.py
+/.ipynb
+/__pycache__/
+/.ipynb_checkpoints/
+/data/buckup/
+/video/buckup/
+
+
