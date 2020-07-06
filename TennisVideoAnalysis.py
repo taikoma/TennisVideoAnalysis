@@ -74,7 +74,7 @@ class Application(tkinter.Frame):
         self.rx2=40
         self.ry2=20
         
-        print("pts:",len(self.pts))
+        # print("pts:",len(self.pts))
 
     def reselectOff(self):
         self.clickPlayerA=False
@@ -90,7 +90,7 @@ class Application(tkinter.Frame):
         self.frame_count = vid.frame_count
         self.score.arrayFrameEnd[len(
             self.score.arrayFrameEnd) - 1] = self.frame_count
-        print("END:",self.score.arrayFrameEnd)
+        # print("END:",self.score.arrayFrameEnd)
 
         self.vid.set_start_frame(self.vid.start_frame)
         self.vid.set_end_frame(self.vid.end_frame)
@@ -246,8 +246,8 @@ class Application(tkinter.Frame):
             x_temp=dst[0][0][0]
             y_temp=dst[0][0][1]
 
-            print("i",i)
-            print("server",self.score.arrayServer[i])
+            # print("i",i)
+            # print("server",self.score.arrayServer[i])
             #print("playerName[0]",self.score.playerName[0])
             #print("playerName[1]",self.score.playerName[1])
             #print(x_temp,y_temp)#4.538057930289974 4.405105323121075
@@ -414,7 +414,7 @@ class Application(tkinter.Frame):
         
     def detectPlayer(self,img):
         x1_1,y1_1,x1_2,y1_2,x2_1,y2_1,x2_2,y2_2=self.playerDetect.predict(img)
-        print("playerPosition:",x1_1,y1_1,x1_2,y1_2,x2_1,y2_1,x2_2,y2_2)
+        # print("playerPosition:",x1_1,y1_1,x1_2,y1_2,x2_1,y2_1,x2_2,y2_2)
         x1=int((x1_1+x1_2)/2)
         y1=int(y1_1+(y1_2-y1_1)*9/10)
         x2=int((x2_1+x2_2)/2)
@@ -461,7 +461,7 @@ class Application(tkinter.Frame):
         self.drawCourtLine(self.pts,img_copy,self.inv_M)
 
     def bounceShot(self,img_copy):
-        print("bounceShot")
+        # print("bounceShot")
         self.xball,self.yball=self.transformPosition(self.bx,self.by)
         self.saveArrayShot(self.xball,self.yball,"","","","",1,"Bounce","","Cross")
         self.dispPlayerPositionCourtAll()#plotposition全て
@@ -469,7 +469,7 @@ class Application(tkinter.Frame):
         cv2.circle(img_copy,(self.bx,self.by),2,(0,255,255),-1)
         self.image_change(img_copy)
     def saveArrayShot(self,xball,yball,xa,ya,xb,yb,servereturn,hitBounce,foreback,crossstreat):
-        print("saveArrayShot")
+        # print("saveArrayShot")
         self.score.arrayBallPosition[self.score.number].append([self.score.number,self.myval.get(),xball,yball])
         self.score.arrayPlayerAPosition[self.score.number].append([self.score.number,self.myval.get(),xa,ya])
         self.score.arrayPlayerBPosition[self.score.number].append([self.score.number,self.myval.get(),xb,yb])
@@ -488,9 +488,9 @@ class Application(tkinter.Frame):
         cv2.circle(img_copy,(self.bx,self.by),2,(0,255,255),-1)
         self.image_change(img_copy)
     def saveArrayShotFix(self,xball,yball,xa,ya,xb,yb,servereturn,hitBounce,foreback,crossstreat):#(self,xball,yball,xa,ya,xb,yb,servereturn,y1,y2):
-        print("saveArrayShotFix")
-        print(xball,yball,xa,ya,xb,yb)
-        print(self.score.number,self.score.rally)
+        # print("saveArrayShotFix")
+        # print(xball,yball,xa,ya,xb,yb)
+        # print(self.score.number,self.score.rally)
         #foreback,by=self.isForeBack(xball,yball,xa,ya,xb,yb,y1,y2)
         self.score.arrayBallPosition[self.score.number][self.score.rally-1]=[self.score.number,self.myval.get(),xball,yball]
         self.score.arrayPlayerAPosition[self.score.number][self.score.rally-1]=[self.score.number,self.myval.get(),xa,ya]
@@ -502,7 +502,7 @@ class Application(tkinter.Frame):
         #self.dispPlayerPositionCourtAll()
 
     def hitShot(self,gimg,img_copy):
-        print("hitShot")
+        # print("hitShot")
         self.x1,self.y1,self.x2,self.y2,self.rx1,self.ry1,self.rx2,self.ry2=self.detectPlayer(gimg)#追加
         self.xball,self.yball=self.transformPosition(self.bx,self.by)
         self.xa,self.ya=self.transformPosition(self.x1,self.y1)
@@ -515,7 +515,7 @@ class Application(tkinter.Frame):
         cv2.circle(img_copy,(self.bx,self.by),2,(0,255,255),-1)
         self.image_change(img_copy)
     def hitShotFix(self,gimg,img_copy):
-        print("hitShotFix")
+        # print("hitShotFix")
         #self.x1,self.y1,self.x2,self.y2,self.rx1,self.ry1,self.rx2,self.ry2=self.detectPlayer(gimg)#追加
         self.xball,self.yball=self.transformPosition(self.bx,self.by)
         self.xa,self.ya=self.transformPosition(self.x1,self.y1)
@@ -530,7 +530,7 @@ class Application(tkinter.Frame):
         self.image_change(img_copy)
 
     def mouseclicked(self, event):  # mouseevent 着弾点をマウスでクリック
-        print("mouseclicked")
+        # print("mouseclicked")
         if(self.clickPlayerA):
             gimg = self.readImage(self.myval.get())
             img_copy = np.copy(gimg)
@@ -656,7 +656,7 @@ class Application(tkinter.Frame):
             self.bx,self.by=self.detectBall(event)#ボールを検出
 
             r=self.score.rally
-            print("self.score.rally:",self.score.rally)
+            # print("self.score.rally:",self.score.rally)
             if(r%4==0):#サーブの着地 #self.bounceAdd(self.bx,self.by,0)
                 self.bounceShot(img_copy)
             elif(r%4==1):#リターン側の打点
@@ -675,7 +675,7 @@ class Application(tkinter.Frame):
                     self.score.arrayContactServe[self.score.number] = [0, 0]
             else:
                 if(score.mode == 0):
-                    print("mode", self.score.mode)
+                    # print("mode", self.score.mode)
                     gimg = self.readImage(self.myval.get())
                     pts, dilation = calcCourtPoints(gimg)
                     img_copy = np.copy(gimg)
@@ -735,7 +735,7 @@ class Application(tkinter.Frame):
                         self.score.pointXYNum = 0
                         self.score.mode = 2
                 elif(self.score.mode == 2):#
-                    print("mode", self.score.mode)
+                    # print("mode", self.score.mode)
                     gimg = self.readImage(self.myval.get())
 
                     img_copy = np.copy(gimg)
@@ -804,8 +804,8 @@ class Application(tkinter.Frame):
     #     self.score.arrayDirection[self.score.number].append("Cross")
 
     def isForeBack(self,xball,yball,xa,ya,xb,yb):
-        print("isForeBack")
-        print(xball,yball,xa,ya,xb,yb)
+        # print("isForeBack")
+        # print(xball,yball,xa,ya,xb,yb)
         a=np.array([xa,ya])
         b=np.array([xb,yb])
         ball=np.array([xball,yball])
@@ -842,8 +842,8 @@ class Application(tkinter.Frame):
                 w=w+0.2
 
     def dispPlayerPositionCourtAll(self):
-        print("dispPlayerPositionCourtAll")
-        print(len(self.score.arrayBallPosition[self.score.number]))
+        # print("dispPlayerPositionCourtAll")
+        # print(len(self.score.arrayBallPosition[self.score.number]))
         self.canvas1.delete("all")
         self.createCourt(self.canvas1,self.courtsize,self.pwRightUpLeft)
         self.plotBallLine()
@@ -866,14 +866,14 @@ class Application(tkinter.Frame):
             print(i,xball,yball,xa,ya,xb,yb)
 
     def dispPlayerPositionCourt(self,xball,yball,xa,ya,xb,yb):
-        print("dispPlayerPositionCourt")
-        print(xball,yball,xa,ya,xb,yb)
+        # print("dispPlayerPositionCourt")
+        # print(xball,yball,xa,ya,xb,yb)
         self.plotPosition(xball,yball,'#ffff00')
         self.plotPosition(xa,ya,'#0000FF')#赤#0000FF
         self.plotPosition(xb,yb,'#FF0000')#青
     def dispPlayerPositionImage(self,img_copy,x1,y1,x2,y2,rx1,ry1,rx2,ry2):
-        print("dispPlayerPositionImage")
-        print(x1,y1,x2,y2,rx1,ry1,rx2,ry2)
+        # print("dispPlayerPositionImage")
+        # print(x1,y1,x2,y2,rx1,ry1,rx2,ry2)
         cv2.ellipse(img_copy, ((x1, y1), (rx1, ry1), 0), (255, 0, 0))
         cv2.ellipse(img_copy, ((x2, y2), (rx2, ry2), 0), (0, 0, 255))
         
@@ -994,7 +994,7 @@ class Application(tkinter.Frame):
         self.sub_win.destroy()
 
     def edit_setting(self):
-        self.sub_win=tkinter.Toplevel(root)    
+        self.sub_win=tkinter.Toplevel(self.master)    
         self.sub_win.title('Edit Settings')
         self.sub_win.geometry("600x200")
 
@@ -1195,7 +1195,7 @@ class Application(tkinter.Frame):
 
 
     def create_point_tree(self):
-        self.point_tree = ttk.Treeview(root, selectmode="browse",takefocus=1)
+        self.point_tree = ttk.Treeview(self.master, selectmode="browse",takefocus=1)
         self.point_tree["columns"]=(1,2,3,4,5,6)
         self.point_tree["show"]="headings"
         self.point_tree.column(1, width=30)
@@ -1215,7 +1215,7 @@ class Application(tkinter.Frame):
         #self.point_tree.bind("<Button-3>",self.showPopup2)
 
     def create_tree(self):
-        self.tree = ttk.Treeview(root, selectmode="browse",takefocus=1)
+        self.tree = ttk.Treeview(self.master, selectmode="browse",takefocus=1)
         self.tree["columns"] = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11)#, 12, 13, 14
         self.tree["show"] = "headings"
         self.tree.column(1, width=30)
