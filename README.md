@@ -3,7 +3,15 @@ Video analysis tool for tennis
 
 テニス試合分析用の映像解析ツール
 
-## Requirement
+## DEMO
+
+## Features
+Video analysis for tennis game.
+You can get tracking data, player positions and ball positions.
+And can create some plots like this figure.
+
+
+## Requirements
 scipy==1.3.1<br>
 numpy==1.16.4<br>
 opencv_python==4.1.0.25<br>
@@ -19,8 +27,11 @@ torchvision==0.6.1<br>
 ## Installation
 `$ git clone git@github.com:taikoma/TennisVideoAnalysis.git`
 
+## Usage
+`$ python TennisVideoAnalysis.py`
+
 ## Author
-otakoma
+[@otakoma](https://twitter.com/otakoma)
 
 ## License
 This software is released under the MIT License, see LICENSE.
@@ -33,5 +44,5 @@ This software is released under the MIT License, see LICENSE.
 
 [自作したテニスのビデオ分析ツールで錦織・デルポトロ戦を分析してみました](http://datatennis.net/archives/4377/)
 
-
+[西岡良仁選手のテニスの試合データ（ボール着地点、選手位置データ）を公開します](http://datatennis.net/archives/5833/)
 
