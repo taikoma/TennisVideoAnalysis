@@ -1,4 +1,4 @@
-~cipy==1.3.1
+# ~cipy==1.3.1
 numpy==1.16.4
 opencv_python==4.1.0.25
 matplotlib==3.1.1
