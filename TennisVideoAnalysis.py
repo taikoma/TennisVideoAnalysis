@@ -18,10 +18,6 @@ import database
 import predict
 import playerDetect
 
-if os.environ.get('DISPLAY','') == '':
-   print('no display found. Using non-interactive Agg backend')
-   mpl.use('Agg')
-
 
 class Application(tkinter.Frame):
     #GUIウィンドウの設定と画像描画
