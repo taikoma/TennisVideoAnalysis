@@ -50,8 +50,8 @@ class Application(tkinter.Frame):
         
         self.fld="data.db"
 
-        self.mode_predict=True
-        self.mode_predictPlayer=True
+        self.mode_predict=False
+        self.mode_predictPlayer=False
         if(self.mode_predict):
             filepath="./weights/predict_court_10000.pth"
             self.predict=predict.Predict(filepath)

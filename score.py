@@ -213,7 +213,7 @@ class Score():
             p[0] += 1
         if(self.pointWin[1][i] == 1):
             p[1] += 1
-        scoreA, scoreB, p[0], p[1], g[0], g[1], s[0], s[1] = self.convertScore(
+        scoreA, scoreB, p[0], p[1], g[0], g[1], s[0], s[1] = self.convert_score(
             p[0], p[1], g[0], g[1], s[0], s[1])
         nextScore = scoreA + "-" + scoreB
         nextGame = str(g[0]) + "-" + str(g[1])
@@ -223,7 +223,7 @@ class Score():
 
         return nextScore,nextGame,nextSet,p,g,s,scoreA,scoreB
 
-    def convertScore(self, gamePointA, gamePointB, gameA, gameB, setA, setB):  # ポイント数からスコアに変換
+    def convert_score(self, gamePointA, gamePointB, gameA, gameB, setA, setB):  # ポイント数からスコアに変換
         if((gameA == 6) and (gameB == 6)):#タイブレーク
             if(gamePointA > 5 and gamePointB > 5):
                 if((gamePointA - gamePointB) > 1):

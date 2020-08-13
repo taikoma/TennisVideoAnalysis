@@ -6,5 +6,7 @@
 /.ipynb_checkpoints/
 /data/buckup/
 /video/buckup/
+*.pyc
+
 
 
