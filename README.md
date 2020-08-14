@@ -5,11 +5,13 @@ Video analysis tool for tennis
 
 ## DEMO
 
-## Features
+## FeaturesreadImage
 Video analysis for tennis game.
 You can get tracking data, player positions and ball positions.
 And can create some plots like this figure.
 
+## Installation
+`$ git clone git@github.com:taikoma/TennisVideoAnalysis.git`
 
 ## Requirements
 scipy==1.3.1<br>
@@ -19,16 +21,24 @@ matplotlib==3.1.1<br>
 pandas==1.0.5<br>
 Pillow==7.1.2<br>
 scipy==1.5.0<br>
-torch==1.5.1<br>
-torchvision==0.6.1<br>
+~~torch==1.5.1<br>~~
+~~torchvision==0.6.1<br>~~
 
 `$ pip install -r requirements.txt`
 
-## Installation
-`$ git clone git@github.com:taikoma/TennisVideoAnalysis.git`
+### AI predict position of the ball and player
+If you want to use this features, you need to install this packages.  
+torch==1.5.1<br>
+torchvision==0.6.1<br>
+
+TennisVideoAnalysis.py
+```python
+self.mode_predict=True
+self.mode_predictPlayer=True
+```
 
 ## Usage
-`$ python TennisVideoAnalysis.py`
+`$ python TennisVideoAnalysis.py`  
 
 ## Author
 [@otakoma](https://twitter.com/otakoma)
