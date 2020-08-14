@@ -1,3 +1,4 @@
+import importlib
 import tkinter
 import cv2
 from PIL import Image, ImageTk
@@ -15,8 +16,9 @@ import score
 import setting
 import video
 import database
-import predict
-import playerDetect
+
+# import predict
+# import playerDetect
 
 
 class Application(tkinter.Frame):
@@ -53,9 +55,11 @@ class Application(tkinter.Frame):
         self.mode_predict=False
         self.mode_predictPlayer=False
         if(self.mode_predict):
+            import predict
             filepath="./weights/predict_court_10000.pth"
             self.predict=predict.Predict(filepath)
         if(self.mode_predictPlayer):
+            import PlayerDetect
             filepath="./weights/ssd300_200.pth"
             self.playerDetect=playerDetect.playerDetect(filepath)
 

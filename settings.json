@@ -2,6 +2,6 @@
     "playerA": "Nakashima",
     "playerB": "Nishioka",
     "firstServer": 0,
-    "videoFile": "./video/nishioka.mp4",
+    "videoFile": "",
     "database": ""
 }
