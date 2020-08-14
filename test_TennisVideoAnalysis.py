@@ -74,8 +74,7 @@ class TestTennisVideoAnalysis(unittest.TestCase):
             for l in range(0,1):
                 s[1]=l
 
-                gs=[[5,0],[5,1],[5,2],[5,3],[5,4]]#[6,5]はエラー
-                    #,[5,6]]
+                gs=[[5,0],[5,1],[5,2],[5,3],[5,4],[6,5]]
                 p=[4,0]
                 for m,g in enumerate(gs):
                     scoreA, scoreB, gamePointA, gamePointB, gameA, gameB, setA, setB = self.score.convert_score(p[0], p[1], g[0], g[1], s[0], s[1])
@@ -84,7 +83,45 @@ class TestTennisVideoAnalysis(unittest.TestCase):
                     self.assertEqual([gameA,gameB],[0,0])
                     self.assertEqual([setA,setB],[s[0]+1,s[1]])
 
-                
+                gs=[[0,5],[1,5],[2,5],[3,5],[4,5],[5,6]]
+                p=[0,4]
+                for m,g in enumerate(gs):
+                    scoreA, scoreB, gamePointA, gamePointB, gameA, gameB, setA, setB = self.score.convert_score(p[0], p[1], g[0], g[1], s[0], s[1])
+                    self.assertEqual([scoreA,scoreB],['0','0'])
+                    self.assertEqual([gamePointA,gamePointB],[0,0])
+                    self.assertEqual([gameA,gameB],[0,0])
+                    self.assertEqual([setA,setB],[s[0],s[1]+1])
+        #タイブレーク
+
+
+    # def test_score_convert_set(self):#score計算にエラーがないかテスト
+    #     print("test")
+        # setA,setB=0,0
+        #セットに変化なし
+        # g=[0,0]
+        # for i in range(0,6):
+        #     g[0]=i
+        #     for j in range(0,6):
+        #         g[1]=j
+        #         gameA, gameB, setA, setB = self.score.convert_set(g[0], g[1], setA, setB)
+        #         self.assertEqual([gameA,gameB],[g[0],g[1]])
+        #         self.assertEqual([setA,setB],[setA,setB])
+        # #6-5 5-6
+        # gs=[[6,5],[5,6]]
+        # for i,g in enumerate(gs):
+        #     gameA, gameB, setA, setB = self.score.convert_set(g[0], g[1], setA, setB)
+        #     self.assertEqual([gameA,gameB],[0,0])
+        #     self.assertEqual([setA,setB],[setA,setB])
+
+        # #セットに変化あり
+        # gs=[[6,1],[6,2],[6,3],[6,4],[7,5],[7,6],[1,1]]
+        # for i,g in enumerate(gs):
+        #     gameA, gameB, setA, setB = self.score.convert_set(g[0], g[1], setA, setB)
+        #     self.assertEqual([gameA,gameB],[0,0])
+        #     self.assertEqual([setA,setB],[setA+1,setB])
+
+if __name__ == "__main__":
+    unittest.main()               
 
 
 

@@ -267,7 +267,7 @@ class Score():
                     scoreA = str(gamePointA)
                     scoreB = str(gamePointB)
 
-        else:
+        else:#タイブレーク以外
             if(gamePointA > 2 and gamePointB > 2):  # 40-40以降
                 if((gamePointA - gamePointB) > 1):
                     scoreA = "0"
@@ -328,20 +328,20 @@ class Score():
                     #totalGame.set(totalGame.get() + 1)
                     self.totalGame += 1
 
-        gameA, gameB, setA, setB = self.convertSet(gameA, gameB, setA, setB)
+        gameA, gameB, setA, setB = self.convert_set(gameA, gameB, setA, setB)
 
         return scoreA, scoreB, gamePointA, gamePointB, gameA, gameB, setA, setB
 
-    def convertSet(self, gameA, gameB, setA, setB):
-        if(gameA > 5 and gameB < 5):
+    def convert_set(self, gameA, gameB, setA, setB):
+        if(gameA > 5 and gameB < 5):#6-4
             setA += 1
             gameA = 0
             gameB = 0
-        elif(gameB > 5 and gameA < 5):
+        elif(gameB > 5 and gameA < 5):#4-6
             setB += 1
             gameA = 0
             gameB = 0
-        elif(gameA > 5 and gameB > 5):
+        elif(gameA > 4 and gameB > 4):#7-6
             if(gameA == 7):
                 setA += 1
                 gameA = 0
