@@ -7,6 +7,7 @@
 /data/buckup/
 /video/buckup/
 *.pyc
+.vscode/
 
 
 
