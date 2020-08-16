@@ -12,6 +12,7 @@ import csv
 import threading
 from tkinter import filedialog
 import os
+import sys
 import score
 import setting
 import video

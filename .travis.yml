@@ -5,5 +5,5 @@ dist: xenial
 services:
   - xvfb
 script:
-  - python -m unittest
+  - python -m unittest discover tests
 

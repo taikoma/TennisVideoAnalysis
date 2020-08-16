@@ -1,10 +1,12 @@
 import unittest
+from pathlib import Path
 import sys
 import tkinter
-sys.path.append('../src')
-import TennisVideoAnalysis
-import video
-import score
+sys.path.append(str(Path(__file__).parent.parent))
+sys.path.append(str(Path(__file__).parent.parent / "src"))
+import src.TennisVideoAnalysis as TennisVideoAnalysis
+import src.video as video
+import src.score as score
 
 class TestTennisVideoAnalysis(unittest.TestCase):
     def setUp(self):#設定
