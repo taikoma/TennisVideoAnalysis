@@ -1,9 +1,10 @@
 import unittest
 import sys
+import tkinter
+sys.path.append('../src')
 import TennisVideoAnalysis
 import video
 import score
-import tkinter
 
 class TestTennisVideoAnalysis(unittest.TestCase):
     def setUp(self):#設定

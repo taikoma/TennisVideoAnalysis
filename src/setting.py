@@ -4,7 +4,7 @@ import collections as cl
 class Setting():  # 設定ファイル読込
     def __init__(self):
         
-        fileName="settings.json"
+        fileName="../settings.json"
         jsonFile=open(fileName,'r')
         self.jsonDict=json.load(jsonFile)
 
