@@ -19,7 +19,7 @@ class playerDetect():
             'aspect_ratios': [[2], [2, 3], [2, 3], [2, 3], [2], [2]],
         }
         net = SSD(phase="inference", cfg=ssd_cfg)
-        net_weights = torch.load('./weights/ssd300_200.pth',
+        net_weights = torch.load('../weights/ssd300_300.pth',
                                 map_location={'cuda:0': 'cpu'})
         net.load_state_dict(net_weights)
         self.ssd = SSDPredictShow(eval_categories=voc_classes, net=net)

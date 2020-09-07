@@ -1,7 +1,3 @@
-"""
-第2章SSDで実装した内容をまとめたファイル
-"""
-
 # パッケージのimport
 import torch.nn as nn
 import torch.nn.init as init

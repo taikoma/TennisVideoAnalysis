@@ -18,10 +18,6 @@ import setting
 import video
 import database
 
-# import predict
-# import playerDetect
-
-
 class Application(tkinter.Frame):
     #GUIウィンドウの設定と画像描画
     def __init__(self, score, master=None):
@@ -53,15 +49,17 @@ class Application(tkinter.Frame):
         
         self.fld="data.db"
 
-        self.mode_predict=False
-        self.mode_predictPlayer=False
+        self.mode_predict=True#False
+        self.mode_predictPlayer=True#False
+
+
         if(self.mode_predict):
             import predict
-            filepath="./weights/predict_court_10000.pth"
+            filepath="../weights/predict_court_10000.pth"
             self.predict=predict.Predict(filepath)
         if(self.mode_predictPlayer):
             import playerDetect
-            filepath="./weights/ssd300_200.pth"
+            filepath="../weights/ssd300_300.pth"
             self.playerDetect=playerDetect.playerDetect(filepath)
 
         self.xa=0
@@ -421,9 +419,9 @@ class Application(tkinter.Frame):
         x1_1,y1_1,x1_2,y1_2,x2_1,y2_1,x2_2,y2_2=self.playerDetect.predict(img)
         # print("playerPosition:",x1_1,y1_1,x1_2,y1_2,x2_1,y2_1,x2_2,y2_2)
         x1=int((x1_1+x1_2)/2)
-        y1=int(y1_1+(y1_2-y1_1)*9/10)
+        y1=int(y1_1+(y1_2-y1_1)*10/10)#back
         x2=int((x2_1+x2_2)/2)
-        y2=int(y2_1+(y2_2-y2_1)*9/10)
+        y2=int(y2_1+(y2_2-y2_1)*9/10)#front
         rx1=int((x1_2-x1_1)*1.5)
         ry1=int(rx1/5)
         rx2=int((x2_2-x2_1)*1.5)
