@@ -95,6 +95,10 @@ class Score():
         self.winner = 0
         self.rally=0
 
+        self.total_point=[]
+        self.total_point.append(0)
+        self.total_point.append(0)
+
         #追加
         # self.arrayRally=[]
         # self.arrayRally.append([])
@@ -211,8 +215,14 @@ class Score():
         self.arraySet[i] = nextSet
         if(self.pointWin[0][i] == 1):
             p[0] += 1
+            self.total_point[0]+=1
         if(self.pointWin[1][i] == 1):
             p[1] += 1
+            self.total_point[1]+=1
+        self.serve_point[(self.firstServer + g[0] + g[0]) % 2]+=1
+
+        print("point:",p[0],p[1])
+
         scoreA, scoreB, p[0], p[1], g[0], g[1], s[0], s[1] = self.convert_score(
             p[0], p[1], g[0], g[1], s[0], s[1])
         nextScore = scoreA + "-" + scoreB
@@ -222,6 +232,14 @@ class Score():
 
 
         return nextScore,nextGame,nextSet,p,g,s,scoreA,scoreB
+
+    def calc_stats(self, gamePointA, gamePointB, gameA, gameB, setA, setB):
+        total_points=self.total_point[0]+self.total_point[1]
+        total_point_won[0]=self.total_point[0]/total_points
+        total_point_won[1]=self.total_point[1]/total_points
+
+
+
 
     def convert_score(self, gamePointA, gamePointB, gameA, gameB, setA, setB):  # ポイント数からスコアに変換
         if((gameA == 6) and (gameB == 6)):#タイブレーク

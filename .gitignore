@@ -9,6 +9,6 @@
 *.pyc
 .vscode/
 /weights/*
-
+analysis/.ipynb_checkpoints/*
 
 
