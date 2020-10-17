@@ -1,4 +1,3 @@
-# 必要なパッケージのimport
 import torch
 import torch.nn as nn
 from torch.nn import init
@@ -6,6 +5,7 @@ import torchvision
 
 class TennisCourtNet(nn.Module):
     def __init__(self):
+
         super(TennisCourtNet, self).__init__()
 
         # Featureモジュール

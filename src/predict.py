@@ -1,4 +1,4 @@
-import TennisCourtNet
+# import TennisCourtNet
 import math
 import cv2
 import matplotlib.cm
@@ -6,10 +6,15 @@ import numpy as np
 from scipy.ndimage.filters import gaussian_filter, maximum_filter
 from scipy.ndimage.morphology import generate_binary_structure
 import os.path as osp
-import torch
+# import torch
 
 class Predict():
     def __init__(self,filepath):
+        try:
+            import torch
+            import TennisCourtNet
+        except ImportError:
+            print("import error")
         self.net = TennisCourtNet.TennisCourtNet()
         net_weights = torch.load(filepath, map_location={'cuda:0': 'cpu'})
         keys = list(net_weights.keys())

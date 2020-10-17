@@ -47,6 +47,8 @@ class Database():
 
         self.playerA = score.playerA
         self.playerB = score.playerB
+        print("self.playerA,self.playerB",self.playerA,self.playerB)
+
         self.number = score.number
         self.totalGame = score.totalGame
         self.faultFlug = score.faultFlug
@@ -109,19 +111,19 @@ class Database():
                 bh.append(self.arrayBounceHit[i][j])
                 fb.append(self.arrayForeBack[i][j])#arrayDirection
                 d.append(self.arrayDirection[i][j])
-                print(self.arrayHitPlayer[i][j])
+                # print(self.arrayHitPlayer[i][j])
         df_shot=pd.DataFrame({'point':point,'frame':frame,'ballx':bx,'bally':by,
                             'playerAx':pax,'playerAy':pay,'playerBx':pbx,'playerBy':pby,
                             'hitplayer':h,'bouncehit':bh,'foreback':fb,'direction':d
         })
 
-        print(self.arrayBallPosition)
-        print(self.arrayPlayerAPosition)
-        print(self.arrayPlayerBPosition)
-        print(self.arrayHitPlayer)
-        print(self.arrayBounceHit)
-        print(self.arrayForeBack)
-        print(self.arrayDirection)
+        # print(self.arrayBallPosition)
+        # print(self.arrayPlayerAPosition)
+        # print(self.arrayPlayerBPosition)
+        # print(self.arrayHitPlayer)
+        # print(self.arrayBounceHit)
+        # print(self.arrayForeBack)
+        # print(self.arrayDirection)
         
         # with open('contactBalls.csv', 'w') as f:
             # writer = csv.writer(f, lineterminator='\n')  # 改行コード（\n）を指定しておく
@@ -197,9 +199,8 @@ class Database():
                 i], df['Court4Y'].values.tolist()[i]])
 
         df_basic = pd.read_sql("select * from match", conn)
-        self.playerA = df_basic['playerA'].values
-        self.playerB = df_basic['playerB'].values
-
+        self.playerA = df_basic['playerA'].values[0]
+        self.playerB = df_basic['playerB'].values[0]
 
         self.number = len(df) - 1
         self.totalGame = df_basic['totalGame'].values[0]
@@ -244,13 +245,13 @@ class Database():
             self.arrayForeBack.append([])
             self.arrayDirection.append([])
 
-        print("arrayBallPosition",self.arrayBallPosition)
-        print("arrayPlayerAPosition",self.arrayPlayerAPosition)
-        print("arrayPlayerBPosition",self.arrayPlayerBPosition)
-        print("arrayHitPlayer",self.arrayHitPlayer)
-        print("arrayBounceHit",self.arrayBounceHit)
-        print("arrayForeBack",self.arrayForeBack)
-        print("arrayDirection",self.arrayDirection)
+        # print("arrayBallPosition",self.arrayBallPosition)
+        # print("arrayPlayerAPosition",self.arrayPlayerAPosition)
+        # print("arrayPlayerBPosition",self.arrayPlayerBPosition)
+        # print("arrayHitPlayer",self.arrayHitPlayer)
+        # print("arrayBounceHit",self.arrayBounceHit)
+        # print("arrayForeBack",self.arrayForeBack)
+        # print("arrayDirection",self.arrayDirection)
 
         conn.close()
     # def array2arrays(self,point,frame,ballx,bally):
@@ -287,7 +288,7 @@ class Database():
         #print("r",r)
         for i in range(len(point)):
             n=point[i]
-            print(i,n)
+            # print(i,n)
             temp=[]
             temp.append(point[i])
             temp.append(frame[i])
@@ -299,7 +300,7 @@ class Database():
 
     def array2arrays2(self,point,hit,bouncehit,foreback,direction):
         lastP=point[len(point)-1]+1
-        print("lastP:",lastP)
+        # print("lastP:",lastP)
         array_hit=[]
         array_bouncehit=[]
         array_foreback=[]
@@ -312,15 +313,15 @@ class Database():
 
         for i in range(len(point)):
             n=point[i]
-            print(i,n)
+            # print(i,n)
             array_hit[n].append(hit[i])
             array_bouncehit[n].append(bouncehit[i])
             array_foreback[n].append(foreback[i])
             array_direction[n].append(direction[i])
-        print(array_hit)
-        print(array_bouncehit)
-        print(array_foreback)
-        print(array_direction)
+        # print(array_hit)
+        # print(array_bouncehit)
+        # print(array_foreback)
+        # print(array_direction)
         return array_hit,array_bouncehit,array_foreback,array_direction    
 
     # def array2arrays2(self,point,hit,bouncehit,foreback,direction):

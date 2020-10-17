@@ -305,14 +305,15 @@ class Application(tkinter.Frame):
         self.pwLeft.add(self.sc, padx=10)
 
     def value_changed(self, *args):  # scaleの値が変化したとき
-        if(self.myval.get() > self.score.arrayFrameEnd[self.score.number]):
-            self.score.number += 1
-            self.tree.selection_set(self.tree.get_children()[self.score.number])
-        elif(self.myval.get() < self.score.arrayFrameStart[self.score.number]):
-            self.score.number -= 1
-            self.tree.selection_set(self.tree.get_children()[self.score.number])
-        if(self.mode == 0):
-            self.imageShow()
+        if(self.video):
+            if(self.myval.get() > self.score.arrayFrameEnd[self.score.number]):
+                self.score.number += 1
+                self.tree.selection_set(self.tree.get_children()[self.score.number])
+            elif(self.myval.get() < self.score.arrayFrameStart[self.score.number]):
+                self.score.number -= 1
+                self.tree.selection_set(self.tree.get_children()[self.score.number])
+            if(self.mode == 0):
+                self.imageShow()
 
     def showPopup(self,event):
         self.menu_top.post(event.x_root,event.y_root)
@@ -946,6 +947,7 @@ class Application(tkinter.Frame):
                 self.load_data()
     
     def load_data(self):
+        print("load_data")
         db = database.Database(self.fld, self.score)
         db.loadDatabase()
         self.score = db.dbToScore()
@@ -1001,6 +1003,7 @@ class Application(tkinter.Frame):
         self.sub_win.title('Edit Settings')
         self.sub_win.geometry("600x200")
 
+        print(self.score.playerA,self.score.playerB)
         label_playerA=tkinter.Label(self.sub_win, text = "PlayerA : ")
         
         label_playerA.grid(row=0,column=0, padx=5, pady=5)
@@ -1635,14 +1638,16 @@ class Application(tkinter.Frame):
     def select(self, event):
         print("tree_select")
         curItem = self.tree.focus()
-        score.number = int(self.tree.item(curItem)["values"][0])
-        self.myval.set(int(self.tree.item(curItem)["values"][1]))
+        self.score.number = int(self.tree.item(curItem)["values"][0])
+        print(self.score.number)
+        self.myval.set(int(self.tree.item(curItem)["values"][1]))#フレーム位置変更
         self.key_activate()
         self.setPointTree()#追加
 
     def close(self):
         if(self.vid):
             self.vid.close()
+
 
 if __name__ == "__main__":
     # videoFile="djoko01.mp4"
