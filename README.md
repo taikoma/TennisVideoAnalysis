@@ -48,11 +48,15 @@ This software is released under the MIT License, see LICENSE.
  [MIT license](https://en.wikipedia.org/wiki/MIT_License).
 
 ## ブログ記事
+[テニスの試合動画のシーン分割を自動化](http://datatennis.net/archives/5965/)
+
+[西岡良仁選手のテニスの試合データ（ボール着地点、選手位置データ）を公開します](http://datatennis.net/archives/5833/)
+
 [テニスの映像分析ツールでボール着地点・選手の位置データを記録し、西岡・ナカシマ戦を分析](http://datatennis.net/archives/5744/)
 
 [テニスの動画分析ツールにAI技術を取り入れ一部作業を自動化](http://datatennis.net/archives/5723/)
 
 [自作したテニスのビデオ分析ツールで錦織・デルポトロ戦を分析してみました](http://datatennis.net/archives/4377/)
 
-[西岡良仁選手のテニスの試合データ（ボール着地点、選手位置データ）を公開します](http://datatennis.net/archives/5833/)
+
 
