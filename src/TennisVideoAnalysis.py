@@ -17,6 +17,8 @@ import score
 import setting
 import video
 import database
+import logging
+import time
 
 class Application(tkinter.Frame):
     #GUIウィンドウの設定と画像描画
@@ -396,7 +398,9 @@ class Application(tkinter.Frame):
         # self.drawLine(img_copy,test,inv_M)
     
     def predictTransformMatrix(self,img):
+        start_predict=time.time()
         points=self.predict.predictPoints(img)
+        end_predict=time.time()
         self.pts = np.array([points[0],points[1],points[2],points[3]],dtype=int)
         p1=np.array(points[3])
         p2=np.array(points[0])
@@ -407,6 +411,7 @@ class Application(tkinter.Frame):
         dst_pts = np.float32([c1,c2,c3,c4]).reshape(-1,1,2)
         self.M,mask=cv2.findHomography(src_pts, dst_pts, cv2.RANSAC,5.0)
         self.inv_M=np.linalg.inv(self.M)
+        end_transform=time.time()
         self.score.arrayPointXY[0][0] = points[3][0]
         self.score.arrayPointXY[0][1] = points[3][1]
         self.score.arrayPointXY[1][0] = points[0][0]
@@ -415,7 +420,8 @@ class Application(tkinter.Frame):
         self.score.arrayPointXY[2][1] = points[1][1]
         self.score.arrayPointXY[3][0] = points[2][0]
         self.score.arrayPointXY[3][1] = points[2][1]
-        
+        logging.info('predict time:total:%s predict:%s transform:%s',end_transform-start_predict,end_predict-start_predict,end_transform-end_predict)
+
     def detectPlayer(self,img):
         x1_1,y1_1,x1_2,y1_2,x2_1,y2_1,x2_2,y2_2=self.playerDetect.predict(img)
         # print("playerPosition:",x1_1,y1_1,x1_2,y1_2,x2_1,y2_1,x2_2,y2_2)
@@ -764,7 +770,11 @@ class Application(tkinter.Frame):
                     self.setTree()
 
     def readImage(self, frameIndex):
-        self.video.set(cv2.CAP_PROP_POS_FRAMES, frameIndex)
+        print("frame_index",int(frameIndex))
+        # self.video.set(cv2.CAP_PROP_POS_FRAMES, int(frameIndex))
+        frame_time=1000.0*frameIndex/self.vid.fps
+        self.video.set(cv2.CAP_PROP_POS_MSEC,frame_time)
+        print("frame_time",int(frame_time))
         ok, frame = self.video.read()
         return cv2.resize(frame, (self.h, self.w))
 
@@ -792,20 +802,6 @@ class Application(tkinter.Frame):
             gimg = self.readImage(self.myval.get())
             img_copy = np.copy(gimg)   
             self.image_change(img_copy)
-
-    # def bounceAdd(self,bx,by,servereturn):#server servereturn=0,returner servereturn=1
-    #     print("bounceAdd")
-    #     self.xball,self.yball=self.transformPosition(bx,by)
-    #     print(bx,by)
-    #     print(self.xball,self.yball)
-    #     self.plotPosition(self.xball,self.yball,'#ffff00')
-    #     self.score.arrayPlayerAPosition[self.score.number].append([self.score.number,self.myval.get(),"",""])
-    #     self.score.arrayPlayerBPosition[self.score.number].append([self.score.number,self.myval.get(),"",""])
-    #     self.score.arrayBallPosition[self.score.number].append([self.score.number,self.myval.get(),self.xball,self.yball])
-    #     self.score.arrayHitPlayer[self.score.number].append(self.score.playerName[(self.score.firstServer + servereturn + self.score.totalGame) % 2])
-    #     self.score.arrayBounceHit[self.score.number].append("Bounce")
-    #     self.score.arrayForeBack[self.score.number].append("")
-    #     self.score.arrayDirection[self.score.number].append("Cross")
 
     def isForeBack(self,xball,yball,xa,ya,xb,yb):
         # print("isForeBack")
@@ -880,29 +876,6 @@ class Application(tkinter.Frame):
         # print(x1,y1,x2,y2,rx1,ry1,rx2,ry2)
         cv2.ellipse(img_copy, ((x1, y1), (rx1, ry1), 0), (255, 0, 0))
         cv2.ellipse(img_copy, ((x2, y2), (rx2, ry2), 0), (0, 0, 255))
-        
-    # def rallyAdd(self,gimg,img_copy):#,bx,by,xa,ya,xb,yb
-    #     r=self.score.rally
-    #     #bx,by=self.transformPosition(self.bx,self.by)
-    #     #print("r%4",r%4)
-    #     if(r%4==0):#サーブの着地
-    #         self.bounceAdd(self.bx,self.by,0)
-    #     elif(r%4==1):#リターン側の打点
-    #         self.hitAdd(self.bx,self.by,1,gimg,img_copy)#0サーバーがヒット　リターンがヒット
-    #     elif(r%4==2):#リターンの着地
-    #         self.bounceAdd(self.bx,self.by,1)
-    #     elif(r%4==3):#サーブ側の打点
-    #         self.hitAdd(self.bx,self.by,0,gimg,img_copy)
-    #     self.score.rally=self.score.rally+1
-
-    # def imageShowAdd(self,gimg):
-    #     if(self.video):
-    #         img_copy = np.copy(gimg)
-    #         if(len(self.pts)==4):
-    #             self.drawCourtLine(self.pts,img_copy,self.inv_M)
-    #             self.rallyAdd(gimg,img_copy)
-    #         cv2.circle(img_copy,(self.bx,self.by),2,(0,255,255),-1)
-    #         self.image_change(img_copy)
 
     def update(self):
         if(self.mode == 1):
@@ -988,7 +961,7 @@ class Application(tkinter.Frame):
             self.label_firstServer["text"]="1stServer:"+self.score.playerB
 
         settings=setting.Setting()
-        settings.save_data(self.score.playerA,self.score.playerB,self.score.firstServer)
+        settings.save_data(self.score.playerA,self.score.playerB,self.score.firstServer,self.vid.videoFileName)
 
         self.sub_win.destroy()
         self.updata_button()
@@ -1003,7 +976,7 @@ class Application(tkinter.Frame):
         self.sub_win.title('Edit Settings')
         self.sub_win.geometry("600x200")
 
-        print(self.score.playerA,self.score.playerB)
+
         label_playerA=tkinter.Label(self.sub_win, text = "PlayerA : ")
         
         label_playerA.grid(row=0,column=0, padx=5, pady=5)
@@ -1650,12 +1623,20 @@ class Application(tkinter.Frame):
 
 
 if __name__ == "__main__":
-    # videoFile="djoko01.mp4"
-    # vid=Video(videoFile)
-    #print('getcwd:      ', os.getcwd())
-    #print('dirname:     ', os.path.dirname(__file__))
+
+    logging.basicConfig(filename='log/logger.log',level=logging.DEBUG)
+    logging.critical('critical')
+    logging.error('error')
+    logging.warning('warning')
+    logging.info('info')
+    logging.debug('debug')
+
+    logging.info('error{}'.format('outputting error'))
+    logging.info('warning %s %s' % ('was','outputted'))
+    logging.info('info %s %s','test','test')
+
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
-    settings=setting.Setting()#initでsettings.json読込
+    settings=setting.Setting()#settings.json
 
     score = score.Score(settings.firstServer)
     score.setPlayerName(settings.playerA,settings.playerB)
@@ -1665,11 +1646,7 @@ if __name__ == "__main__":
     root = tkinter.Tk()#root
     root.title("Tennis Video Analytics")
 
-    # sub_win=tkinter.Toplevel(root)    
-    # sub_win.geometry("300x200")
-
     app = Application(score, master=root)
-    # app.loadVideo(vid)
     app.create_widgets(360, 640)
     
     print("videoFile:",settings.videoFile)
@@ -1698,7 +1675,3 @@ if __name__ == "__main__":
     app.focus_set()
     app.pack()
     app.mainloop()
-
-    
-
-    # vid.close()

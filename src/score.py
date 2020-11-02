@@ -99,6 +99,10 @@ class Score():
         self.total_point.append(0)
         self.total_point.append(0)
 
+        self.serve_point=[]
+        self.serve_point.append(0)
+        self.serve_point.append(0)
+
         #追加
         # self.arrayRally=[]
         # self.arrayRally.append([])
@@ -195,9 +199,6 @@ class Score():
                         s,
                         scoreA,
                         scoreB)
-        #print("arrayFault", self.arrayFault)
-        #print("arrayFirstSecond", self.arrayFirstSecond)
-        #print("score arrayScore",self.arrayScore)
 
     def calcScore2(
             self,

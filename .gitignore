@@ -6,9 +6,11 @@
 /.ipynb_checkpoints/
 /data/buckup/
 /video/buckup/
+/video/*
 *.pyc
 .vscode/
 /weights/*
 analysis/.ipynb_checkpoints/*
-
+/src/scene
+*.ipynb
 

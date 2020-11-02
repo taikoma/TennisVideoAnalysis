@@ -117,17 +117,6 @@ class Database():
                             'hitplayer':h,'bouncehit':bh,'foreback':fb,'direction':d
         })
 
-        # print(self.arrayBallPosition)
-        # print(self.arrayPlayerAPosition)
-        # print(self.arrayPlayerBPosition)
-        # print(self.arrayHitPlayer)
-        # print(self.arrayBounceHit)
-        # print(self.arrayForeBack)
-        # print(self.arrayDirection)
-        
-        # with open('contactBalls.csv', 'w') as f:
-            # writer = csv.writer(f, lineterminator='\n')  # 改行コード（\n）を指定しておく
-            # writer.writerows(self.arrayContactBalls)  # 2次元配列も書き込める
         df_basic.to_sql("match", conn, if_exists="replace")
         df.to_sql("score", conn, if_exists="replace")
         df_shot.to_sql("shot",conn,if_exists="replace")
@@ -244,43 +233,14 @@ class Database():
             self.arrayBounceHit.append([])
             self.arrayForeBack.append([])
             self.arrayDirection.append([])
-
-        # print("arrayBallPosition",self.arrayBallPosition)
-        # print("arrayPlayerAPosition",self.arrayPlayerAPosition)
-        # print("arrayPlayerBPosition",self.arrayPlayerBPosition)
-        # print("arrayHitPlayer",self.arrayHitPlayer)
-        # print("arrayBounceHit",self.arrayBounceHit)
-        # print("arrayForeBack",self.arrayForeBack)
-        # print("arrayDirection",self.arrayDirection)
-
         conn.close()
-    # def array2arrays(self,point,frame,ballx,bally):
-    #     temp2=[]
-    #     r=[]
-    #     for i in range(len(point)):
-    #         print(r)
-    #         if(i==0):
-    #             r.append([])
-    #         if(((point[i]-point[i-1])>1 and i>0)):#i=0 point[0]==1
-    #             print("point[i]:",i,point[i])
-    #             r.append([])
-    #         else:
-    #             temp1=[]
-    #             if(((point[i]-point[i-1])==1) and i>0):
-    #                 r.append(temp2)
-    #                 temp2=[]
-    #             temp1.append(point[i])
-    #             temp1.append(frame[i])
-    #             temp1.append(ballx[i])
-    #             temp1.append(bally[i])
-    #             temp2.append(temp1)
-    #             if(i==len(point)-1):
-    #                 r.append(temp2)
-    #     print("r",r)
-    #     return r
+
 
     def array2arrays(self,point,frame,ballx,bally):
-        lastP=point[len(point)-1]+1
+        if len(point)>0:
+            lastP=point[len(point)-1]+1
+        else:
+            lastP=0
         #print("lastP:",lastP)
         r=[]
         for i in range(lastP):
@@ -299,7 +259,10 @@ class Database():
         return r
 
     def array2arrays2(self,point,hit,bouncehit,foreback,direction):
-        lastP=point[len(point)-1]+1
+        if len(point)>0:
+            lastP=point[len(point)-1]+1
+        else:
+            lastP=0
         # print("lastP:",lastP)
         array_hit=[]
         array_bouncehit=[]
@@ -324,52 +287,7 @@ class Database():
         # print(array_direction)
         return array_hit,array_bouncehit,array_foreback,array_direction    
 
-    # def array2arrays2(self,point,hit,bouncehit,foreback,direction):
-    #     array_hit=[]
-    #     array_bouncehit=[]
-    #     array_foreback=[]
-    #     array_direction=[]
-
-    #     array_hit_temp=[]
-    #     array_bouncehit_temp=[]
-    #     array_foreback_temp=[]
-    #     array_direction_temp=[]
-
-    #     for i in range(len(point)):
-    #         if(i==0):
-    #             array_hit.append([])
-    #             array_bouncehit.append([])
-    #             array_foreback.append([])
-    #             array_direction.append([])
-    #         if((point[i]-point[i-1]>1 and i>0)):
-    #             array_hit.append([])
-    #             array_bouncehit.append([])
-    #             array_foreback.append([])
-    #             array_direction.append([])
-    #         else:
-    #             if(point[i]!=point[i-1] and i>0):
-    #                 array_hit.append(array_hit_temp)
-    #                 array_hit_temp=[]
-    #                 array_bouncehit.append(array_bouncehit_temp)
-    #                 array_bouncehit_temp=[]
-    #                 array_foreback.append(array_foreback_temp)
-    #                 array_foreback_temp=[]
-    #                 array_direction.append(array_direction_temp)
-    #                 array_direction_temp=[]
-    #             array_hit_temp.append(hit[i])
-    #             array_bouncehit_temp.append(bouncehit[i])
-    #             array_foreback_temp.append(foreback[i])
-    #             array_direction_temp.append(direction[i])
-
-    #             if(i==len(point)-1):
-    #                 array_hit.append(array_hit_temp)
-    #                 array_bouncehit.append(array_bouncehit_temp)
-    #                 array_foreback.append(array_foreback_temp)
-    #                 array_direction.append(array_direction_temp)
-        
-    #     return array_hit,array_bouncehit,array_foreback,array_direction
-
-
+    
     def dbToScore(self):#return
         print("dbToScore")
         # score=src.Score()

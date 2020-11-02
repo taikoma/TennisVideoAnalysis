@@ -1,0 +1,592 @@
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+INFO:root:init Setting()
+INFO:root:save_data
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+INFO:root:init Setting()
+INFO:root:save_data
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+INFO:root:init Setting()
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+INFO:root:init Setting()
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+INFO:root:init Setting()
+INFO:root:save_data
+INFO:root:settings.json : Nishikori Medvedev 1 C:/Users/taku/Documents/Python/TennisVideoAnalysis/video/nishikori-medvedev.mp4 
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+INFO:root:predict time:total:7.4751293659210205 predict:0.08118009567260742 transform:7.393949270248413
+INFO:root:predict time:total:11.825935125350952 predict:0.04299640655517578 transform:11.782938718795776
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+INFO:root:predict time:total:10.570099115371704 predict:10.370100736618042 transform:0.1999983787536621
+INFO:root:predict time:total:5.734645128250122 predict:5.734645128250122 transform:0.0
+INFO:root:predict time:total:5.494245529174805 predict:5.494245529174805 transform:0.0
+INFO:root:predict time:total:6.6488049030303955 predict:6.574805974960327 transform:0.07399892807006836
+INFO:root:predict time:total:6.184334754943848 predict:6.140332937240601 transform:0.04400181770324707
+INFO:root:predict time:total:6.498001337051392 predict:6.498001337051392 transform:0.0
+INFO:root:predict time:total:5.85006308555603 predict:5.8080620765686035 transform:0.04200100898742676
+INFO:root:predict time:total:5.6093738079071045 predict:5.6093738079071045 transform:0.0
+INFO:root:predict time:total:5.743266820907593 predict:5.702265501022339 transform:0.041001319885253906
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+INFO:root:predict time:total:5.590017318725586 predict:5.5250022411346436 transform:0.06501507759094238
+INFO:root:predict time:total:5.531000375747681 predict:5.531000375747681 transform:0.0
+INFO:root:predict time:total:6.3579981327056885 predict:6.317000865936279 transform:0.04099726676940918
+INFO:root:predict time:total:5.562997102737427 predict:5.562997102737427 transform:0.0
+INFO:root:predict time:total:5.418999671936035 predict:5.418999671936035 transform:0.0
+INFO:root:predict time:total:5.536025285720825 predict:5.535023212432861 transform:0.0010020732879638672
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+INFO:root:predict time:total:7.768988847732544 predict:7.6869895458221436 transform:0.08199930191040039
+INFO:root:predict time:total:5.689998149871826 predict:5.689998149871826 transform:0.0
+INFO:root:predict time:total:7.122028589248657 predict:7.071028709411621 transform:0.05099987983703613
+INFO:root:predict time:total:5.471000909805298 predict:5.471000909805298 transform:0.0
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+INFO:root:predict time 6.361997127532959 0.0050029754638671875
+INFO:root:predict time:total:7.030001163482666 predict:6.9459991455078125 transform:0.08400201797485352
+INFO:root:predict time 4.9569666385650635 0.020032882690429688
+INFO:root:predict time:total:5.336997747421265 predict:5.336997747421265 transform:0.0
+INFO:root:predict time 6.432001113891602 0.003997802734375
+INFO:root:predict time:total:7.658001184463501 predict:7.610998868942261 transform:0.047002315521240234
+INFO:root:predict time 5.02599024772644 0.023009777069091797
+INFO:root:predict time:total:5.400001287460327 predict:5.400001287460327 transform:0.0
+INFO:root:predict time 5.446999788284302 0.004000425338745117
+INFO:root:predict time:total:5.99750828742981 predict:5.958509206771851 transform:0.038999080657958984
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+INFO:root:predict time 7.883965253829956 0.015033721923828125
+INFO:root:predict time:total:8.85200023651123 predict:8.647999048233032 transform:0.20400118827819824
+INFO:root:predict time 5.870997190475464 0.37900280952453613
+INFO:root:predict time:total:7.104999303817749 predict:7.104999303817749 transform:0.0
+INFO:root:predict time 7.154971122741699 0.0040285587310791016
+INFO:root:predict time:total:7.966999769210815 predict:7.9209983348846436 transform:0.046001434326171875
+INFO:root:predict time 4.948971271514893 0.023029088973999023
+INFO:root:predict time:total:5.292001008987427 predict:5.292001008987427 transform:0.0
+INFO:root:predict time 6.859998941421509 0.003999948501586914
+INFO:root:predict time:total:7.541999340057373 predict:7.4999988079071045 transform:0.042000532150268555
+INFO:root:predict time 5.09796667098999 0.01703166961669922
+INFO:root:predict time:total:5.473998308181763 predict:5.473998308181763 transform:0.0
+INFO:root:predict time 5.010000467300415 0.003997325897216797
+INFO:root:predict time:total:5.6240234375 predict:5.5759992599487305 transform:0.04802417755126953
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+INFO:root:predict time 7.378971099853516 0.004029989242553711
+INFO:root:predict time:total:8.880035638809204 predict:8.324000835418701 transform:0.5560348033905029
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+INFO:root:predict time 9.597004175186157 0.17699646949768066
+INFO:root:predict time:total:10.498998641967773 predict:10.432998657226562 transform:0.06599998474121094
+INFO:root:predict time 6.397000312805176 0.024999141693115234
+INFO:root:predict time:total:6.771998167037964 predict:6.771998167037964 transform:0.0
+INFO:root:predict time 5.602999925613403 0.04599785804748535
+INFO:root:predict time:total:6.137999534606934 predict:6.102999925613403 transform:0.03499960899353027
+INFO:root:predict time 5.318994998931885 0.009004354476928711
+INFO:root:predict time:total:5.685002088546753 predict:5.685002088546753 transform:0.0
+INFO:root:predict time 6.823971748352051 0.004029750823974609
+INFO:root:predict time:total:8.065140962600708 predict:7.936141729354858 transform:0.1289992332458496
+INFO:root:predict time 8.041207790374756 1.3770380020141602
+INFO:root:predict time:total:9.771990299224854 predict:9.771990299224854 transform:0.0
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+INFO:root:predict time 6.941000461578369 0.027999162673950195
+INFO:root:predict time:total:7.698999881744385 predict:7.578998565673828 transform:0.12000131607055664
+INFO:root:predict time 4.309998512268066 0.02700328826904297
+INFO:root:predict time:total:4.6670002937316895 predict:4.6670002937316895 transform:0.0
+INFO:root:predict time 6.1209986209869385 0.0050008296966552734
+INFO:root:predict time:total:6.559998989105225 predict:6.559998989105225 transform:0.0
+INFO:root:predict time 4.969998836517334 0.004998922348022461
+INFO:root:predict time:total:5.744632720947266 predict:5.744632720947266 transform:0.0
+INFO:root:predict time 5.318000793457031 0.008997201919555664
+INFO:root:predict time:total:5.717998027801514 predict:5.717998027801514 transform:0.0
+INFO:root:predict time 5.339002847671509 0.0039958953857421875
+INFO:root:predict time:total:5.73903226852417 predict:5.738032817840576 transform:0.00099945068359375
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+INFO:root:predict time 4.77799129486084 0.016006946563720703
+INFO:root:predict time:total:5.221997976303101 predict:5.17499852180481 transform:0.046999454498291016
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
