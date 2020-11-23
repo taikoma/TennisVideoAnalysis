@@ -2,6 +2,6 @@
     "playerA": "Nishikori",
     "playerB": "Medvedev",
     "firstServer": 1,
-    "videoFile": "C:/Users/taku/Documents/Python/TennisVideoAnalysis/video/nishikori-medvedev.avi",
-    "database": ""
+    "videoFile": "../video/nishikori-medvedev.avi",
+    "database": "../data/nishikori-medvedev.db"
 }

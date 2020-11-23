@@ -122,7 +122,7 @@ class Score():
         self.arrayPlayerBPosition = []
         self.arrayPlayerBPosition.append([])
 
-    def nextAppend(self):
+    def nextAppend(self):#button_endで呼び出される
         self.rally=0
         self.arrayPlayerAPosition.append([])
         self.arrayPlayerBPosition.append([])
@@ -131,6 +131,9 @@ class Score():
         self.arrayBounceHit.append([])
         self.arrayForeBack.append([])
         self.arrayDirection.append([])
+
+    def load_scene(self,num_scene):
+        self.arrayBallPosition=[[] for i in range(len(self.arrayBallPosition),num_scene)]
 
     def setPlayerName(self, playerA, playerB):
         self.playerA = playerA

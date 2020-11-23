@@ -19,6 +19,10 @@ class Video():  # ビデオファイルの読み込み
         self.videoFileName = videoFileName
         self.video = cv2.VideoCapture(self.videoFileName)
         self.frame_count = int(self.video.get(cv2.CAP_PROP_FRAME_COUNT))
+        self.width=self.video.get(cv2.CAP_PROP_FRAME_WIDTH)
+        self.height=self.video.get(cv2.CAP_PROP_FRAME_HEIGHT)
+        print(self.width,self.height)
+
         print(self.frame_count)
 
         self.fps = self.video.get(cv2.CAP_PROP_FPS)

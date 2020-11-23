@@ -19,6 +19,7 @@ import video
 import database
 import logging
 import time
+import detect_score
 
 class Application(tkinter.Frame):
     #GUIウィンドウの設定と画像描画
@@ -26,6 +27,8 @@ class Application(tkinter.Frame):
         super().__init__(master)
         self.score = score
         self.master = master
+
+        self.ds=detect_score.DetectScore()
 
         self.pack()
 
@@ -49,6 +52,9 @@ class Application(tkinter.Frame):
         self.clickCourtRightDown=False
         self.clickCourtLeftDown=False
         
+        self.click_select_score_range=False
+        self.click_select_score_range_active=False
+
         self.fld="data.db"
 
         self.mode_predict=True#False
@@ -78,6 +84,9 @@ class Application(tkinter.Frame):
         self.ry1=20
         self.rx2=40
         self.ry2=20
+
+        self.sx1=0
+        self.sy1=0
         
         # print("pts:",len(self.pts))
 
@@ -109,6 +118,7 @@ class Application(tkinter.Frame):
 
         self.w = w
         self.h = h
+        print("wh:",self.w,self.h)
         self.pw = tkinter.PanedWindow(self, orient='horizontal')  # 全画面
         self.pw.pack(expand=True)
 
@@ -340,12 +350,15 @@ class Application(tkinter.Frame):
     def selectCourtLeftDown(self):
         self.reselectOff()
         self.clickCourtLeftDown=True
+    def select_score_range(self):
+        self.click_select_score_range=True
 
     def create_rightMenu(self):
         self.menu_top = Menu(self,tearoff=False)
         self.menu_2nd = Menu(self.menu_top,tearoff=0)
         self.menu_3rd = Menu(self.menu_top,tearoff=0)
         self.menu_top.add_cascade (label='Position',menu=self.menu_2nd,under=5)
+        self.menu_top.add_cascade (label='Select Score',menu=self.menu_3rd,under=5)
         self.menu_top.add_separator()
         #menu_top.add_command(label='EDIT(E)',underline=5,command=callback)
 
@@ -358,11 +371,11 @@ class Application(tkinter.Frame):
         #self.menu_2nd.add_cascade(label='Open(O)',under=5,menu=self.menu_3rd)
 
         #self.menu_3rd.add_command(label='Local File(L)',under=11)
-        #self.menu_3rd.add_command(label='Network(N)',under=8)
+        self.menu_3rd.add_command(label='Select Score Range',under=4,command=self.select_score_range)
 
     def create_image(self):
         # gimg=self.readImage(0)
-        gimg = np.zeros((self.w, self.h, 3), dtype=np.uint8)
+        gimg = np.zeros((self.h,self.w,  3), dtype=np.uint8)
         img_copy = np.copy(gimg)
         image_change = cv2.cvtColor(img_copy, cv2.COLOR_BGR2RGB)
         im = Image.fromarray(image_change)
@@ -372,8 +385,9 @@ class Application(tkinter.Frame):
         
 
         self.panel = tkinter.Label(self, image=self.imgtk)
-        self.panel.bind("<Button-1>", self.mouseclicked)
-        self.panel.bind("<Button-3>",self.showPopup)
+        self.panel.bind("<Button-1>", self.mouseclicked)#マウスクリック左
+        self.panel.bind("<Button-3>",self.showPopup)#マウスクリック右
+        self.panel.bind("<Motion>",self.mouse_motion)
         self.pwLeftUp.add(self.panel, padx=10, pady=10)
     def drawLine(self,img_copy,ph,inv_M):
         dst_inv=cv2.perspectiveTransform(ph,inv_M)
@@ -539,9 +553,44 @@ class Application(tkinter.Frame):
         cv2.circle(img_copy,(self.bx,self.by),2,(0,255,255),-1)
         self.image_change(img_copy)
 
+    def mouse_motion(self,event):
+        if(self.click_select_score_range_active):
+            gimg = self.readImage(self.myval.get())
+            img_copy = np.copy(gimg)
+            h,w=img_copy.shape[0],img_copy.shape[1]
+            x=event.x
+            y=event.y
+            # cv2.line(img_copy,(x,0),(x,h-1),(255,0,0))
+            # cv2.line(img_copy,(0,y),(w-1,y),(255,0,0))
+            xmin=min(x,self.sx1)
+            ymin=min(y,self.sy1)
+            xmax=max(x,self.sx1)
+            ymax=max(y,self.sy1)
+            cv2.rectangle(img_copy,(xmin,ymin),(xmax,ymax),(255,0,0))
+
+            self.image_change(img_copy)
+
     def mouseclicked(self, event):  # mouseevent 着弾点をマウスでクリック
         # print("mouseclicked")
-        if(self.clickPlayerA):
+        print(self.click_select_score_range)
+        if(self.click_select_score_range):
+            if(self.click_select_score_range_active!=True):
+                self.sx1=event.x
+                self.sy1=event.y
+                print(self.sx1,self.sy1)
+                self.click_select_score_range_active=True
+            else:
+                self.sx2=event.x
+                self.sy2=event.y
+                print(self.sx2,self.sy2)
+                x1=int(self.sx1/self.w*self.vid.width)
+                y1=int(self.sy1/self.h*self.vid.height)
+                x2=int(self.sx2/self.w*self.vid.width)
+                y2=int(self.sy2/self.h*self.vid.height)
+                self.ds.set_xy(x1,y1,x2,y2)
+                self.click_select_score_range_active=False
+                
+        elif(self.clickPlayerA):
             gimg = self.readImage(self.myval.get())
             img_copy = np.copy(gimg)
             x1=event.x
@@ -770,13 +819,11 @@ class Application(tkinter.Frame):
                     self.setTree()
 
     def readImage(self, frameIndex):
-        print("frame_index",int(frameIndex))
-        # self.video.set(cv2.CAP_PROP_POS_FRAMES, int(frameIndex))
-        frame_time=1000.0*frameIndex/self.vid.fps
-        self.video.set(cv2.CAP_PROP_POS_MSEC,frame_time)
-        print("frame_time",int(frame_time))
+        self.video.set(cv2.CAP_PROP_POS_FRAMES, int(frameIndex))
+        # frame_time=1000.0*frameIndex/self.vid.fps
+        # self.video.set(cv2.CAP_PROP_POS_MSEC,frame_time)
         ok, frame = self.video.read()
-        return cv2.resize(frame, (self.h, self.w))
+        return cv2.resize(frame, ( self.w,self.h))
 
     def transformPosition(self,x,y):
         pts=np.array([[[float(x),float(y)]]])
@@ -1082,6 +1129,14 @@ class Application(tkinter.Frame):
         Button_no_bound=tkinter.Button(text=u'No Bounce',width=10)
         Button_no_bound.bind("<Button-1>",self.no_bound)
         pw.add(Button_no_bound)
+
+        Button_score_image=tkinter.Button(text=u'ScoreImage',width=10)
+        Button_score_image.bind("<Button-1>",self.score_image)
+        pw.add(Button_score_image)
+
+        Button_score_text=tkinter.Button(text=u'ScoreText',width=10)
+        Button_score_text.bind("<Button-1>",self.score_text)
+        pw.add(Button_score_text)
 
         
 
@@ -1475,6 +1530,19 @@ class Application(tkinter.Frame):
         self.score.rally=self.score.rally+1
         self.setPointTree()
 
+    def score_image(self,event):
+        start_list=[0,800,1031,1672,2564,3346,2350,3862,4180,6028,6738,7091,7969,7981,8564,9080,9796,
+                    10172,11097,11498,11900]
+        self.ds.frame2images(start_list,self.vid.videoFileName)
+
+    def score_text(self,event):
+        game_a_array,game_b_array,score_a_array,score_b_array=self.ds.image2scores()
+        for i in range(len(game_a_array)):
+            self.score.arrayGame[i]=str(game_a_array[i])+"-"+str(game_b_array[i])
+            self.score.arrayScore=str(score_a_array[i])+"-"+str(score_b_array[i])
+        print(self.score.arrayGame)
+        print(self.score.arrayScore)
+
     def setPattern(self, pattern):
         #self.setScore()
         if(self.score.arrayPointPattern[self.score.number] == ""):
@@ -1647,7 +1715,8 @@ if __name__ == "__main__":
     root.title("Tennis Video Analytics")
 
     app = Application(score, master=root)
-    app.create_widgets(360, 640)
+    # app.create_widgets(360, 640)
+    app.create_widgets(640, 360)
     
     print("videoFile:",settings.videoFile)
     if(settings.videoFile!=""):
@@ -1658,7 +1727,7 @@ if __name__ == "__main__":
         app.sc.configure(to=app.frame_count)
 
     if(settings.dataFile!=""):
-        print(setting.dataFile)
+        print(settings.dataFile)
         filename=settings.dataFile
         app.fld=filename
         app.load_data()

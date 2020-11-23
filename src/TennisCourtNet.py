@@ -4,6 +4,7 @@ from torch.nn import init
 import torchvision
 
 class TennisCourtNet(nn.Module):
+
     def __init__(self):
 
         super(TennisCourtNet, self).__init__()
@@ -29,8 +30,6 @@ class TennisCourtNet(nn.Module):
         self.model6_2 = make_TennisCourt_block('block6_2')
 
     def forward(self, x):
-        """順伝搬の定義"""
-
         # Featureモジュール
         out1 = self.model0(x)
 
@@ -112,10 +111,6 @@ class TennisCourt_Feature(nn.Module):
 
 
 def make_TennisCourt_block(block_name):
-    """
-    コンフィグレーション変数からOpenPoseのStageモジュールのblcokを作成
-    nn.Moduleではなく、nn.Sequentialにする
-    """
 
     # 1. コンフィグレーションの辞書変数blocksを作成し、ネットワークを生成させる
     # 最初に全パターンの辞書を用意し、引数block_nameのみを生成する
@@ -189,5 +184,3 @@ def make_TennisCourt_block(block_name):
     net.apply(_initialize_weights_norm)
 
     return net
-
-

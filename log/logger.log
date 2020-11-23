@@ -590,3 +590,742 @@ INFO:root:warning was outputted
 INFO:root:info test test
 INFO:root:init Setting()
 DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+INFO:root:predict time 14.366668224334717 0.035680532455444336
+INFO:root:predict time:total:15.211469650268555 predict:15.105435371398926 transform:0.1060342788696289
+INFO:root:predict time 6.946275472640991 0.03400158882141113
+INFO:root:predict time:total:7.5340256690979 predict:7.48818302154541 transform:0.045842647552490234
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+INFO:root:predict time 23.754924774169922 0.03999805450439453
+INFO:root:predict time:total:24.971370458602905 predict:24.853326320648193 transform:0.11804413795471191
+INFO:root:predict time 17.926021814346313 0.05300760269165039
+INFO:root:predict time:total:18.8318989276886 predict:18.76090407371521 transform:0.07099485397338867
+INFO:root:predict time 13.206225156784058 0.013028621673583984
+INFO:root:predict time:total:13.706508874893188 predict:13.650253295898438 transform:0.05625557899475098
+INFO:root:predict time 22.674956560134888 0.007998943328857422
+INFO:root:predict time:total:23.44492220878601 predict:23.37492299079895 transform:0.06999921798706055
+INFO:root:predict time 5.640129327774048 0.028003692626953125
+INFO:root:predict time:total:6.108932256698608 predict:6.108932256698608 transform:0.0
+INFO:root:predict time 10.041123628616333 0.003999948501586914
+INFO:root:predict time:total:11.101062297821045 predict:11.037086009979248 transform:0.06397628784179688
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+INFO:root:predict time 13.777610063552856 0.03513789176940918
+INFO:root:predict time:total:15.052321672439575 predict:14.861433982849121 transform:0.1908876895904541
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+INFO:root:predict time 8.566272735595703 0.03139519691467285
+INFO:root:predict time:total:9.352035999298096 predict:9.267827987670898 transform:0.08420801162719727
+INFO:root:predict time 5.625527620315552 0.04400897026062012
+INFO:root:predict time:total:6.202247381210327 predict:6.198260068893433 transform:0.003987312316894531
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+INFO:root:predict time 9.54970645904541 0.0029985904693603516
+INFO:root:predict time:total:10.505690097808838 predict:10.321630954742432 transform:0.18405914306640625
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+INFO:root:predict time 7.231513977050781 0.0216977596282959
+INFO:root:predict time:total:7.8595428466796875 predict:7.7714128494262695 transform:0.08812999725341797
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+DEBUG:google.auth._default:Checking C:\Users\taku\GCP\test-vision-ocr-8665d9fa3b34.json for explicit credentials as part of auth process...
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+DEBUG:google.auth._default:Checking C:\Users\taku\GCP\test-vision-ocr-8665d9fa3b34.json for explicit credentials as part of auth process...
+DEBUG:google.auth.transport.requests:Making request: POST https://oauth2.googleapis.com/token
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): oauth2.googleapis.com:443
+DEBUG:urllib3.connectionpool:https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+DEBUG:google.auth._default:Checking C:\Users\taku\GCP\test-vision-ocr-8665d9fa3b34.json for explicit credentials as part of auth process...
+DEBUG:google.auth.transport.requests:Making request: POST https://oauth2.googleapis.com/token
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): oauth2.googleapis.com:443
+DEBUG:urllib3.connectionpool:https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+DEBUG:google.auth._default:Checking C:\Users\taku\GCP\test-vision-ocr-8665d9fa3b34.json for explicit credentials as part of auth process...
+DEBUG:google.auth.transport.requests:Making request: POST https://oauth2.googleapis.com/token
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): oauth2.googleapis.com:443
+DEBUG:urllib3.connectionpool:https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+DEBUG:google.auth._default:Checking C:\Users\taku\GCP\test-vision-ocr-8665d9fa3b34.json for explicit credentials as part of auth process...
+DEBUG:google.auth.transport.requests:Making request: POST https://oauth2.googleapis.com/token
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): oauth2.googleapis.com:443
+DEBUG:urllib3.connectionpool:https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+DEBUG:google.auth._default:Checking C:\Users\taku\GCP\test-vision-ocr-8665d9fa3b34.json for explicit credentials as part of auth process...
+DEBUG:google.auth.transport.requests:Making request: POST https://oauth2.googleapis.com/token
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): oauth2.googleapis.com:443
+DEBUG:urllib3.connectionpool:https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+DEBUG:google.auth._default:Checking C:\Users\taku\GCP\test-vision-ocr-8665d9fa3b34.json for explicit credentials as part of auth process...
+DEBUG:google.auth.transport.requests:Making request: POST https://oauth2.googleapis.com/token
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): oauth2.googleapis.com:443
+DEBUG:urllib3.connectionpool:https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+DEBUG:google.auth._default:Checking C:\Users\taku\GCP\test-vision-ocr-8665d9fa3b34.json for explicit credentials as part of auth process...
+DEBUG:google.auth.transport.requests:Making request: POST https://oauth2.googleapis.com/token
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): oauth2.googleapis.com:443
+DEBUG:urllib3.connectionpool:https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+DEBUG:google.auth._default:Checking C:\Users\taku\GCP\test-vision-ocr-8665d9fa3b34.json for explicit credentials as part of auth process...
+DEBUG:google.auth.transport.requests:Making request: POST https://oauth2.googleapis.com/token
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): oauth2.googleapis.com:443
+DEBUG:urllib3.connectionpool:https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+DEBUG:google.auth._default:Checking C:\Users\taku\GCP\test-vision-ocr-8665d9fa3b34.json for explicit credentials as part of auth process...
+DEBUG:google.auth.transport.requests:Making request: POST https://oauth2.googleapis.com/token
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): oauth2.googleapis.com:443
+DEBUG:urllib3.connectionpool:https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+DEBUG:google.auth._default:Checking C:\Users\taku\GCP\test-vision-ocr-8665d9fa3b34.json for explicit credentials as part of auth process...
+DEBUG:google.auth.transport.requests:Making request: POST https://oauth2.googleapis.com/token
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): oauth2.googleapis.com:443
+DEBUG:urllib3.connectionpool:https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+DEBUG:google.auth._default:Checking C:\Users\taku\GCP\test-vision-ocr-8665d9fa3b34.json for explicit credentials as part of auth process...
+DEBUG:google.auth.transport.requests:Making request: POST https://oauth2.googleapis.com/token
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): oauth2.googleapis.com:443
+DEBUG:urllib3.connectionpool:https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+DEBUG:google.auth._default:Checking C:\Users\taku\GCP\test-vision-ocr-8665d9fa3b34.json for explicit credentials as part of auth process...
+DEBUG:google.auth.transport.requests:Making request: POST https://oauth2.googleapis.com/token
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): oauth2.googleapis.com:443
+DEBUG:urllib3.connectionpool:https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+DEBUG:google.auth._default:Checking C:\Users\taku\GCP\test-vision-ocr-8665d9fa3b34.json for explicit credentials as part of auth process...
+DEBUG:google.auth.transport.requests:Making request: POST https://oauth2.googleapis.com/token
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): oauth2.googleapis.com:443
+DEBUG:urllib3.connectionpool:https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+DEBUG:google.auth._default:Checking C:\Users\taku\GCP\test-vision-ocr-8665d9fa3b34.json for explicit credentials as part of auth process...
+DEBUG:google.auth.transport.requests:Making request: POST https://oauth2.googleapis.com/token
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): oauth2.googleapis.com:443
+DEBUG:urllib3.connectionpool:https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+DEBUG:google.auth._default:Checking C:\Users\taku\GCP\test-vision-ocr-8665d9fa3b34.json for explicit credentials as part of auth process...
+DEBUG:google.auth.transport.requests:Making request: POST https://oauth2.googleapis.com/token
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): oauth2.googleapis.com:443
+DEBUG:urllib3.connectionpool:https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+DEBUG:google.auth._default:Checking C:\Users\taku\GCP\test-vision-ocr-8665d9fa3b34.json for explicit credentials as part of auth process...
+DEBUG:google.auth.transport.requests:Making request: POST https://oauth2.googleapis.com/token
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): oauth2.googleapis.com:443
+DEBUG:urllib3.connectionpool:https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+DEBUG:google.auth._default:Checking C:\Users\taku\GCP\test-vision-ocr-8665d9fa3b34.json for explicit credentials as part of auth process...
+DEBUG:google.auth.transport.requests:Making request: POST https://oauth2.googleapis.com/token
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): oauth2.googleapis.com:443
+DEBUG:urllib3.connectionpool:https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+DEBUG:google.auth._default:Checking C:\Users\taku\GCP\test-vision-ocr-8665d9fa3b34.json for explicit credentials as part of auth process...
+DEBUG:google.auth.transport.requests:Making request: POST https://oauth2.googleapis.com/token
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): oauth2.googleapis.com:443
+DEBUG:urllib3.connectionpool:https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+DEBUG:google.auth._default:Checking C:\Users\taku\GCP\test-vision-ocr-8665d9fa3b34.json for explicit credentials as part of auth process...
+DEBUG:google.auth.transport.requests:Making request: POST https://oauth2.googleapis.com/token
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): oauth2.googleapis.com:443
+DEBUG:urllib3.connectionpool:https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+DEBUG:google.auth._default:Checking C:\Users\taku\GCP\test-vision-ocr-8665d9fa3b34.json for explicit credentials as part of auth process...
+DEBUG:google.auth.transport.requests:Making request: POST https://oauth2.googleapis.com/token
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): oauth2.googleapis.com:443
+DEBUG:urllib3.connectionpool:https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+DEBUG:google.auth._default:Checking C:\Users\taku\GCP\test-vision-ocr-8665d9fa3b34.json for explicit credentials as part of auth process...
+DEBUG:google.auth.transport.requests:Making request: POST https://oauth2.googleapis.com/token
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): oauth2.googleapis.com:443
+DEBUG:urllib3.connectionpool:https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+DEBUG:google.auth._default:Checking C:\Users\taku\GCP\test-vision-ocr-8665d9fa3b34.json for explicit credentials as part of auth process...
+DEBUG:google.auth.transport.requests:Making request: POST https://oauth2.googleapis.com/token
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): oauth2.googleapis.com:443
+DEBUG:urllib3.connectionpool:https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+DEBUG:google.auth._default:Checking C:\Users\taku\GCP\test-vision-ocr-8665d9fa3b34.json for explicit credentials as part of auth process...
+DEBUG:google.auth.transport.requests:Making request: POST https://oauth2.googleapis.com/token
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): oauth2.googleapis.com:443
+DEBUG:urllib3.connectionpool:https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+DEBUG:google.auth._default:Checking C:\Users\taku\GCP\test-vision-ocr-8665d9fa3b34.json for explicit credentials as part of auth process...
+DEBUG:google.auth.transport.requests:Making request: POST https://oauth2.googleapis.com/token
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): oauth2.googleapis.com:443
+DEBUG:urllib3.connectionpool:https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+DEBUG:google.auth._default:Checking C:\Users\taku\GCP\test-vision-ocr-8665d9fa3b34.json for explicit credentials as part of auth process...
+DEBUG:google.auth.transport.requests:Making request: POST https://oauth2.googleapis.com/token
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): oauth2.googleapis.com:443
+DEBUG:urllib3.connectionpool:https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+DEBUG:google.auth._default:Checking C:\Users\taku\GCP\test-vision-ocr-8665d9fa3b34.json for explicit credentials as part of auth process...
+DEBUG:google.auth.transport.requests:Making request: POST https://oauth2.googleapis.com/token
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): oauth2.googleapis.com:443
+DEBUG:urllib3.connectionpool:https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+DEBUG:google.auth._default:Checking C:\Users\taku\GCP\test-vision-ocr-8665d9fa3b34.json for explicit credentials as part of auth process...
+DEBUG:google.auth.transport.requests:Making request: POST https://oauth2.googleapis.com/token
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): oauth2.googleapis.com:443
+DEBUG:urllib3.connectionpool:https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+DEBUG:google.auth._default:Checking C:\Users\taku\GCP\test-vision-ocr-8665d9fa3b34.json for explicit credentials as part of auth process...
+DEBUG:google.auth.transport.requests:Making request: POST https://oauth2.googleapis.com/token
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): oauth2.googleapis.com:443
+DEBUG:urllib3.connectionpool:https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+DEBUG:google.auth._default:Checking C:\Users\taku\GCP\test-vision-ocr-8665d9fa3b34.json for explicit credentials as part of auth process...
+DEBUG:google.auth.transport.requests:Making request: POST https://oauth2.googleapis.com/token
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): oauth2.googleapis.com:443
+DEBUG:urllib3.connectionpool:https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+DEBUG:google.auth._default:Checking C:\Users\taku\GCP\test-vision-ocr-8665d9fa3b34.json for explicit credentials as part of auth process...
+DEBUG:google.auth.transport.requests:Making request: POST https://oauth2.googleapis.com/token
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): oauth2.googleapis.com:443
+DEBUG:urllib3.connectionpool:https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+DEBUG:google.auth._default:Checking C:\Users\taku\GCP\test-vision-ocr-8665d9fa3b34.json for explicit credentials as part of auth process...
+DEBUG:google.auth.transport.requests:Making request: POST https://oauth2.googleapis.com/token
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): oauth2.googleapis.com:443
+DEBUG:urllib3.connectionpool:https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.
+DEBUG:google.auth._default:Checking C:\Users\taku\GCP\test-vision-ocr-8665d9fa3b34.json for explicit credentials as part of auth process...
+DEBUG:google.auth.transport.requests:Making request: POST https://oauth2.googleapis.com/token
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): oauth2.googleapis.com:443
+DEBUG:urllib3.connectionpool:https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+DEBUG:google.auth._default:Checking C:\Users\taku\GCP\test-vision-ocr-8665d9fa3b34.json for explicit credentials as part of auth process...
+DEBUG:google.auth.transport.requests:Making request: POST https://oauth2.googleapis.com/token
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): oauth2.googleapis.com:443
+DEBUG:urllib3.connectionpool:https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+DEBUG:google.auth._default:Checking C:\Users\taku\GCP\test-vision-ocr-8665d9fa3b34.json for explicit credentials as part of auth process...
+DEBUG:google.auth.transport.requests:Making request: POST https://oauth2.googleapis.com/token
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): oauth2.googleapis.com:443
+DEBUG:urllib3.connectionpool:https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+DEBUG:google.auth._default:Checking C:\Users\taku\GCP\test-vision-ocr-8665d9fa3b34.json for explicit credentials as part of auth process...
+DEBUG:google.auth.transport.requests:Making request: POST https://oauth2.googleapis.com/token
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): oauth2.googleapis.com:443
+DEBUG:urllib3.connectionpool:https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+DEBUG:google.auth._default:Checking C:\Users\taku\GCP\test-vision-ocr-8665d9fa3b34.json for explicit credentials as part of auth process...
+DEBUG:google.auth.transport.requests:Making request: POST https://oauth2.googleapis.com/token
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): oauth2.googleapis.com:443
+DEBUG:urllib3.connectionpool:https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+DEBUG:google.auth._default:Checking C:\Users\taku\GCP\test-vision-ocr-8665d9fa3b34.json for explicit credentials as part of auth process...
+DEBUG:google.auth.transport.requests:Making request: POST https://oauth2.googleapis.com/token
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): oauth2.googleapis.com:443
+DEBUG:urllib3.connectionpool:https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+DEBUG:google.auth._default:Checking C:\Users\taku\GCP\test-vision-ocr-8665d9fa3b34.json for explicit credentials as part of auth process...
+DEBUG:google.auth.transport.requests:Making request: POST https://oauth2.googleapis.com/token
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): oauth2.googleapis.com:443
+DEBUG:urllib3.connectionpool:https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+DEBUG:google.auth._default:Checking C:\Users\taku\GCP\test-vision-ocr-8665d9fa3b34.json for explicit credentials as part of auth process...
+DEBUG:google.auth.transport.requests:Making request: POST https://oauth2.googleapis.com/token
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): oauth2.googleapis.com:443
+DEBUG:urllib3.connectionpool:https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+DEBUG:google.auth._default:Checking C:\Users\taku\GCP\test-vision-ocr-8665d9fa3b34.json for explicit credentials as part of auth process...
+DEBUG:google.auth.transport.requests:Making request: POST https://oauth2.googleapis.com/token
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): oauth2.googleapis.com:443
+DEBUG:urllib3.connectionpool:https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+DEBUG:google.auth._default:Checking C:\Users\taku\GCP\test-vision-ocr-8665d9fa3b34.json for explicit credentials as part of auth process...
+DEBUG:google.auth.transport.requests:Making request: POST https://oauth2.googleapis.com/token
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): oauth2.googleapis.com:443
+DEBUG:urllib3.connectionpool:https://oauth2.googleapis.com:443 "POST /token HTTP/1.1" 200 None
+CRITICAL:root:critical
+ERROR:root:error
+WARNING:root:warning
+INFO:root:info
+DEBUG:root:debug
+INFO:root:erroroutputting error
+INFO:root:warning was outputted
+INFO:root:info test test
+INFO:root:init Setting()
+DEBUG:matplotlib.pyplot:Loaded backend TkAgg version unknown.

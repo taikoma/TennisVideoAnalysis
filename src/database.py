@@ -316,12 +316,19 @@ class Database():
         # self.score.arrayContactBalls = self.arrayContactBalls
         self.score.arrayFault = self.arrayFault
 
-        self.score.arrayBallPosition = self.arrayBallPosition
-        self.score.arrayPlayerAPosition = self.arrayPlayerAPosition
-        self.score.arrayPlayerBPosition = self.arrayPlayerBPosition
-        self.score.arrayHitPlayer = self.arrayHitPlayer
-        self.score.arrayBounceHit = self.arrayBounceHit
-        self.score.arrayForeBack = self.arrayForeBack
-        self.score.arrayDirection = self.arrayDirection
+        # self.score.arrayBallPosition = self.arrayBallPosition
+        # self.score.arrayPlayerAPosition = self.arrayPlayerAPosition
+        # self.score.arrayPlayerBPosition = self.arrayPlayerBPosition
+        # self.score.arrayHitPlayer = self.arrayHitPlayer
+        # self.score.arrayBounceHit = self.arrayBounceHit
+        # self.score.arrayForeBack = self.arrayForeBack
+        # self.score.arrayDirection = self.arrayDirection
+        self.score.arrayBallPosition=[[] for i in range(len(self.arrayBallPosition),self.score.number+1)]
+        self.score.arrayPlayerAPosition = [[] for i in range(len(self.arrayPlayerAPosition),self.score.number+1)]
+        self.score.arrayPlayerBPosition = [[] for i in range(len(self.arrayPlayerBPosition),self.score.number+1)]
+        self.score.arrayHitPlayer = [[] for i in range(len(self.arrayHitPlayer),self.score.number+1)]
+        self.score.arrayBounceHit = [[] for i in range(len(self.arrayBounceHit),self.score.number+1)]
+        self.score.arrayForeBack = [[] for i in range(len(self.arrayForeBack),self.score.number+1)]
+        self.score.arrayDirection = [[] for i in range(len(self.arrayDirection),self.score.number+1)]
 
         return self.score
