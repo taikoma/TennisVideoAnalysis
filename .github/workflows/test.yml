@@ -1,0 +1,36 @@
+name: Python package
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.7]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    # インストール
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8 pytest
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    # pythonバージョンの表示
+    - name: Display Python version
+      run: python -c "import sys; print(sys.version)"
+    # unittestの実行
+    - name: Test
+      run: |
+        disp=:99
+        screen=0
+        geom=640x480x24
+        exec Xvfb $disp -screen $screen $geom 2>/tmp/Xvfb.log &
+        export DISPLAY=:99
+        python -m unittest discover tests

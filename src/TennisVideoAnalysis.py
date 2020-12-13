@@ -23,7 +23,7 @@ import detect_score
 
 class Application(tkinter.Frame):
     #GUIウィンドウの設定と画像描画
-    def __init__(self, score, master=None):
+    def __init__(self,score,mode_predict_court,mode_predict_player,  master=None):
         super().__init__(master)
         self.score = score
         self.master = master
@@ -57,8 +57,8 @@ class Application(tkinter.Frame):
 
         self.fld="data.db"
 
-        self.mode_predict=True#False
-        self.mode_predictPlayer=True#False
+        self.mode_predict=mode_predict_court#False
+        self.mode_predictPlayer=mode_predict_player#False
 
 
         if(self.mode_predict):
@@ -1692,16 +1692,16 @@ class Application(tkinter.Frame):
 
 if __name__ == "__main__":
 
-    logging.basicConfig(filename='log/logger.log',level=logging.DEBUG)
-    logging.critical('critical')
-    logging.error('error')
-    logging.warning('warning')
-    logging.info('info')
-    logging.debug('debug')
+    # logging.basicConfig(filename='log/logger.log',level=logging.DEBUG)
+    # logging.critical('critical')
+    # logging.error('error')
+    # logging.warning('warning')
+    # logging.info('info')
+    # logging.debug('debug')
 
-    logging.info('error{}'.format('outputting error'))
-    logging.info('warning %s %s' % ('was','outputted'))
-    logging.info('info %s %s','test','test')
+    # logging.info('error{}'.format('outputting error'))
+    # logging.info('warning %s %s' % ('was','outputted'))
+    # logging.info('info %s %s','test','test')
 
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
     settings=setting.Setting()#settings.json
@@ -1714,7 +1714,9 @@ if __name__ == "__main__":
     root = tkinter.Tk()#root
     root.title("Tennis Video Analytics")
 
-    app = Application(score, master=root)
+    mode_predict_court=True
+    mode_predict_player=True
+    app = Application(score,mode_predict_court,mode_predict_player, master=root)
     # app.create_widgets(360, 640)
     app.create_widgets(640, 360)
     

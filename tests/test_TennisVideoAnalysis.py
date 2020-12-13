@@ -12,7 +12,9 @@ class TestTennisVideoAnalysis(unittest.TestCase):
     def setUp(self):#設定
         self.root = tkinter.Tk()
         self.score = score.Score(0)
-        self.app=TennisVideoAnalysis.Application(self.score, master=self.root)
+        mode_predict_court=False
+        mode_predict_player=False
+        self.app=TennisVideoAnalysis.Application(self.score,mode_predict_court,mode_predict_player, master=self.root)
         self.app.create_widgets(360, 640)
 
     # def test_loadVideo(self):
