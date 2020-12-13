@@ -933,7 +933,7 @@ class Application(tkinter.Frame):
         if(self.mode == 1):
             ret, frame = self.vid.get_frame()
             if ret:
-                frame = cv2.resize(frame, (self.h, self.w))
+                frame = cv2.resize(frame, ( self.w,self.h))
                 im = Image.fromarray(frame)
                 self.imgtk = ImageTk.PhotoImage(image=im)
                 self.panel.configure(image=self.imgtk)
@@ -1723,7 +1723,6 @@ if __name__ == "__main__":
     mode_predict_player=True
     mode_detect_score=True
     app = Application(score,mode_predict_court,mode_predict_player,mode_detect_score, master=root)
-    # app.create_widgets(360, 640)
     app.create_widgets(640, 360)
     
     print("videoFile:",settings.videoFile)
