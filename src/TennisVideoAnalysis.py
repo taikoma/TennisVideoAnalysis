@@ -57,8 +57,9 @@ class Application(tkinter.Frame):
 
         self.fld="data.db"
 
-        self.mode_predict=mode_predict_court#False
-        self.mode_predictPlayer=mode_predict_player#False
+        self.mode_predict=mode_predict_court
+        self.mode_predictPlayer=mode_predict_player
+        self.mode_detect_score=mode_detect_score
 
 
         if(self.mode_predict):
@@ -69,7 +70,7 @@ class Application(tkinter.Frame):
             import playerDetect
             filepath="../weights/ssd300_300.pth"
             self.playerDetect=playerDetect.playerDetect(filepath)
-        if(self.mode_detect_score)
+        if(self.mode_detect_score):
             import detect_score
             self.ds=detect_score.DetectScore()
             

@@ -14,7 +14,8 @@ class TestTennisVideoAnalysis(unittest.TestCase):
         self.score = score.Score(0)
         mode_predict_court=False
         mode_predict_player=False
-        self.app=TennisVideoAnalysis.Application(self.score,mode_predict_court,mode_predict_player, master=self.root)
+        mode_detect_score=False
+        self.app=TennisVideoAnalysis.Application(self.score,mode_predict_court,mode_predict_player,mode_detect_score, master=self.root)
         self.app.create_widgets(360, 640)
 
     # def test_loadVideo(self):
