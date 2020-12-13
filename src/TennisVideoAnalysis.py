@@ -63,15 +63,16 @@ class Application(tkinter.Frame):
 
 
         if(self.mode_predict):
-            import predict
+            from predict import predict
             filepath="../weights/predict_court_10000.pth"
             self.predict=predict.Predict(filepath)
         if(self.mode_predictPlayer):
-            import playerDetect
+            from predict import playerDetect
             filepath="../weights/ssd300_300.pth"
             self.playerDetect=playerDetect.playerDetect(filepath)
         if(self.mode_detect_score):
-            import detect_score
+            import predict.detect_score as detect_score
+            from predict import  detect_score
             self.ds=detect_score.DetectScore()
             
         self.xa=0
