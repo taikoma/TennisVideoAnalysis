@@ -19,16 +19,16 @@ import video
 import database
 import logging
 import time
-import detect_score
+
 
 class Application(tkinter.Frame):
     #GUIウィンドウの設定と画像描画
-    def __init__(self,score,mode_predict_court,mode_predict_player,  master=None):
+    def __init__(self,score,mode_predict_court,mode_predict_player,mode_detect_score,  master=None):
         super().__init__(master)
         self.score = score
         self.master = master
 
-        self.ds=detect_score.DetectScore()
+        
 
         self.pack()
 
@@ -69,7 +69,10 @@ class Application(tkinter.Frame):
             import playerDetect
             filepath="../weights/ssd300_300.pth"
             self.playerDetect=playerDetect.playerDetect(filepath)
-
+        if(self.mode_detect_score)
+            import detect_score
+            self.ds=detect_score.DetectScore()
+            
         self.xa=0
         self.ya=0
         self.xb=0
@@ -1716,7 +1719,8 @@ if __name__ == "__main__":
 
     mode_predict_court=True
     mode_predict_player=True
-    app = Application(score,mode_predict_court,mode_predict_player, master=root)
+    mode_detect_score=True
+    app = Application(score,mode_predict_court,mode_predict_player,mode_detect_score, master=root)
     # app.create_widgets(360, 640)
     app.create_widgets(640, 360)
     
