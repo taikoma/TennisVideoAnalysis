@@ -28,8 +28,6 @@ class Application(tkinter.Frame):
         self.score = score
         self.master = master
 
-        
-
         self.pack()
 
         self.winner = tkinter.IntVar()
@@ -64,11 +62,11 @@ class Application(tkinter.Frame):
 
         if(self.mode_predict):
             from predict import predict
-            filepath="../weights/predict_court_10000.pth"
+            filepath="./predict/weights/predict_court_10000.pth"
             self.predict=predict.Predict(filepath)
         if(self.mode_predictPlayer):
             from predict import playerDetect
-            filepath="../weights/ssd300_300.pth"
+            filepath="./predict/weights/ssd300_300.pth"
             self.playerDetect=playerDetect.playerDetect(filepath)
         if(self.mode_detect_score):
             import predict.detect_score as detect_score
