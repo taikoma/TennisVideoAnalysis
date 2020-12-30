@@ -12,21 +12,14 @@ import threading
 from tkinter import filedialog
 import os
 
+import const
 
 class Score():
     def __init__(self, firstSever):
         self.firstServer = firstSever
 
         self.setPlayerName("PlayerA", "PlayerB")
-        self.patternString = [
-            "サービスエース",
-            "ストロークウィナー",
-            "ボレーウィナー",
-            "リターンエラー",
-            "ストロークエラー",
-            "ボレーエラー",
-            "フォルト",
-            "ダブルフォルト"]
+        self.patternString = const.PATTERN
         self.firstSecondString = ["", "1st", "2nd"]
 
         self.pointXYNum = 0
@@ -75,6 +68,7 @@ class Score():
         self.pointB.append(0)
         self.pointWin.append(self.pointA)  # pointA 勝ったら1を格納
         self.pointWin.append(self.pointB)  # pointB 勝ったら1を格納
+        print("pointwin",self.pointWin)
 
         self.arrayPointPattern = []  # ポイントパターン
         self.arrayPointPattern.append("")

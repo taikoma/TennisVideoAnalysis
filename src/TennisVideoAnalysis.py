@@ -22,6 +22,10 @@ import time
 
 
 class Application(tkinter.Frame):
+    """
+    画面アプリケーションクラス
+
+    """
     #GUIウィンドウの設定と画像描画
     def __init__(self,score,mode_predict_court,mode_predict_player,mode_detect_score,  master=None):
         super().__init__(master)
@@ -972,7 +976,7 @@ class Application(tkinter.Frame):
     def load_data(self):
         print("load_data")
         db = database.Database(self.fld, self.score)
-        db.loadDatabase()
+        db.load_database()
         self.score = db.dbToScore()
         self.drawContactAll()
         self.setTree()
@@ -988,7 +992,7 @@ class Application(tkinter.Frame):
                     ('Db Files', ('.db'))])
             if(self.fld):
                 db = database.Database(self.fld, self.score)
-                db.saveDatabase()
+                db.save_database()
 
     def save_data_as(self):
         dir = 'C:\\'
@@ -997,7 +1001,7 @@ class Application(tkinter.Frame):
                 ('Db Files', ('.db'))])
         if(self.fld):
             db = database.Database(self.fld, self.score)
-            db.saveDatabase()
+            db.save_database()
 
     def button_edit_save(self,enent):
         self.score.playerA=self.tw_txtA.get()

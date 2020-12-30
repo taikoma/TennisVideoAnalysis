@@ -12,20 +12,14 @@ import threading
 from tkinter import filedialog
 # import score as scr
 
+import const
+
 class Database():
     def __init__(self, dbName, score):
         self.dbName = dbName
         self.score=score
 
-        self.patternString = [
-            "サービスエース",
-            "ストロークウィナー",
-            "ボレーウィナー",
-            "リターンエラー",
-            "ストロークエラー",
-            "ボレーエラー",
-            "フォルト",
-            "ダブルフォルト"]
+        self.patternString = const.PATTERN
         self.firstSecondString = ["", "1st", "2nd"]
 
         self.arrayFrameStart = score.arrayFrameStart
@@ -63,10 +57,7 @@ class Database():
         self.arrayForeBack=score.arrayForeBack
         self.arrayDirection=score.arrayDirection
 
-
-    def saveDatabase(self):
-        print("saveDatabase", self.dbName)
-        #print("saveDatabase", self.arrayFrameEnd)
+    def save_temp_db(self):#
         conn = sqlite3.connect(self.dbName)
         c = conn.cursor()
         df = pd.DataFrame({'StartFrame': self.arrayFrameStart, 'EndFrame': self.arrayFrameEnd, 'Set': self.arraySet, 'Game': self.arrayGame,
@@ -79,12 +70,37 @@ class Database():
                            'Court3X': list(np.array(self.arrayCourt)[2][:, 0]), 'Court3Y': list(np.array(self.arrayCourt)[2][:, 1]),
                            'Court4X': list(np.array(self.arrayCourt)[3][:, 0]), 'Court4Y': list(np.array(self.arrayCourt)[3][:, 1])
                            })
-        df_basic = pd.DataFrame({'playerA': self.playerA,
+        df.to_sql("score", conn, if_exists="replace")
+        conn.close()                  
+
+
+    def save_database(self):
+        print("saveDatabase", self.dbName)
+        #print("saveDatabase", self.arrayFrameEnd)
+        conn = sqlite3.connect(self.dbName)
+        c = conn.cursor()
+        try:
+            df = pd.DataFrame({'StartFrame': self.arrayFrameStart, 'EndFrame': self.arrayFrameEnd, 'Set': self.arraySet, 'Game': self.arrayGame,
+                           'Score': self.arrayScore, 'ScoreResult': self.arrayScoreResult, 'FirstSecond': self.arrayFirstSecond, 'Server': self.arrayServer,
+                           'PointWinner': self.arrayPointWinner, 'PointWinA': self.pointWin[0], 'PointWinB': self.pointWin[1],
+                           'PointPattern': self.arrayPointPattern, 'Fault': self.arrayFault,
+                           'ContactServeX': list(np.array(self.arrayContactServe)[:, 0]), 'ContactServeY': list(np.array(self.arrayContactServe)[:, 1]),
+                           'Court1X': list(np.array(self.arrayCourt)[0][:, 0]), 'Court1Y': list(np.array(self.arrayCourt)[0][:, 1]),
+                           'Court2X': list(np.array(self.arrayCourt)[1][:, 0]), 'Court2Y': list(np.array(self.arrayCourt)[1][:, 1]),
+                           'Court3X': list(np.array(self.arrayCourt)[2][:, 0]), 'Court3Y': list(np.array(self.arrayCourt)[2][:, 1]),
+                           'Court4X': list(np.array(self.arrayCourt)[3][:, 0]), 'Court4Y': list(np.array(self.arrayCourt)[3][:, 1])
+                           })
+        except ValueError as e:
+            print("Error",e)
+        try:
+            df_basic = pd.DataFrame({'playerA': self.playerA,
                                  'playerB': self.playerB,
                                  'number': self.number,
                                  'totalGame': self.totalGame,
                                  'faultFlug': self.faultFlug},
                                 index=[0])
+        except ValueError as e:
+            print("Error",e)
         point=[]
         frame=[]
         bx=[]
@@ -111,18 +127,20 @@ class Database():
                 bh.append(self.arrayBounceHit[i][j])
                 fb.append(self.arrayForeBack[i][j])#arrayDirection
                 d.append(self.arrayDirection[i][j])
-                # print(self.arrayHitPlayer[i][j])
-        df_shot=pd.DataFrame({'point':point,'frame':frame,'ballx':bx,'bally':by,
+        try:
+            df_shot=pd.DataFrame({'point':point,'frame':frame,'ballx':bx,'bally':by,
                             'playerAx':pax,'playerAy':pay,'playerBx':pbx,'playerBy':pby,
                             'hitplayer':h,'bouncehit':bh,'foreback':fb,'direction':d
-        })
+            })
+        except ValueError as e:
+            print("Error",e)
 
         df_basic.to_sql("match", conn, if_exists="replace")
         df.to_sql("score", conn, if_exists="replace")
         df_shot.to_sql("shot",conn,if_exists="replace")
         conn.close()
 
-    def loadDatabase(self):
+    def load_database(self):
         print("loadDatabase")
         self.arrayFrameStart.clear()
         self.arrayFrameEnd.clear()
@@ -186,6 +204,8 @@ class Database():
                 i], df['Court3Y'].values.tolist()[i]])
             self.arrayCourt[3].insert(i, [df['Court4X'].values.tolist()[
                 i], df['Court4Y'].values.tolist()[i]])
+        print(df)
+        
 
         df_basic = pd.read_sql("select * from match", conn)
         self.playerA = df_basic['playerA'].values[0]
@@ -194,6 +214,7 @@ class Database():
         self.number = len(df) - 1
         self.totalGame = df_basic['totalGame'].values[0]
         self.faultFlug = df_basic['faultFlug'].values[0]
+        print(df_basic)
 
 
         df_shot = pd.read_sql("select * from shot", conn)
@@ -210,7 +231,6 @@ class Database():
         bh=df_shot['bouncehit'].values.tolist()
         fb=df_shot['foreback'].values.tolist()
         d=df_shot['direction'].values.tolist()
-        #print(self.array2arrays(point,frame,ballx,bally))
         print(df_shot)
         
 
@@ -233,6 +253,13 @@ class Database():
             self.arrayBounceHit.append([])
             self.arrayForeBack.append([])
             self.arrayDirection.append([])
+
+        df.to_csv("./score.csv")
+        df_shot.to_csv("./shot.csv")
+        df_basic.to_csv("./basic.csv")
+        print(self.arrayCourt)
+        print("ok")
+        
         conn.close()
 
 
