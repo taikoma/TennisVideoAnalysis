@@ -41,12 +41,10 @@ class Database():
 
         self.playerA = score.playerA
         self.playerB = score.playerB
-        print("self.playerA,self.playerB",self.playerA,self.playerB)
 
         self.number = score.number
         self.totalGame = score.totalGame
         self.faultFlug = score.faultFlug
-        # self.arrayContactBalls = score.arrayContactBalls
         self.arrayFault = score.arrayFault
 
         self.arrayBallPosition=score.arrayBallPosition
@@ -74,9 +72,8 @@ class Database():
         conn.close()                  
 
 
-    def save_database(self):
-        print("saveDatabase", self.dbName)
-        #print("saveDatabase", self.arrayFrameEnd)
+    def save_database_score(self,db_name):
+        r=0
         conn = sqlite3.connect(self.dbName)
         c = conn.cursor()
         try:
@@ -90,17 +87,23 @@ class Database():
                            'Court3X': list(np.array(self.arrayCourt)[2][:, 0]), 'Court3Y': list(np.array(self.arrayCourt)[2][:, 1]),
                            'Court4X': list(np.array(self.arrayCourt)[3][:, 0]), 'Court4Y': list(np.array(self.arrayCourt)[3][:, 1])
                            })
+            r=len(df)
         except ValueError as e:
             print("Error",e)
-        try:
-            df_basic = pd.DataFrame({'playerA': self.playerA,
-                                 'playerB': self.playerB,
-                                 'number': self.number,
-                                 'totalGame': self.totalGame,
-                                 'faultFlug': self.faultFlug},
-                                index=[0])
-        except ValueError as e:
-            print("Error",e)
+        else:
+            try:
+                df.to_sql("score", conn, if_exists="replace")
+            except pd.io.sql.DatabaseError as e:
+                print("Error",e)
+        finally:
+            conn.close()
+        return r
+
+    def save_database_shot(self,db_name):
+        r=0
+        conn = sqlite3.connect(self.dbName)
+        c = conn.cursor()
+
         point=[]
         frame=[]
         bx=[]
@@ -113,20 +116,24 @@ class Database():
         bh=[]
         fb=[]
         d=[]
-        for i in range(len(self.arrayBallPosition)):
-            for j in range(len(self.arrayBallPosition[i])):
-                point.append(self.arrayBallPosition[i][j][0])
-                frame.append(self.arrayBallPosition[i][j][1])
-                bx.append(self.arrayBallPosition[i][j][2])
-                by.append(self.arrayBallPosition[i][j][3])
-                pax.append(self.arrayPlayerAPosition[i][j][2])
-                pay.append(self.arrayPlayerAPosition[i][j][3])
-                pbx.append(self.arrayPlayerBPosition[i][j][2])
-                pby.append(self.arrayPlayerBPosition[i][j][3])
-                h.append(self.arrayHitPlayer[i][j])
-                bh.append(self.arrayBounceHit[i][j])
-                fb.append(self.arrayForeBack[i][j])#arrayDirection
-                d.append(self.arrayDirection[i][j])
+        print(len(self.arrayBallPosition))
+        try:
+            for i in range(len(self.arrayBallPosition)):
+                for j in range(len(self.arrayBallPosition[i])):
+                    point.append(self.arrayBallPosition[i][j][0])
+                    frame.append(self.arrayBallPosition[i][j][1])
+                    bx.append(self.arrayBallPosition[i][j][2])
+                    by.append(self.arrayBallPosition[i][j][3])
+                    pax.append(self.arrayPlayerAPosition[i][j][2])
+                    pay.append(self.arrayPlayerAPosition[i][j][3])
+                    pbx.append(self.arrayPlayerBPosition[i][j][2])
+                    pby.append(self.arrayPlayerBPosition[i][j][3])
+                    h.append(self.arrayHitPlayer[i][j])
+                    bh.append(self.arrayBounceHit[i][j])
+                    fb.append(self.arrayForeBack[i][j])#arrayDirection
+                    d.append(self.arrayDirection[i][j])
+        except IndexError as e:
+            print("Error",e)
         try:
             df_shot=pd.DataFrame({'point':point,'frame':frame,'ballx':bx,'bally':by,
                             'playerAx':pax,'playerAy':pay,'playerBx':pbx,'playerBy':pby,
@@ -134,14 +141,40 @@ class Database():
             })
         except ValueError as e:
             print("Error",e)
+        else:
+            df_shot.to_sql("shot",conn,if_exists="replace")
+            r=len(df_shot)
+        finally:
+            conn.close()
+        return r
 
-        df_basic.to_sql("match", conn, if_exists="replace")
-        df.to_sql("score", conn, if_exists="replace")
-        df_shot.to_sql("shot",conn,if_exists="replace")
-        conn.close()
+    def save_database_basic(self,db_name):
+        r=0
+        conn = sqlite3.connect(self.dbName)
+        c = conn.cursor()
+        try:
+            df_basic = pd.DataFrame({'playerA': self.playerA,
+                                 'playerB': self.playerB,
+                                 'number': self.number,
+                                 'totalGame': self.totalGame,
+                                 'faultFlug': self.faultFlug},
+                                index=[0])
+        except ValueError as e:
+            print("Error",e)
+        else:
+            df_basic.to_sql("match", conn, if_exists="replace")
+            r=len(df_basic)
+        finally:
+            conn.close()
+        return r
 
-    def load_database(self):
-        print("loadDatabase")
+    def save_database(self):
+        print("saveDatabase", self.dbName)
+        self.save_database_score(self.dbName)
+        self.save_database_shot(self.dbName)
+        self.save_database_basic(self.dbName)
+
+    def clear_array(self):
         self.arrayFrameStart.clear()
         self.arrayFrameEnd.clear()
         self.arraySet.clear()
@@ -158,9 +191,7 @@ class Database():
         self.arrayContactServe.clear()
         self.arrayCourt.clear()
         self.arrayContactServe.clear()
-        # self.arrayContactBalls.clear()
         self.arrayFault.clear()
-
         self.arrayBallPosition.clear()
         self.arrayPlayerAPosition.clear()
         self.arrayPlayerBPosition.clear()
@@ -168,9 +199,12 @@ class Database():
         self.arrayBounceHit.clear()
         self.arrayForeBack.clear()
         self.arrayDirection.clear()
-
+        
+    def load_database_score(self,db_name):
+        r=0
         conn = sqlite3.connect(self.dbName)
         c = conn.cursor()
+
         df = pd.read_sql("select * from score", conn)
         self.arrayFrameStart.extend(df['StartFrame'].values.tolist())
         self.arrayFrameEnd.extend(df['EndFrame'].values.tolist())
@@ -182,7 +216,6 @@ class Database():
         self.arrayServer.extend(df['Server'].values.tolist())
         self.arrayPointWinner.extend(df['PointWinner'].values.tolist())
         self.arrayPointPattern.extend(df['PointPattern'].values.tolist())
-        # self.arrayForeBack.extend(df['ForeBack'].values.tolist())
         self.arrayFault.extend(df['Fault'].values.tolist())
 
         self.pointWin[0].extend(df['PointWinA'].values.tolist())
@@ -204,19 +237,32 @@ class Database():
                 i], df['Court3Y'].values.tolist()[i]])
             self.arrayCourt[3].insert(i, [df['Court4X'].values.tolist()[
                 i], df['Court4Y'].values.tolist()[i]])
-        print(df)
-        
+        self.number = len(df) - 1
+        print("df",df)
+        r=len(df)
+        conn.close()
+        return r
 
+    def load_database_basic(self,db_name):
+        r=0
+        conn = sqlite3.connect(db_name)
+        c = conn.cursor()
+        #df_basic
         df_basic = pd.read_sql("select * from match", conn)
         self.playerA = df_basic['playerA'].values[0]
         self.playerB = df_basic['playerB'].values[0]
-
-        self.number = len(df) - 1
         self.totalGame = df_basic['totalGame'].values[0]
         self.faultFlug = df_basic['faultFlug'].values[0]
-        print(df_basic)
+        # print(df_basic)
+        conn.close()
+        r=len(df_basic)
+        return r
 
-
+    def load_database_shot(self,db_name):
+        r=0
+        conn = sqlite3.connect(db_name)
+        c = conn.cursor()
+        #df_shot
         df_shot = pd.read_sql("select * from shot", conn)
         point=df_shot['point'].values.tolist()
         frame=df_shot['frame'].values.tolist()
@@ -233,7 +279,6 @@ class Database():
         d=df_shot['direction'].values.tolist()
         print(df_shot)
         
-
         self.arrayBallPosition.extend(self.array2arrays(point,frame,ballx,bally))
         self.arrayPlayerAPosition.extend(self.array2arrays(point,frame,pax,pay))
         self.arrayPlayerBPosition.extend(self.array2arrays(point,frame,pbx,pby))
@@ -253,15 +298,16 @@ class Database():
             self.arrayBounceHit.append([])
             self.arrayForeBack.append([])
             self.arrayDirection.append([])
-
-        df.to_csv("./score.csv")
-        df_shot.to_csv("./shot.csv")
-        df_basic.to_csv("./basic.csv")
-        print(self.arrayCourt)
-        print("ok")
-        
         conn.close()
+        r=len(df_shot)
+        return r
 
+    def load_database(self):
+        print("loadDatabase")
+        self.clear_array()#arrayをクリア
+        self.load_database_score(self.dbName)#scoreテーブルを配列に格納
+        self.load_database_basic(self.dbName)
+        self.load_database_shot(self.dbName)
 
     def array2arrays(self,point,frame,ballx,bally):
         if len(point)>0:
@@ -282,7 +328,7 @@ class Database():
             temp.append(ballx[i])
             temp.append(bally[i])
             r[n].append(temp)
-        #print("r",r)
+        print("r",r)
         return r
 
     def array2arrays2(self,point,hit,bouncehit,foreback,direction):

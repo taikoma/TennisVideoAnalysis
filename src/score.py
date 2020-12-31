@@ -240,6 +240,30 @@ class Score():
 
 
     def convert_score(self, gamePointA, gamePointB, gameA, gameB, setA, setB):  # ポイント数からスコアに変換
+        """
+        Convert to Score String from current gamepoint,game,set
+        If Gameup or Setup,change the gamepoint to 0
+
+        Parameters
+        ----------
+        gamePointA:int
+        gamePointB:int
+        gameA:int
+        gameB:int
+        setA:int
+        setB:int
+
+        Returns
+        ----------
+        scoreA:str
+        scoreB:str
+        gamePointA
+        gamePointB
+        gameA:int
+        gameB:int
+        setA:int
+        setB:int
+        """
         if((gameA == 6) and (gameB == 6)):#タイブレーク
             if(gamePointA > 5 and gamePointB > 5):
                 if((gamePointA - gamePointB) > 1):
@@ -349,6 +373,16 @@ class Score():
         return scoreA, scoreB, gamePointA, gamePointB, gameA, gameB, setA, setB
 
     def convert_set(self, gameA, gameB, setA, setB):
+        """
+        If setup,increment set,and convert game to 0
+
+        Parameters
+        ----------
+        gameA:int
+        gameB:int
+        setA:int
+        setB:int
+        """
         if(gameA > 5 and gameB < 5):#6-4
             setA += 1
             gameA = 0

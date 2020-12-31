@@ -1,1 +1,3 @@
 ,index,point,frame,ballx,bally,playerAx,playerAy,playerBx,playerBy,hitplayer,bouncehit,foreback,direction
+0,0,1,847.0,8.49,15.04,,,,,Nishioka,Bounce,,Cross
+1,1,1,861.0,12.19,23.53,4.57,-1.97,9.95,23.53,Nishioka,Hit,Fore,Cross
