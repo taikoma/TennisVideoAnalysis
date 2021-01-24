@@ -16,6 +16,7 @@ import sys
 import score
 import setting
 import video
+import view
 import database
 import logging
 import time
@@ -29,7 +30,9 @@ class Application(tkinter.Frame):
     #GUIウィンドウの設定と画像描画
     def __init__(self,score,mode_predict_court,mode_predict_player,mode_detect_score,  master=None):
         super().__init__(master)
+        #Instantiate other classes
         self.score = score
+        self.view=view
         self.master = master
 
         self.pack()
@@ -71,7 +74,7 @@ class Application(tkinter.Frame):
         if(self.mode_predictPlayer):
             from predict import playerDetect
             filepath="./predict/weights/ssd300_300.pth"
-            self.playerDetect=playerDetect.playerDetect(filepath)
+            self.playerDetect=playerDetect.PlayerDetect(filepath)
         if(self.mode_detect_score):
             import predict.detect_score as detect_score
             from predict import  detect_score
@@ -95,8 +98,6 @@ class Application(tkinter.Frame):
         self.sx1=0
         self.sy1=0
         
-        # print("pts:",len(self.pts))
-
     def reselectOff(self):
         self.clickPlayerA=False
         self.clickPlayerB=False
@@ -105,7 +106,7 @@ class Application(tkinter.Frame):
         self.clickCourtRightDown=False
         self.clickCourtLeftDown=False
 
-    def loadVideo(self, vid):
+    def load_video(self, vid):
         self.vid = vid
         self.video = vid.video
         self.frame_count = vid.frame_count
@@ -118,7 +119,7 @@ class Application(tkinter.Frame):
         if(self.vid.fps>0):
             self.delay = int(1000 / self.vid.fps / 2)
             print("self.delay", self.delay)
-        self.setTree()
+        self.set_tree()
 
     def create_widgets(self, w, h):  # ウィジェット作成
         self.create_menu_bar()
@@ -129,73 +130,85 @@ class Application(tkinter.Frame):
         self.pw = tkinter.PanedWindow(self, orient='horizontal')  # 全画面
         self.pw.pack(expand=True)
 
-        self.pwLeft = tkinter.PanedWindow(self.pw, orient='vertical')  # 左画面
-        self.pw.add(self.pwLeft)
+        self.pw_left = tkinter.PanedWindow(self.pw, orient='vertical')  # 左画面
+        self.pw.add(self.pw_left)
 
-        self.pwRight = tkinter.PanedWindow(self.pw, orient='vertical')  # 右画面
-        self.pw.add(self.pwRight)
+        self.pw_right = tkinter.PanedWindow(self.pw, orient='vertical')  # 右画面
+        self.pw.add(self.pw_right)
 
-        self.pwLeftUp = tkinter.PanedWindow(self.pwLeft, orient='horizontal') # 左画面の上側
-        self.pwLeft.add(self.pwLeftUp)
+        self.pw_left_up = tkinter.PanedWindow(self.pw_left, orient='horizontal') # 左画面の上側
+        self.pw_left.add(self.pw_left_up)
 
-        self.pwRightUp = tkinter.PanedWindow(self.pwRight, orient='horizontal') # 右画面の上側
-        self.pwRight.add(self.pwRightUp)
+        self.pw_right_up = tkinter.PanedWindow(self.pw_right, orient='horizontal') # 右画面の上側
+        self.pw_right.add(self.pw_right_up)
 
-        self.create_image()  # 左画面の上側 画像描画部分
-        self.create_scale()  # 左画面の上側 スケール
+        self.create_image(self.pw_left_up)  # 左画面の上側 画像描画部分
+        self.create_scale(self.pw_left)  # 左画面の上側 スケール
 
-        self.pwRightUpLeft=tkinter.PanedWindow(self.pwRightUp,orient='horizontal')
-        self.pwRightUp.add(self.pwRightUpLeft)
+        self.pw_right_up_left=tkinter.PanedWindow(self.pw_right_up,orient='horizontal')#pwRightUpLeft
+        self.pw_right_up.add(self.pw_right_up_left)
+        self.canvas1 = tkinter.Canvas(self.pw_right_up_left, width = 195, height = 380)#右画面の上テニスコート用のcanvas作成 
+        self.create_court(self.canvas1,self.courtsize,self.pw_right_up_left)#テニスコート
 
-        self.canvas1 = tkinter.Canvas(self.pwRightUpLeft, width = 195, height = 380)#右画面の上テニスコート用のcanvas作成 
-        self.createCourt(self.canvas1,self.courtsize,self.pwRightUpLeft)#テニスコート
+        self.pw_right_up_right=tkinter.PanedWindow(self.pw_right_up,orient='horizontal')#pwRightUpRight
+        self.pw_right_up.add(self.pw_right_up_right)
 
-        # self.canvas2 = tkinter.Canvas(self.pwRightUpLeft, width = 195, height = 380)#テニスコート用のcanvas作成
-        # self.createCourt(self.canvas2,self.courtsize,self.pwRightUpLeft)#テニスコート
+        self.create_point_tree(self.pw_right_up_right)
 
-        self.pwRightUpRight=tkinter.PanedWindow(self.pwRightUp,orient='horizontal')
-        self.pwRightUp.add(self.pwRightUpRight)
+        self.pw_left_down = tkinter.PanedWindow(self.pw_left, orient='horizontal') # 左画面の下側 
+        self.pw_left.add(self.pw_left_down)
 
-        self.create_point_tree()
+        self.pw_right_down = tkinter.PanedWindow(self.pw_right, orient='vertical') # 右画面の下側
+        self.pw_right.add(self.pw_right_down)
 
-        self.pwLeftDown = tkinter.PanedWindow(self.pwLeft, orient='horizontal') # 左画面の下側 
-        self.pwLeft.add(self.pwLeftDown)
+        self.pw_right_down_up =tkinter.PanedWindow(self.pw_right, orient='horizontal')
+        self.pw_right_down.add(self.pw_right_down_up)
 
-        self.pwRightDown = tkinter.PanedWindow(self.pwRight, orient='horizontal') # 右画面の下側 Tree
-        self.pwRight.add(self.pwRightDown)
+        self.entry_edit_set_a = tkinter.Entry(self, width=20)
+        self.entry_edit_set_b = tkinter.Entry(self, width=20)
+        self.entry_edit_game_a = tkinter.Entry(self, width=20)
+        self.entry_edit_game_b = tkinter.Entry(self, width=20)
+
+        self.pw_right_down_up.add(self.entry_edit_set_a)
+        self.pw_right_down_up.add(self.entry_edit_set_b)
+        self.pw_right_down_up.add(self.entry_edit_game_a)
+        self.pw_right_down_up.add(self.entry_edit_game_b)
+
+        self.pw_right_down_down =tkinter.PanedWindow(self.pw_right, orient='horizontal')
+        self.pw_right_down.add(self.pw_right_down_down)
 
 
-        self.pwLeftLeft = tkinter.PanedWindow(self.pwLeftDown, orient='vertical') # 左画面の下側 左
-        self.pwLeftDown.add(self.pwLeftLeft)
+        self.pw_left_down_left = tkinter.PanedWindow(self.pw_left_down, orient='vertical') # 左画面の下側 左
+        self.pw_left_down.add(self.pw_left_down_left)
 
-        self.pwLeftRight = tkinter.PanedWindow(self.pwLeftDown, orient='vertical') # 左画面の下側 右
-        self.pwLeftDown.add(self.pwLeftRight)
+        self.pw_left_down_right = tkinter.PanedWindow(self.pw_left_down, orient='vertical') # 左画面の下側 右
+        self.pw_left_down.add(self.pw_left_down_right)
 
-        self.pw1_1 = tkinter.PanedWindow(self.pwLeft, orient='horizontal') # コマ送り
-        self.pwLeftLeft.add(self.pw1_1)
+        self.pw1_1 = tkinter.PanedWindow(self.pw_left, orient='horizontal') # コマ送り
+        self.pw_left_down_left.add(self.pw1_1)
         self.create_button(self.pw1_1)
 
-        self.pw1_2 = tkinter.PanedWindow(self.pwLeft, orient='horizontal') # 動画再生UI
-        self.pwLeftLeft.add(self.pw1_2)
+        self.pw1_2 = tkinter.PanedWindow(self.pw_left, orient='horizontal') # 動画再生UI
+        self.pw_left_down_left.add(self.pw1_2)
         self.create_button2(self.pw1_2)
 
-        self.pw1_3 = tkinter.PanedWindow(self.pwLeftLeft, orient='horizontal') # 左画面の下側 左
-        self.pwLeftLeft.add(self.pw1_3)
+        self.pw1_3 = tkinter.PanedWindow(self.pw_left_down_left, orient='horizontal') # 左画面の下側 左
+        self.pw_left_down_left.add(self.pw1_3)
         self.create_button3()
 
-        self.pw1_4 = tkinter.PanedWindow(self.pwLeftLeft, orient='horizontal') # 左画面の下側 左 ポイント種別
-        self.pwLeftLeft.add(self.pw1_4)
+        self.pw1_4 = tkinter.PanedWindow(self.pw_left_down_left, orient='horizontal') # 左画面の下側 左 ポイント種別
+        self.pw_left_down_left.add(self.pw1_4)
         self.create_button4(self.pw1_4)
 
 
-        self.create_tree()#タグ一覧を右に描画
-        self.setTree()
+        self.create_tree(self.pw_right_down_down)#タグ一覧を右に描画
+        self.set_tree()
         self.tree.bind('<ButtonRelease-1>', self.select)  # Double-1
         self.tree.selection_set(self.tree.get_children()[0])
 
         self.change_state()
 
-    def createCourt(self,canvas,s,pw):
+    def create_court(self,canvas,s,pw):
         out=5*s
         single=1.37*s
         net=0.914*s
@@ -214,40 +227,16 @@ class Application(tkinter.Frame):
         canvas.place(x=0,y=0)
         pw.add(canvas,pady=10)
 
-    def drawContactPlayerName(self):
-        #print(self.canvas1.width)
-        width=195
-        height=380
-        x=int(width/2)
-        y1=70
-        y2=int(height-70-20)
-        y3=int(height-30)
-        self.canvas1.create_text(x,10,text = "ServeImpactPoints")
-        self.canvas1.create_text(x,y1,text = "Nishikori")
-        self.canvas1.create_text(x,y2,text = "Medvedev")
-
-        self.canvas1.create_text(x+20,y3,text = "2nd")
-        self.canvas1.create_text(x-50,y3,text = "1st")
-        x4=x
-        y4=y3
-        x5=x-70
-        r=2
-        self.canvas1.create_oval(x4-r, y3-r, x4+r, y3+r, tag="oval",fill='#FFFF00',width=0)
-        self.canvas1.create_oval(x5-r, y3-r, x5+r, y3+r, tag="oval",fill='#FF0000',width=0)
-
-
-    def drawContactAll(self):
+    def draw_contact_all(self):
         #print("drawContact",len(self.score.arrayContactServe))
         self.canvas1.delete("all")
-        self.createCourt(self.canvas1,self.courtsize,self.pwRightUpLeft)
+        self.create_court(self.canvas1,self.courtsize,self.pw_right_up_left)
         r=1*1
         s=self.courtsize        
         for i in range(len(self.score.arrayContactServe)):
-            self.drawContact(i,r,s)
-        # self.drawContactPlayerName()
-
+            self.draw_contact(i,r,s)
             
-    def drawContact(self,i,r,s):      
+    def draw_contact(self,i,r,s):      
         if(self.score.arrayContactServe[i][0]+self.score.arrayContactServe[i][1]>0):#サーブ以外のポイントは排除
             #print(i)
             p1=[float(self.score.arrayCourt[1][i][0]),float(self.score.arrayCourt[1][i][1])]
@@ -315,13 +304,13 @@ class Application(tkinter.Frame):
             #print(x,y)
 
 
-    def create_scale(self):
+    def create_scale(self,pw):
         self.myval = tkinter.DoubleVar()
         self.myval.trace("w", self.value_changed)
         self.sc = tkinter.Scale(
             variable=self.myval, orient='horizontal', length=self.w, from_=0, to=(
                 self.frame_count - 1))
-        self.pwLeft.add(self.sc, padx=10)
+        pw.add(self.sc, padx=10)
 
     def value_changed(self, *args):  # scaleの値が変化したとき
         if(self.video):
@@ -360,14 +349,13 @@ class Application(tkinter.Frame):
     def select_score_range(self):
         self.click_select_score_range=True
 
-    def create_rightMenu(self):
+    def create_right_menu(self):
         self.menu_top = Menu(self,tearoff=False)
         self.menu_2nd = Menu(self.menu_top,tearoff=0)
         self.menu_3rd = Menu(self.menu_top,tearoff=0)
         self.menu_top.add_cascade (label='Position',menu=self.menu_2nd,under=5)
         self.menu_top.add_cascade (label='Select Score',menu=self.menu_3rd,under=5)
         self.menu_top.add_separator()
-        #menu_top.add_command(label='EDIT(E)',underline=5,command=callback)
 
         self.menu_2nd.add_command(label='PlayerA',under=4,command=self.selectPlayerA)
         self.menu_2nd.add_command(label='PlayerB',under=4,command=self.selectPlayerB)
@@ -375,32 +363,40 @@ class Application(tkinter.Frame):
         self.menu_2nd.add_command(label='CourtLeftUp',under=4,command=self.selectCourtLeftUp)
         self.menu_2nd.add_command(label='CourtLeftDown',under=4,command=self.selectCourtLeftDown)
         self.menu_2nd.add_command(label='CourtRightDown',under=4,command=self.selectCourtRightDown)
-        #self.menu_2nd.add_cascade(label='Open(O)',under=5,menu=self.menu_3rd)
 
-        #self.menu_3rd.add_command(label='Local File(L)',under=11)
         self.menu_3rd.add_command(label='Select Score Range',under=4,command=self.select_score_range)
 
-    def create_image(self):
-        # gimg=self.readImage(0)
+    def create_image(self,pw):
         gimg = np.zeros((self.h,self.w,  3), dtype=np.uint8)
         img_copy = np.copy(gimg)
         image_change = cv2.cvtColor(img_copy, cv2.COLOR_BGR2RGB)
         im = Image.fromarray(image_change)
         self.imgtk = ImageTk.PhotoImage(image=im)
-
-        self.create_rightMenu()
-        
-
+        self.create_right_menu()
         self.panel = tkinter.Label(self, image=self.imgtk)
         self.panel.bind("<Button-1>", self.mouseclicked)#マウスクリック左
         self.panel.bind("<Button-3>",self.showPopup)#マウスクリック右
         self.panel.bind("<Motion>",self.mouse_motion)
-        self.pwLeftUp.add(self.panel, padx=10, pady=10)
-    def drawLine(self,img_copy,ph,inv_M):
-        dst_inv=cv2.perspectiveTransform(ph,inv_M)
+        # self.pw_left_up.add(self.panel, padx=10, pady=10)
+        pw.add(self.panel, padx=10, pady=10)
+
+    def draw_line(self,img_copy,line,inv_M):
+        """draw a line 
+
+        """
+        dst_inv=cv2.perspectiveTransform(line,inv_M)
         cv2.line(img_copy, (int(dst_inv[0][0][0]),int(dst_inv[0][0][1])),
-            (int(dst_inv[0][1][0]),int(dst_inv[0][1][1])), (0, 255, 0),1)#中央の横ライン
-    def drawCourtLine(self,pts,img_copy,inv_M):
+            (int(dst_inv[0][1][0]),int(dst_inv[0][1][1])), (0, 255, 0),1)
+
+    def draw_court_line(self,pts,img_copy,inv_M):
+        """Draw tenniscourt line on the image
+
+        Parameters
+        ----------
+        pts:
+        img_copy:img
+        inv_M:3x3 matrix
+        """
         cv2.polylines(img_copy, [pts], True, (0, 255, 0), 1)
         ph=np.array([[[1.37,11.89],[1.37+8.23,11.89]]],dtype='float32')#ネットライン
         phup=np.array([[[1.37,11.89/2],[1.37+8.23,11.89/2]]],dtype='float32')#サービスライン上
@@ -409,16 +405,19 @@ class Application(tkinter.Frame):
         phsingleleft=np.array([[[1.37,0],[1.37,23.78]]],dtype='float32')#
         phsingleright=np.array([[[1.37+8.23,0],[1.37+8.23,23.78]]],dtype='float32')#
 
-        # test=np.array([[[0,-11.89/4],[8.23,-11.89/4]]],dtype='float32')#サービスライン上
-        self.drawLine(img_copy,ph,inv_M)
-        self.drawLine(img_copy,phup,inv_M)
-        self.drawLine(img_copy,phdown,inv_M)
-        self.drawLine(img_copy,centerLine,inv_M)
-        self.drawLine(img_copy,phsingleleft,inv_M)
-        self.drawLine(img_copy,phsingleright,inv_M)
-        # self.drawLine(img_copy,test,inv_M)
+        self.draw_line(img_copy,ph,inv_M)
+        self.draw_line(img_copy,phup,inv_M)
+        self.draw_line(img_copy,phdown,inv_M)
+        self.draw_line(img_copy,centerLine,inv_M)
+        self.draw_line(img_copy,phsingleleft,inv_M)
+        self.draw_line(img_copy,phsingleright,inv_M)
     
     def predictTransformMatrix(self,img):
+        """画像内のテニスコート4隅の点を検出
+        ホモグラフィ変換して、変換行列と逆行列を作成
+        検出座標をscore.arrayPointXYに格納
+
+        """
         start_predict=time.time()
         points=self.predict.predictPoints(img)
         end_predict=time.time()
@@ -443,17 +442,25 @@ class Application(tkinter.Frame):
         self.score.arrayPointXY[3][1] = points[2][1]
         logging.info('predict time:total:%s predict:%s transform:%s',end_transform-start_predict,end_predict-start_predict,end_transform-end_predict)
 
-    def detectPlayer(self,img):
-        x1_1,y1_1,x1_2,y1_2,x2_1,y2_1,x2_2,y2_2=self.playerDetect.predict(img)
-        # print("playerPosition:",x1_1,y1_1,x1_2,y1_2,x2_1,y2_1,x2_2,y2_2)
-        x1=int((x1_1+x1_2)/2)
-        y1=int(y1_1+(y1_2-y1_1)*10/10)#back
-        x2=int((x2_1+x2_2)/2)
-        y2=int(y2_1+(y2_2-y2_1)*9/10)#front
-        rx1=int((x1_2-x1_1)*1.5)
-        ry1=int(rx1/5)
-        rx2=int((x2_2-x2_1)*1.5)
-        ry2=int(rx2/5)
+    def detect_player(self,img):
+        """Detect Player Position A and B,Return ellipse center(x,y),radius(rx,ry) 
+        
+        Parameters
+        ----------
+        img:img
+
+        Returns
+        ----------
+        x1:ellipse center position x player A
+        y1:ellipse center position y player A
+        x2:ellipse center position x player B
+        y2:ellipse center position y player B
+        rx1:ellipse radius x player A
+        ry1:ellipse radius y player A
+        rx2:ellipse radius x player B
+        ry2:ellipse radius y player B
+        """
+        x1,y1,x2,y2,rx1,ry1,rx2,ry2=self.playerDetect.detect_player(img)
         return x1,y1,x2,y2,rx1,ry1,rx2,ry2
 
     def detectBall(self,event):
@@ -468,7 +475,11 @@ class Application(tkinter.Frame):
         self.imgtk = ImageTk.PhotoImage(image=im)
         self.panel.configure(image=self.imgtk)
         self.panel.image = self.imgtk
+
     def array2invM(self):
+        """4 corner points 
+
+        """
         self.pts = np.array([self.score.arrayPointXY[0],
                                     self.score.arrayPointXY[1],
                                     self.score.arrayPointXY[2],
@@ -478,27 +489,42 @@ class Application(tkinter.Frame):
         p2=np.array(self.score.arrayPointXY[1])
         p3=np.array(self.score.arrayPointXY[2])
         p4=np.array(self.score.arrayPointXY[3])          
-        self.M,self.inv_M=self.calcInvM(p1,p2,p3,p4)
+        self.M,self.inv_M=self.calc_inv_matrix(p1,p2,p3,p4)
 
-    def calcInvM(self,p1,p2,p3,p4):
+    def calc_inv_matrix(self,p1,p2,p3,p4):
+        """Returns Homography Matrix,and InvM,from 4 points(p1,p2,p3,p4)
+
+        Parameters
+        ----------
+        p1:float [x,y] rightup corner point
+        p2:float [x,y] leftup corner point
+        p3:float [x,y] leftdown corner point
+        p4: float [x,y] rigntdown corner point
+
+        Returns
+        M:3x3 Matrix 
+        inv_M:3x3 Matrix
+        """
         c1,c2,c3,c4=[10.97, 0],[0, 0],[0, 23.78],[10.97, 23.78]#ダブルスコートの4隅
         src_pts = np.float32([p1,p2,p3,p4]).reshape(-1,1,2)
         dst_pts = np.float32([c1,c2,c3,c4]).reshape(-1,1,2)
         M,mask=cv2.findHomography(src_pts, dst_pts, cv2.RANSAC,5.0)
         inv_M=np.linalg.inv(M)
         return M,inv_M
+
     def dispCourtLine(self,img_copy):
         self.array2invM()
-        self.drawCourtLine(self.pts,img_copy,self.inv_M)
+        self.draw_court_line(self.pts,img_copy,self.inv_M)
 
     def bounceShot(self,img_copy):
         # print("bounceShot")
-        self.xball,self.yball=self.transformPosition(self.bx,self.by)
+        self.xball,self.yball=self.transform_position(self.bx,self.by,self.M)
         self.saveArrayShot(self.xball,self.yball,"","","","",1,"Bounce","","Cross")
         self.dispPlayerPositionCourtAll()#plotposition全て
-        self.drawCourtLine(self.pts,img_copy,self.inv_M)
+        self.draw_court_line(self.pts,img_copy,self.inv_M)
         cv2.circle(img_copy,(self.bx,self.by),2,(0,255,255),-1)
         self.image_change(img_copy)
+
     def saveArrayShot(self,xball,yball,xa,ya,xb,yb,servereturn,hitBounce,foreback,crossstreat):
         # print("saveArrayShot")
         self.score.arrayBallPosition[self.score.number].append([self.score.number,self.myval.get(),xball,yball])
@@ -512,10 +538,10 @@ class Application(tkinter.Frame):
 
     def bounceShotFix(self,img_copy):
         print("bounceShotFix")
-        self.xball,self.yball=self.transformPosition(self.bx,self.by)
+        self.xball,self.yball=self.transform_position(self.bx,self.by,self.M)
         self.saveArrayShotFix(self.xball,self.yball,"","","","",1,"Bounce","","Cross")
         self.dispPlayerPositionCourtAll()#plotposition全て
-        self.drawCourtLine(self.pts,img_copy,self.inv_M)
+        self.draw_court_line(self.pts,img_copy,self.inv_M)
         cv2.circle(img_copy,(self.bx,self.by),2,(0,255,255),-1)
         self.image_change(img_copy)
     def saveArrayShotFix(self,xball,yball,xa,ya,xb,yb,servereturn,hitBounce,foreback,crossstreat):#(self,xball,yball,xa,ya,xb,yb,servereturn,y1,y2):
@@ -534,28 +560,29 @@ class Application(tkinter.Frame):
 
     def hitShot(self,gimg,img_copy):
         # print("hitShot")
-        self.x1,self.y1,self.x2,self.y2,self.rx1,self.ry1,self.rx2,self.ry2=self.detectPlayer(gimg)#追加
-        self.xball,self.yball=self.transformPosition(self.bx,self.by)
-        self.xa,self.ya=self.transformPosition(self.x1,self.y1)
-        self.xb,self.yb=self.transformPosition(self.x2,self.y2)
+        self.x1,self.y1,self.x2,self.y2,self.rx1,self.ry1,self.rx2,self.ry2=self.detect_player(gimg)#追加
+        self.xball,self.yball=self.transform_position(self.bx,self.by),self.M
+        self.xa,self.ya=self.transform_position(self.x1,self.y1,self.M)
+        self.xb,self.yb=self.transform_position(self.x2,self.y2,self.M)
         self.dispPlayerPositionImage(img_copy,self.x1,self.y1,self.x2,self.y2,self.rx1,self.ry1,self.rx2,self.ry2)#プレイヤーの位置を左画面に表示
-        foreback,self.yball=self.isForeBack(self.xball,self.yball,self.xa,self.ya,self.xb,self.yb)#aの位置とbの位置でボールに近い方のy座標をボールの座標として変換
+        foreback,self.yball=self.whichForeBack(self.xball,self.yball,self.xa,self.ya,self.xb,self.yb)#aの位置とbの位置でボールに近い方のy座標をボールの座標として変換
         self.saveArrayShot(self.xball,self.yball,self.xa,self.ya,self.xb,self.yb,1,"Hit",foreback,"Cross")
         self.dispPlayerPositionCourtAll()#plotposition全て
-        self.drawCourtLine(self.pts,img_copy,self.inv_M)
+        self.draw_court_line(self.pts,img_copy,self.inv_M)
         cv2.circle(img_copy,(self.bx,self.by),2,(0,255,255),-1)
         self.image_change(img_copy)
+
     def hitShotFix(self,gimg,img_copy):
         # print("hitShotFix")
         #self.x1,self.y1,self.x2,self.y2,self.rx1,self.ry1,self.rx2,self.ry2=self.detectPlayer(gimg)#追加
-        self.xball,self.yball=self.transformPosition(self.bx,self.by)
-        self.xa,self.ya=self.transformPosition(self.x1,self.y1)
-        self.xb,self.yb=self.transformPosition(self.x2,self.y2)
+        self.xball,self.yball=self.transform_position(self.bx,self.by,self.M)
+        self.xa,self.ya=self.transform_position(self.x1,self.y1,self.M)
+        self.xb,self.yb=self.transform_position(self.x2,self.y2,self.M)
         self.dispPlayerPositionImage(img_copy,self.x1,self.y1,self.x2,self.y2,self.rx1,self.ry1,self.rx2,self.ry2)#プレイヤーの位置を左画面に表示
-        foreback,self.yball=self.isForeBack(self.xball,self.yball,self.xa,self.ya,self.xb,self.yb)#aの位置とbの位置でボールに近い方のy座標をボールの座標として変換
+        foreback,self.yball=self.whichForeBack(self.xball,self.yball,self.xa,self.ya,self.xb,self.yb)#aの位置とbの位置でボールに近い方のy座標をボールの座標として変換
         self.saveArrayShotFix(self.xball,self.yball,self.xa,self.ya,self.xb,self.yb,1,"Hit",foreback,"Cross")
         self.dispPlayerPositionCourtAll()#plotposition全て
-        self.drawCourtLine(self.pts,img_copy,self.inv_M)
+        self.draw_court_line(self.pts,img_copy,self.inv_M)
         #self.dispCourtLine(img_copy)
         cv2.circle(img_copy,(self.bx,self.by),2,(0,255,255),-1)
         self.image_change(img_copy)
@@ -577,10 +604,41 @@ class Application(tkinter.Frame):
 
             self.image_change(img_copy)
 
-    def mouseclicked(self, event):  # mouseevent 着弾点をマウスでクリック
+    def reselect_player_a(self,event):
+        gimg = self.readImage(self.myval.get())
+        img_copy = np.copy(gimg)
+        x1=event.x
+        y1=event.y
+        self.y1=y1
+        rx1=40
+        ry1=20
+        self.xa,self.ya=self.transform_position(x1,y1,self.M)#
+
+        x2=self.x2
+        y2=self.y2
+        rx2=self.rx2
+        ry2=self.ry2
+        self.dispPlayerPositionImage(img_copy,x1,y1,x2,y2,rx1,ry1,rx2,ry2)
+        self.draw_court_line(self.pts,img_copy,self.inv_M)
+
+        self.xball,self.yball=self.transform_position(self.bx,self.by,self.M)
+
+        foreback,self.yball=self.whichForeBack(self.xball,self.yball,self.xa,self.ya,self.xb,self.yb)#aの位置とbの位置でボールに近い方のy座標をボールの座標として変換
+        self.saveArrayShotFix(self.xball,self.yball,self.xa,self.ya,self.xb,self.yb,1,"Hit",foreback,"Cross")
+        self.dispPlayerPositionCourtAll()
+        self.clickPlayerA=False
+        self.image_change(img_copy)
+        self.setPointTree()
+
+    def mouseclicked(self, event):
+        """画像範囲内をマウスクリックしたときの処理
+
+        """
+        
+        # mouseevent 着弾点をマウスでクリック
         # print("mouseclicked")
         print(self.click_select_score_range)
-        if(self.click_select_score_range):
+        if(self.click_select_score_range):#スコア範囲選択
             if(self.click_select_score_range_active!=True):
                 self.sx1=event.x
                 self.sy1=event.y
@@ -597,31 +655,10 @@ class Application(tkinter.Frame):
                 self.ds.set_xy(x1,y1,x2,y2)
                 self.click_select_score_range_active=False
                 
-        elif(self.clickPlayerA):
-            gimg = self.readImage(self.myval.get())
-            img_copy = np.copy(gimg)
-            x1=event.x
-            y1=event.y
-            self.y1=y1
-            rx1=40
-            ry1=20
-            self.xa,self.ya=self.transformPosition(x1,y1)
-            x2=self.x2
-            y2=self.y2
-            rx2=self.rx2
-            ry2=self.ry2
-            self.dispPlayerPositionImage(img_copy,x1,y1,x2,y2,rx1,ry1,rx2,ry2)
-            self.drawCourtLine(self.pts,img_copy,self.inv_M)
+        elif(self.clickPlayerA):#プレイヤーAの位置
+            self.reselect_player_a(event)
 
-            self.xball,self.yball=self.transformPosition(self.bx,self.by)
-
-            foreback,self.yball=self.isForeBack(self.xball,self.yball,self.xa,self.ya,self.xb,self.yb)#aの位置とbの位置でボールに近い方のy座標をボールの座標として変換
-            self.saveArrayShotFix(self.xball,self.yball,self.xa,self.ya,self.xb,self.yb,1,"Hit",foreback,"Cross")
-            self.dispPlayerPositionCourtAll()#plotposition全て
-            self.clickPlayerA=False
-            self.image_change(img_copy)
-            self.setPointTree()
-        elif(self.clickPlayerB):
+        elif(self.clickPlayerB):#プレイヤーBの位置
             gimg = self.readImage(self.myval.get())
             img_copy = np.copy(gimg)
             x2=event.x
@@ -629,17 +666,17 @@ class Application(tkinter.Frame):
             self.y2=y2
             rx2=40
             ry2=20
-            self.xb,self.yb=self.transformPosition(x2,y2)
+            self.xb,self.yb=self.transform_position(x2,y2,self.M)
             x1=self.x1
             y1=self.y1
             rx1=self.rx1
             ry1=self.ry1
             self.dispPlayerPositionImage(img_copy,x1,y1,x2,y2,rx1,ry1,rx2,ry2)
-            self.drawCourtLine(self.pts,img_copy,self.inv_M)
+            self.draw_court_line(self.pts,img_copy,self.inv_M)
 
-            self.xball,self.yball=self.transformPosition(self.bx,self.by)
+            self.xball,self.yball=self.transform_position(self.bx,self.by,self.M)
 
-            foreback,self.yball=self.isForeBack(self.xball,self.yball,self.xa,self.ya,self.xb,self.yb)#aの位置とbの位置でボールに近い方のy座標をボールの座標として変換
+            foreback,self.yball=self.whichForeBack(self.xball,self.yball,self.xa,self.ya,self.xb,self.yb)#aの位置とbの位置でボールに近い方のy座標をボールの座標として変換
             self.saveArrayShotFix(self.xball,self.yball,self.xa,self.ya,self.xb,self.yb,1,"Hit",foreback,"Cross")
             self.dispPlayerPositionCourtAll()#plotposition全て
             self.clickPlayerB=False
@@ -716,6 +753,7 @@ class Application(tkinter.Frame):
             self.setPointTree()
 
         elif(self.mode_predict):#予測モード
+
             gimg = self.readImage(self.myval.get())
             img_copy = np.copy(gimg)
             self.predictTransformMatrix(gimg)#テニスコート4点予測し変換行列を作成
@@ -805,7 +843,7 @@ class Application(tkinter.Frame):
                     gimg = self.readImage(self.myval.get())
 
                     img_copy = np.copy(gimg)
-                    self.drawCourtLine(self.pts,img_copy,self.inv_M)
+                    self.draw_court_line(self.pts,img_copy,self.inv_M)
                     h, w = img_copy.shape[0], img_copy.shape[1]
                     
                     cv2.line(img_copy, (event.x - 2, 0),
@@ -822,8 +860,8 @@ class Application(tkinter.Frame):
                     self.score.arrayContactServe[self.score.number] = [
                         event.x - 2, event.y - 2]
 
-                    self.drawContactAll()
-                    self.setTree()
+                    self.draw_contact_all()
+                    self.set_tree()
 
     def readImage(self, frameIndex):
         self.video.set(cv2.CAP_PROP_POS_FRAMES, int(frameIndex))
@@ -832,12 +870,24 @@ class Application(tkinter.Frame):
         ok, frame = self.video.read()
         return cv2.resize(frame, ( self.w,self.h))
 
-    def transformPosition(self,x,y):
+    def transform_position(self,x,y,matrix):
+        """Transform clicked position x,y to tennis court position by using homography matrix
+
+        Parameters
+        ----------
+        x:float coordinate x in the image
+        y:float coorginate y in the image
+
+        Returns
+        ----------
+        hx:float homography coordinate x
+        hy:float homography coordinate y
+        """
         pts=np.array([[[float(x),float(y)]]])
-        dst = cv2.perspectiveTransform(pts,self.M)
-        x=round(dst[0][0][0],2)
-        y=round(dst[0][0][1],2)
-        return x,y
+        dst = cv2.perspectiveTransform(pts,matrix)#self.M
+        hx=round(dst[0][0][0],2)
+        hy=round(dst[0][0][1],2)
+        return hx,hy
 
     def plotPosition(self,x,y,color='#ffff00'):
         s=self.courtsize
@@ -857,9 +907,24 @@ class Application(tkinter.Frame):
             img_copy = np.copy(gimg)   
             self.image_change(img_copy)
 
-    def isForeBack(self,xball,yball,xa,ya,xb,yb):
-        # print("isForeBack")
-        # print(xball,yball,xa,ya,xb,yb)
+    def whichForeBack(self,xball,yball,xa,ya,xb,yb):
+        """Compare the coordinates ball and player position a,b and return fore or back,ball y position
+
+        Parameters
+        ----------
+        xball:int
+        yball:int
+        xa:int
+        ya:int
+        xb:int
+        yb:int
+
+        Returns
+        ----------
+        foreback:
+        yball:
+
+        """
         a=np.array([xa,ya])
         b=np.array([xb,yb])
         ball=np.array([xball,yball])
@@ -881,6 +946,8 @@ class Application(tkinter.Frame):
             else:
                 foreback="Back"
         return foreback,yball
+
+
     def plotBallLine(self):
         s=self.courtsize
         out=5*s
@@ -899,7 +966,7 @@ class Application(tkinter.Frame):
         # print("dispPlayerPositionCourtAll")
         # print(len(self.score.arrayBallPosition[self.score.number]))
         self.canvas1.delete("all")
-        self.createCourt(self.canvas1,self.courtsize,self.pwRightUpLeft)
+        self.create_court(self.canvas1,self.courtsize,self.pw_right_up_left)
         self.plotBallLine()
         for i in range(len(self.score.arrayBallPosition[self.score.number])):
             xball=self.score.arrayBallPosition[self.score.number][i][2]
@@ -959,7 +1026,7 @@ class Application(tkinter.Frame):
         videoFile = fld
         if(len(fld)>0):
             vid = video.Video(videoFile)
-            self.loadVideo(vid)
+            self.load_video(vid)
             self.imageShow()
             self.sc.configure(to=self.frame_count)
 
@@ -978,8 +1045,8 @@ class Application(tkinter.Frame):
         db = database.Database(self.fld, self.score)
         db.load_database()
         self.score = db.dbToScore()
-        self.drawContactAll()
-        self.setTree()
+        self.draw_contact_all()
+        self.set_tree()
         self.setPointTree()
         curItem = self.tree.get_children()[score.number]
         self.myval.set(int(self.tree.item(curItem)["values"][1]))            
@@ -1156,7 +1223,7 @@ class Application(tkinter.Frame):
         self.pw1_3.add(self.label_firstServer)
 
         self.pw1_3_1 = tkinter.PanedWindow(
-            self.pwLeft, orient='vertical')  # ラジオボタン whichポイント
+            self.pw_left, orient='vertical')  # ラジオボタン whichポイント
         self.pw1_3.add(self.pw1_3_1)
 
         self.winner.set(self.score.winner)
@@ -1226,6 +1293,7 @@ class Application(tkinter.Frame):
         self.Button3 = tkinter.Button(text=u'ボレーウィナー(3)', width=20)
         self.Button3.bind("<Button-1>", self.button3_clicked)
         self.pw1_4_3.add(self.Button3)
+
         self.Button6 = tkinter.Button(text=u'ボレーエラー(6)', width=20)
         self.Button6.bind("<Button-1>", self.button6_clicked)
         self.pw1_4_3.add(self.Button6)
@@ -1235,7 +1303,7 @@ class Application(tkinter.Frame):
         self.radio2["text"]=self.score.playerB
 
 
-    def create_point_tree(self):
+    def create_point_tree(self,pw):
         self.point_tree = ttk.Treeview(self.master, selectmode="browse",takefocus=1)
         self.point_tree["columns"]=(1,2,3,4,5,6)
         self.point_tree["show"]="headings"
@@ -1251,11 +1319,12 @@ class Application(tkinter.Frame):
         self.point_tree.heading(4, text="Bce/Hit")
         self.point_tree.heading(5, text="Fr/Bc")
         self.point_tree.heading(6, text="Dir")
-        self.pwRightUpRight.add(self.point_tree)
+        # self.pw_right_up_right.add(self.point_tree)
+        pw.add(self.point_tree)
         #self.create_rightMenu_tree()#追加
         #self.point_tree.bind("<Button-3>",self.showPopup2)
 
-    def create_tree(self):
+    def create_tree(self,pw):
         self.tree = ttk.Treeview(self.master, selectmode="browse",takefocus=1)
         self.tree["columns"] = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11)#, 12, 13, 14
         self.tree["show"] = "headings"
@@ -1287,7 +1356,7 @@ class Application(tkinter.Frame):
         # self.tree.heading(12, text="FrBc")
         # self.tree.heading(13, text="X")
         # self.tree.heading(14, text="Y")
-        self.pwRightDown.add(self.tree)
+        pw.add(self.tree)
         
 
     def create_rightMenu_tree(self):
@@ -1334,11 +1403,16 @@ class Application(tkinter.Frame):
             self.score.calcScore()  # arrayScoreにスコアを格納
         self.score.arrayServer[self.score.number] = self.score.playerName[(
             self.score.firstServer + self.score.totalGame) % 2]
-        self.setTree()
+        self.set_tree()
 
     
 
     def buttonFault_clicked(self, event):
+        """calc when button fault clicked
+        if pre point is fault,2nd fault
+
+
+        """
 
         if(self.score.number == 0):
             self.firstFault()
@@ -1348,32 +1422,60 @@ class Application(tkinter.Frame):
             else:
                 self.firstFault()
 
-        self.calcFaultAll()
+        self.calc_fault_all()
         self.score.calcScore()
+        self.set_tree()
 
-        self.setTree()
+    def calc_fault_all(self):
+        """calc all point arrayFault[i] which 0,1,2 by pre point
+        0:not fault
+        1:fault
+        2:double fault
 
-    def calcFaultAll(self):
+        pre,current
+        1  ,0      ->arrayFirstSecond[i] = 1 
+        1  ,1 2    ->arrayFault[i] = 2 doublefault
+        0  ,0      ->
+        0  ,1 2    ->arrayFault[i] = 1
+        """
+
+        #todo Noneや""の場合は、飛ばして次の計算をするようにしたい
+        print("self.score.arrayFault:",self.score.arrayFault)
+        pre=None
+        current=None
         for i in range(len(self.score.arrayFault)):
             if(i > 0):
-                if(self.score.arrayFault[i - 1] == 1):  # 前のポイントがフォルト
-                    if(self.score.arrayFault[i] == 0):  # 現在ポイントがフォルト以外
-                        print("1")
-                        self.score.arrayFirstSecond[i] = 1#0じゃない？
-                    else:  # 現在ポイントがフォルトorダブルフォルト
-                        print("2")
-                        self.score.arrayFault[i] = 2  # ダブルフォルトにする
-                else:  # 前のポイントがフォルト以外
-                    if(score.arrayFault[i] == 0):  # 現在ポイントがフォルト以外
-                        print("3")
-                    else:  # 現在ポイントがフォルトorダブルフォルト
-                        print("4")
-                        self.score.arrayFault[i] = 1
+                if(self.score.arrayFault[i - 1]!=None):
+                    pre = self.score.arrayFault[i - 1]
+                if(self.score.arrayFault[i]!=None):
+                    current = self.score.arrayFault[i]
+                if(pre!=None and current!=None):
+                    if(pre == 1):  # 前のポイントがフォルト
+                        if(current == 0):  # 現在ポイントがフォルト以外
+                            # print("1")
+                            self.score.arrayFirstSecond[i] = 1#0じゃない？
+                        # else:  # 現在ポイントがフォルトorダブルフォルト
+                        elif(current > 0):# 現在ポイントがフォルトorダブルフォルト
+                            # print("2")
+                            self.score.arrayFault[i] = 2  # ダブルフォルトにする
+                    else:  # 前のポイントがフォルト以外
+                        if(current == 0):  # 現在ポイントがフォルト以外
+                            print("3")
+                        # else:  # 現在ポイントがフォルトorダブルフォルト
+                        elif(current > 0):# 現在ポイントがフォルトorダブルフォルト
+                            # print("4")
+                            self.score.arrayFault[i] = 1
+                else:
+                    if(self.score.arrayFault[i - 1]==None):
+                        self.score.arrayFirstSecond[i-1] = 0
+                    if(self.score.arrayFault[i]==None):
+                        self.score.arrayFirstSecond[i] = 0
 
     def firstFault(self):
         print("firstFault")
         self.score.arrayFault[self.score.number] = 1  # 2⇒ダブルフォルト 1⇒フォルト 0⇒フォルトなし
         self.score.arrayFirstSecond[self.score.number] = 1
+        # self.score.arrayServer[self.score.number] =
         self.score.arrayPointWinner[self.score.number] = ""
         self.score.pointWin[0][self.score.number] = 2
         self.score.pointWin[1][self.score.number] = 2
@@ -1431,18 +1533,12 @@ class Application(tkinter.Frame):
             self.score.arrayContactServe.insert(self.score.number, [0, 0])
             print("self.score.arrayBallPosition:",self.score.arrayBallPosition)
             self.score.arrayFault.insert(self.score.number, 0)
-
-
             self.score.nextAppend()
-
-
-            
-
             self.setButtonFault()
 
             self.score.mode = 1
 
-            self.setTree()
+            self.set_tree()
 
     def change_state(self):
         self.score.winner = self.winner.get()
@@ -1460,16 +1556,17 @@ class Application(tkinter.Frame):
     def button1_clicked(self, event):  # Ace
         self.setPattern(0)
 
-
     def button2_clicked(self, event):  # STW
         self.setPattern(1)
 
     def button3_clicked(self, event):  # VlW
         self.setPattern(2)
+        # self.after(5000,self.setPattern(2))
+        # self.master.after(1000,self.showerror())
+        # self.Button3.configure(relief="raised")
 
     def button4_clicked(self, event):  # RtE
         self.setPattern(3)
-
     def button5_clicked(self, event):  # StE
         self.setPattern(4)
 
@@ -1538,17 +1635,32 @@ class Application(tkinter.Frame):
         self.setPointTree()
 
     def score_image(self,event):
-        start_list=[0,800,1031,1672,2564,3346,2350,3862,4180,6028,6738,7091,7969,7981,8564,9080,9796,
-                    10172,11097,11498,11900]
+        # start_list=[0,800,1031,1672,2564,3346,2350,3862,4180,6028,6738,7091,7969,7981,8564,9080,9796,
+        #             10172,11097,11498,11900]
+        start_list=[0,800,1031,1672,2564]
         self.ds.frame2images(start_list,self.vid.videoFileName)
 
     def score_text(self,event):
+        
         game_a_array,game_b_array,score_a_array,score_b_array=self.ds.image2scores()
+        print(game_a_array)
+        print(game_b_array)
+        print(score_a_array)
+        print(score_b_array)
+
         for i in range(len(game_a_array)):
             self.score.arrayGame[i]=str(game_a_array[i])+"-"+str(game_b_array[i])
-            self.score.arrayScore=str(score_a_array[i])+"-"+str(score_b_array[i])
+            self.score.arrayScore[i]=str(score_a_array[i])+"-"+str(score_b_array[i])
         print(self.score.arrayGame)
         print(self.score.arrayScore)
+        self.set_tree()
+
+    def show_pattern_message(self,pattern):
+        print("show_pattern_message")
+        msg = tkinter.messagebox.askyesno('data', 'データを上書きしますか？')
+        if msg == 1:
+            self.master.after(1 ,self.setPattern2(pattern))
+            # self.setPattern2(pattern)
 
     def setPattern(self, pattern):
         #self.setScore()
@@ -1557,6 +1669,7 @@ class Application(tkinter.Frame):
         else:
             msg = tkinter.messagebox.askyesno('data', 'データを上書きしますか？')
             if msg == 1:
+            # self.master.after(1 ,self.show_pattern_message(pattern))
                 self.setPattern2(pattern)
 
     def setPattern2(self, pattern):
@@ -1576,7 +1689,9 @@ class Application(tkinter.Frame):
             else:
                 self.firstPattern()
 
-        self.setTree()
+        self.set_tree()
+        # self.master.after(1,self.setTree())
+        
         print("number", self.score.number)
         print("arrayFault", self.score.arrayFault)
         print("arrayFirstSecond", self.score.arrayFirstSecond)
@@ -1640,7 +1755,7 @@ class Application(tkinter.Frame):
             self.score.arrayFirstSecond[self.score.number] = 1
             if(self.score.number == (len(self.score.arrayFault) - 1)):
                 self.score.faultFlug = 0
-        self.setTree()
+        self.set_tree()
 
     def setPointTree(self):
         print("self.score.number:",self.score.number)
@@ -1658,7 +1773,7 @@ class Application(tkinter.Frame):
                                      self.score.arrayForeBack[self.score.number][i],
                                      self.score.arrayBallPosition[self.score.number][i][1]))#self.score.arrayDirection[self.score.number][i]
 
-    def setTree(self):
+    def set_tree(self):
         print("setTree", len(self.score.arrayFrameStart))
         print("arrayFrameEnd", len(self.score.arrayFrameEnd))
 
@@ -1731,7 +1846,7 @@ if __name__ == "__main__":
     if(settings.videoFile!=""):
         videoFile = settings.videoFile
         vid = video.Video(videoFile)
-        app.loadVideo(vid)
+        app.load_video(vid)
         app.imageShow()
         app.sc.configure(to=app.frame_count)
 

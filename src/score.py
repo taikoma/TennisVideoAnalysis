@@ -152,6 +152,8 @@ class Score():
         nextSet = "0-0"
         self.totalGame = 0
 
+        print("len(self.pointWin[0])",len(self.pointWin[0]))
+
         for i in range(len(self.pointWin[0])):  # ポイント間も含め全ポイントを計算する
 
             #todo ボタン記録されていない箇所（最終行）は計算しないようにしたい
@@ -219,7 +221,7 @@ class Score():
             self.total_point[1]+=1
         self.serve_point[(self.firstServer + g[0] + g[0]) % 2]+=1
 
-        print("point:",p[0],p[1])
+        # print("point:",p[0],p[1])
 
         scoreA, scoreB, p[0], p[1], g[0], g[1], s[0], s[1] = self.convert_score(
             p[0], p[1], g[0], g[1], s[0], s[1])
