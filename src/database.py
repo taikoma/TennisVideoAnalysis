@@ -22,11 +22,20 @@ class Database():
         self.patternString = const.PATTERN
         self.firstSecondString = ["", "1st", "2nd"]
 
-        self.arrayFrameStart = score.arrayFrameStart
-        self.arrayFrameEnd = score.arrayFrameEnd
+        self.arrayFrameStart = score.array_frame_start
+        self.arrayFrameEnd = score.array_frame_end
         self.arraySet = score.arraySet
+        # self.array_set_a=score.array_set_a
+        # self.array_set_b=score.array_set_b
+
         self.arrayGame = score.arrayGame
+        # self.array_game_a=score.array_game_a
+        # self.array_game_b=score.array_game_b
+
         self.arrayScore = score.arrayScore
+        # self.array_score_a=score.array_score_a
+        # self.array_score_b=score.array_score_b
+
         self.arrayScoreResult = score.arrayScoreResult
         self.arrayFirstSecond = score.arrayFirstSecond
         self.arrayServer = score.arrayServer
@@ -206,6 +215,9 @@ class Database():
         c = conn.cursor()
 
         df = pd.read_sql("select * from score", conn)
+
+        df=df.fillna("")
+
         self.arrayFrameStart.extend(df['StartFrame'].values.tolist())
         self.arrayFrameEnd.extend(df['EndFrame'].values.tolist())
         self.arraySet.extend(df['Set'].values.tolist())
@@ -289,7 +301,6 @@ class Database():
         self.arrayForeBack.extend(array_foreback)
         self.arrayDirection.extend(array_direction)
 
-
         if(self.number==len(self.arrayBallPosition)):
             self.arrayBallPosition.append([])
             self.arrayPlayerAPosition.append([])
@@ -328,7 +339,6 @@ class Database():
             temp.append(ballx[i])
             temp.append(bally[i])
             r[n].append(temp)
-        print("r",r)
         return r
 
     def array2arrays2(self,point,hit,bouncehit,foreback,direction):
@@ -361,11 +371,11 @@ class Database():
         return array_hit,array_bouncehit,array_foreback,array_direction    
 
     
-    def dbToScore(self):#return
-        print("dbToScore")
+    def db2score(self):#return
+        print("db2score")
         # score=src.Score()
-        self.score.arrayFrameStart = self.arrayFrameStart
-        self.score.arrayFrameEnd = self.arrayFrameEnd
+        self.score.array_frame_start = self.arrayFrameStart
+        self.score.array_frame_end = self.arrayFrameEnd
         self.score.arraySet = self.arraySet
         self.score.arrayGame = self.arrayGame
         self.score.arrayScore = self.arrayScore
@@ -386,22 +396,42 @@ class Database():
         self.score.number = self.number
         self.score.totalGame = self.totalGame
         self.score.faultFlug = self.faultFlug
-        # self.score.arrayContactBalls = self.arrayContactBalls
         self.score.arrayFault = self.arrayFault
 
-        # self.score.arrayBallPosition = self.arrayBallPosition
-        # self.score.arrayPlayerAPosition = self.arrayPlayerAPosition
-        # self.score.arrayPlayerBPosition = self.arrayPlayerBPosition
-        # self.score.arrayHitPlayer = self.arrayHitPlayer
-        # self.score.arrayBounceHit = self.arrayBounceHit
-        # self.score.arrayForeBack = self.arrayForeBack
-        # self.score.arrayDirection = self.arrayDirection
-        self.score.arrayBallPosition=[[] for i in range(len(self.arrayBallPosition),self.score.number+1)]
-        self.score.arrayPlayerAPosition = [[] for i in range(len(self.arrayPlayerAPosition),self.score.number+1)]
-        self.score.arrayPlayerBPosition = [[] for i in range(len(self.arrayPlayerBPosition),self.score.number+1)]
-        self.score.arrayHitPlayer = [[] for i in range(len(self.arrayHitPlayer),self.score.number+1)]
-        self.score.arrayBounceHit = [[] for i in range(len(self.arrayBounceHit),self.score.number+1)]
-        self.score.arrayForeBack = [[] for i in range(len(self.arrayForeBack),self.score.number+1)]
-        self.score.arrayDirection = [[] for i in range(len(self.arrayDirection),self.score.number+1)]
+        if(len(self.arrayBallPosition)<len(self.score.array_frame_start)):
+            self.score.arrayBallPosition=[[] for i in range(len(self.arrayBallPosition),len(self.score.array_frame_start))]
+        else:
+            self.score.arrayBallPosition = self.arrayBallPosition
+
+        if(len(self.arrayPlayerAPosition)<len(self.score.array_frame_start)):
+            self.score.arrayPlayerAPosition=[[] for i in range(len(self.arrayPlayerAPosition),len(self.score.array_frame_start))]
+        else:
+            self.score.arrayPlayerAPosition = self.arrayPlayerAPosition
+
+        if(len(self.arrayPlayerBPosition)<len(self.score.array_frame_start)):
+            self.score.arrayPlayerBPosition=[[] for i in range(len(self.arrayPlayerBPosition),len(self.score.array_frame_start))]
+        else:
+            self.score.arrayPlayerBPosition = self.arrayPlayerBPosition
+
+        if(len(self.arrayHitPlayer)<len(self.score.array_frame_start)):
+            self.score.arrayHitPlayer=[[] for i in range(len(self.arrayHitPlayer),len(self.score.array_frame_start))]
+        else:
+            self.score.arrayHitPlayer = self.arrayHitPlayer
+
+        if(len(self.arrayBounceHit)<len(self.score.array_frame_start)):
+            self.score.arrayBounceHit=[[] for i in range(len(self.arrayBounceHit),len(self.score.array_frame_start))]
+        else:
+            self.score.arrayBounceHit = self.arrayBounceHit
+        
+        if(len(self.arrayForeBack)<len(self.score.array_frame_start)):
+            self.score.arrayForeBack=[[] for i in range(len(self.arrayForeBack),len(self.score.array_frame_start))]
+        else:
+            self.score.arrayForeBack = self.arrayForeBack
+
+        if(len(self.arrayDirection)<len(self.score.array_frame_start)):
+            self.score.arrayDirection=[[] for i in range(len(self.arrayDirection),len(self.score.array_frame_start))]
+        else:
+            self.score.arrayDirection = self.arrayDirection
+
 
         return self.score

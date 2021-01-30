@@ -1,7 +1,7 @@
 {
-    "playerA": "Nishikori",
-    "playerB": "Medvedev",
-    "firstServer": 1,
+    "playerA": "Nakashima",
+    "playerB": "Nishioka",
+    "firstServer": 0,
     "videoFile": "../video/nishikori-medvedev.avi",
-    "database": "../data/nishikori-medvedev.db"
+    "database": "../data/nishioka-nakajima.db"
 }

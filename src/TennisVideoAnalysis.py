@@ -20,6 +20,7 @@ import view
 import database
 import logging
 import time
+import re
 
 
 class Application(tkinter.Frame):
@@ -110,9 +111,9 @@ class Application(tkinter.Frame):
         self.vid = vid
         self.video = vid.video
         self.frame_count = vid.frame_count
-        self.score.arrayFrameEnd[len(
-            self.score.arrayFrameEnd) - 1] = self.frame_count
-        # print("END:",self.score.arrayFrameEnd)
+        self.score.array_frame_end[len(
+            self.score.array_frame_end) - 1] = self.frame_count
+        # print("END:",self.score.array_frame_end)
 
         self.vid.set_start_frame(self.vid.start_frame)
         self.vid.set_end_frame(self.vid.end_frame)
@@ -143,7 +144,7 @@ class Application(tkinter.Frame):
         self.pw_right.add(self.pw_right_up)
 
         self.create_image(self.pw_left_up)  # 左画面の上側 画像描画部分
-        self.create_scale(self.pw_left)  # 左画面の上側 スケール
+        self.create_seekbar(self.pw_left)  # 左画面の上側 スケール
 
         self.pw_right_up_left=tkinter.PanedWindow(self.pw_right_up,orient='horizontal')#pwRightUpLeft
         self.pw_right_up.add(self.pw_right_up_left)
@@ -164,15 +165,56 @@ class Application(tkinter.Frame):
         self.pw_right_down_up =tkinter.PanedWindow(self.pw_right, orient='horizontal')
         self.pw_right_down.add(self.pw_right_down_up)
 
-        self.entry_edit_set_a = tkinter.Entry(self, width=20)
-        self.entry_edit_set_b = tkinter.Entry(self, width=20)
-        self.entry_edit_game_a = tkinter.Entry(self, width=20)
-        self.entry_edit_game_b = tkinter.Entry(self, width=20)
+        self.entry_edit_start = tkinter.Entry(self, width=10)
+        self.entry_edit_end = tkinter.Entry(self, width=10)
+        self.entry_edit_set_a = tkinter.Entry(self, width=10)
+        self.entry_edit_set_b = tkinter.Entry(self, width=10)
+        self.entry_edit_game_a = tkinter.Entry(self, width=10)
+        self.entry_edit_game_b = tkinter.Entry(self, width=10)
+        self.entry_edit_score_a = tkinter.Entry(self, width=10)
+        self.entry_edit_score_b = tkinter.Entry(self, width=10)
 
+        self.pw_right_down_up.add(self.entry_edit_start)
+        self.pw_right_down_up.add(self.entry_edit_end)
         self.pw_right_down_up.add(self.entry_edit_set_a)
         self.pw_right_down_up.add(self.entry_edit_set_b)
         self.pw_right_down_up.add(self.entry_edit_game_a)
         self.pw_right_down_up.add(self.entry_edit_game_b)
+        self.pw_right_down_up.add(self.entry_edit_score_a)
+        self.pw_right_down_up.add(self.entry_edit_score_b)
+
+        option_serve_list=["1st","2nd"]
+        self.variable_serve=tkinter.StringVar(self)
+        self.variable_serve.set(option_serve_list[0])
+        self.variable_serve.trace("w", self.option_serve)
+        self.opt_serve=tkinter.OptionMenu(self,self.variable_serve,*option_serve_list)
+        self.pw_right_down_up.add(self.opt_serve)
+
+        option_which_server_list=[self.score.playerName[0],self.score.playerName[1]]
+        self.variable_which_server=tkinter.StringVar(self)
+        self.variable_which_server.set(option_which_server_list[0])
+        self.variable_which_server.trace("w", self.option_which_server)
+        self.opt_server=tkinter.OptionMenu(self,self.variable_which_server,*option_which_server_list)
+        self.pw_right_down_up.add(self.opt_server)
+
+        option_winner_list=[self.score.playerName[0],self.score.playerName[1]]
+        self.variable_winner=tkinter.StringVar(self)
+        self.variable_winner.set(option_winner_list[0])
+        self.variable_winner.trace("w", self.option_winner)
+        self.opt_winner=tkinter.OptionMenu(self,self.variable_winner,*option_winner_list)
+        self.pw_right_down_up.add(self.opt_winner)
+
+        option_pattern_list=self.score.patternString
+        self.variable_pattern=tkinter.StringVar(self)
+        self.variable_pattern.set(option_pattern_list[0])
+        self.variable_pattern.trace("w", self.option_pattern)
+        self.opt_pattern=tkinter.OptionMenu(self,self.variable_pattern,*option_pattern_list)
+        self.pw_right_down_up.add(self.opt_pattern)
+
+
+        button_update = tkinter.Button(text=u'Update', width=10)
+        button_update.bind("<Button-1>", self.button_update_tree)
+        self.pw_right_down_up.add(button_update)
 
         self.pw_right_down_down =tkinter.PanedWindow(self.pw_right, orient='horizontal')
         self.pw_right_down.add(self.pw_right_down_down)
@@ -186,19 +228,19 @@ class Application(tkinter.Frame):
 
         self.pw1_1 = tkinter.PanedWindow(self.pw_left, orient='horizontal') # コマ送り
         self.pw_left_down_left.add(self.pw1_1)
-        self.create_button(self.pw1_1)
+        self.create_button_seek(self.pw1_1)
 
         self.pw1_2 = tkinter.PanedWindow(self.pw_left, orient='horizontal') # 動画再生UI
         self.pw_left_down_left.add(self.pw1_2)
-        self.create_button2(self.pw1_2)
+        self.create_button_play(self.pw1_2)
 
         self.pw1_3 = tkinter.PanedWindow(self.pw_left_down_left, orient='horizontal') # 左画面の下側 左
         self.pw_left_down_left.add(self.pw1_3)
-        self.create_button3()
+        self.create_button_server()
 
         self.pw1_4 = tkinter.PanedWindow(self.pw_left_down_left, orient='horizontal') # 左画面の下側 左 ポイント種別
         self.pw_left_down_left.add(self.pw1_4)
-        self.create_button4(self.pw1_4)
+        self.create_button_pointpattern(self.pw1_4)
 
 
         self.create_tree(self.pw_right_down_down)#タグ一覧を右に描画
@@ -304,20 +346,24 @@ class Application(tkinter.Frame):
             #print(x,y)
 
 
-    def create_scale(self,pw):
-        self.myval = tkinter.DoubleVar()
-        self.myval.trace("w", self.value_changed)
+    def create_seekbar(self,pw):
+        self.pos_seek = tkinter.DoubleVar()
+        self.pos_seek.trace("w", self.pos_seek_changed)
         self.sc = tkinter.Scale(
-            variable=self.myval, orient='horizontal', length=self.w, from_=0, to=(
+            variable=self.pos_seek, orient='horizontal', length=self.w, from_=0, to=(
                 self.frame_count - 1))
         pw.add(self.sc, padx=10)
 
-    def value_changed(self, *args):  # scaleの値が変化したとき
+    def pos_seek_changed(self, *args):
+        """if pos_seek changed"""
         if(self.video):
-            if(self.myval.get() > self.score.arrayFrameEnd[self.score.number]):
-                self.score.number += 1
-                self.tree.selection_set(self.tree.get_children()[self.score.number])
-            elif(self.myval.get() < self.score.arrayFrameStart[self.score.number]):
+            if(len(self.score.array_frame_start)>self.score.number+1):
+                print(len(self.score.array_frame_start))
+                print(self.score.number)
+                if(self.pos_seek.get() > self.score.array_frame_start[self.score.number+1]):
+                    self.score.number += 1
+                    self.tree.selection_set(self.tree.get_children()[self.score.number])
+            elif(self.pos_seek.get() < self.score.array_frame_start[self.score.number]):
                 self.score.number -= 1
                 self.tree.selection_set(self.tree.get_children()[self.score.number])
             if(self.mode == 0):
@@ -527,9 +573,9 @@ class Application(tkinter.Frame):
 
     def saveArrayShot(self,xball,yball,xa,ya,xb,yb,servereturn,hitBounce,foreback,crossstreat):
         # print("saveArrayShot")
-        self.score.arrayBallPosition[self.score.number].append([self.score.number,self.myval.get(),xball,yball])
-        self.score.arrayPlayerAPosition[self.score.number].append([self.score.number,self.myval.get(),xa,ya])
-        self.score.arrayPlayerBPosition[self.score.number].append([self.score.number,self.myval.get(),xb,yb])
+        self.score.arrayBallPosition[self.score.number].append([self.score.number,self.pos_seek.get(),xball,yball])
+        self.score.arrayPlayerAPosition[self.score.number].append([self.score.number,self.pos_seek.get(),xa,ya])
+        self.score.arrayPlayerBPosition[self.score.number].append([self.score.number,self.pos_seek.get(),xb,yb])
         #servereturn=1
         self.score.arrayHitPlayer[self.score.number].append(self.score.playerName[(self.score.firstServer + servereturn + self.score.totalGame) % 2])
         self.score.arrayBounceHit[self.score.number].append(hitBounce)
@@ -549,9 +595,9 @@ class Application(tkinter.Frame):
         # print(xball,yball,xa,ya,xb,yb)
         # print(self.score.number,self.score.rally)
         #foreback,by=self.isForeBack(xball,yball,xa,ya,xb,yb,y1,y2)
-        self.score.arrayBallPosition[self.score.number][self.score.rally-1]=[self.score.number,self.myval.get(),xball,yball]
-        self.score.arrayPlayerAPosition[self.score.number][self.score.rally-1]=[self.score.number,self.myval.get(),xa,ya]
-        self.score.arrayPlayerBPosition[self.score.number][self.score.rally-1]=[self.score.number,self.myval.get(),xb,yb]
+        self.score.arrayBallPosition[self.score.number][self.score.rally-1]=[self.score.number,self.pos_seek.get(),xball,yball]
+        self.score.arrayPlayerAPosition[self.score.number][self.score.rally-1]=[self.score.number,self.pos_seek.get(),xa,ya]
+        self.score.arrayPlayerBPosition[self.score.number][self.score.rally-1]=[self.score.number,self.pos_seek.get(),xb,yb]
         self.score.arrayHitPlayer[self.score.number][self.score.rally-1]=self.score.playerName[(self.score.firstServer + servereturn + self.score.totalGame) % 2]
         self.score.arrayBounceHit[self.score.number][self.score.rally-1]=hitBounce
         self.score.arrayForeBack[self.score.number][self.score.rally-1]=foreback
@@ -589,7 +635,7 @@ class Application(tkinter.Frame):
 
     def mouse_motion(self,event):
         if(self.click_select_score_range_active):
-            gimg = self.readImage(self.myval.get())
+            gimg = self.readImage(self.pos_seek.get())
             img_copy = np.copy(gimg)
             h,w=img_copy.shape[0],img_copy.shape[1]
             x=event.x
@@ -605,7 +651,7 @@ class Application(tkinter.Frame):
             self.image_change(img_copy)
 
     def reselect_player_a(self,event):
-        gimg = self.readImage(self.myval.get())
+        gimg = self.readImage(self.pos_seek.get())
         img_copy = np.copy(gimg)
         x1=event.x
         y1=event.y
@@ -628,7 +674,24 @@ class Application(tkinter.Frame):
         self.dispPlayerPositionCourtAll()
         self.clickPlayerA=False
         self.image_change(img_copy)
-        self.setPointTree()
+        self.set_point_tree()
+
+    def option_serve(self,*args):
+        self.score.arrayFirstSecond[self.score.number]=self.score.firstSecondString.index(self.variable_serve.get())
+        self.set_tree()
+
+    def option_which_server(self,*args):
+        self.score.arrayServer[self.score.number]=self.variable_which_server.get()
+        self.set_tree()
+
+    def option_winner(self,*args):
+        self.score.arrayPointWinner[self.score.number]=self.variable_winner.get()
+        self.set_tree()
+
+    def option_pattern(self,*args):
+        self.score.arrayPointPattern[self.score.number]=self.variable_pattern.get()
+        self.set_tree()
+
 
     def mouseclicked(self, event):
         """画像範囲内をマウスクリックしたときの処理
@@ -659,7 +722,7 @@ class Application(tkinter.Frame):
             self.reselect_player_a(event)
 
         elif(self.clickPlayerB):#プレイヤーBの位置
-            gimg = self.readImage(self.myval.get())
+            gimg = self.readImage(self.pos_seek.get())
             img_copy = np.copy(gimg)
             x2=event.x
             y2=event.y
@@ -681,9 +744,9 @@ class Application(tkinter.Frame):
             self.dispPlayerPositionCourtAll()#plotposition全て
             self.clickPlayerB=False
             self.image_change(img_copy)
-            self.setPointTree()
+            self.set_point_tree()
         elif(self.clickCourtRightUp):
-            gimg = self.readImage(self.myval.get())
+            gimg = self.readImage(self.pos_seek.get())
             img_copy = np.copy(gimg)
 
             self.score.arrayPointXY[0]=[event.x,event.y]
@@ -698,10 +761,10 @@ class Application(tkinter.Frame):
                 self.bounceShotFix(img_copy)
             elif(r%4==3):#サーブ側の打点
                 self.hitShotFix(gimg,img_copy)
-            self.setPointTree()
+            self.set_point_tree()
 
         elif(self.clickCourtLeftUp):#self.score.rally-1にデータを入れていく必要がある
-            gimg = self.readImage(self.myval.get())
+            gimg = self.readImage(self.pos_seek.get())
             img_copy = np.copy(gimg)
 
             self.score.arrayPointXY[1]=[event.x,event.y]
@@ -716,9 +779,9 @@ class Application(tkinter.Frame):
                 self.bounceShotFix(img_copy)
             elif(r%4==3):#サーブ側の打点
                 self.hitShotFix(gimg,img_copy)
-            self.setPointTree()
+            self.set_point_tree()
         elif(self.clickCourtLeftDown):
-            gimg = self.readImage(self.myval.get())
+            gimg = self.readImage(self.pos_seek.get())
             img_copy = np.copy(gimg)
 
             self.score.arrayPointXY[2]=[event.x,event.y]
@@ -733,9 +796,9 @@ class Application(tkinter.Frame):
                 self.bounceShotFix(img_copy)
             elif(r%4==3):#サーブ側の打点
                 self.hitShotFix(gimg,img_copy)
-            self.setPointTree()
+            self.set_point_tree()
         elif(self.clickCourtRightDown):
-            gimg = self.readImage(self.myval.get())
+            gimg = self.readImage(self.pos_seek.get())
             img_copy = np.copy(gimg)
 
             self.score.arrayPointXY[3]=[event.x,event.y]
@@ -750,11 +813,11 @@ class Application(tkinter.Frame):
                 self.bounceShotFix(img_copy)
             elif(r%4==3):#サーブ側の打点
                 self.hitShotFix(gimg,img_copy)
-            self.setPointTree()
+            self.set_point_tree()
 
         elif(self.mode_predict):#予測モード
 
-            gimg = self.readImage(self.myval.get())
+            gimg = self.readImage(self.pos_seek.get())
             img_copy = np.copy(gimg)
             self.predictTransformMatrix(gimg)#テニスコート4点予測し変換行列を作成
             self.bx,self.by=self.detectBall(event)#ボールを検出
@@ -770,7 +833,7 @@ class Application(tkinter.Frame):
             elif(r%4==3):#サーブ側の打点
                 self.hitShot(gimg,img_copy)
             self.score.rally=self.score.rally+1
-            self.setPointTree()
+            self.set_point_tree()
 
         else:#予測モード以外　手動でコート4隅をクリックする
             if((self.score.arrayContactServe[self.score.number][0] > 0) and(self.score.arrayContactServe[self.score.number][1] > 0)):
@@ -780,7 +843,7 @@ class Application(tkinter.Frame):
             else:
                 if(score.mode == 0):
                     # print("mode", self.score.mode)
-                    gimg = self.readImage(self.myval.get())
+                    gimg = self.readImage(self.pos_seek.get())
                     pts, dilation = calcCourtPoints(gimg)
                     img_copy = np.copy(gimg)
                     cv2.polylines(img_copy, [pts], True, (0, 255, 0), 2)
@@ -795,7 +858,7 @@ class Application(tkinter.Frame):
                     self.panel.configure(image=imgtk)
                     self.panel.image = imgtk
                 elif(self.score.mode == 1):#
-                    gimg = self.readImage(self.myval.get())
+                    gimg = self.readImage(self.pos_seek.get())
                     img_copy = np.copy(gimg)
                     cv2.circle(img_copy, (event.x - 2, event.y - 2),
                             2, (0, 255, 0), -1)
@@ -840,7 +903,7 @@ class Application(tkinter.Frame):
                         self.score.mode = 2
                 elif(self.score.mode == 2):#
                     # print("mode", self.score.mode)
-                    gimg = self.readImage(self.myval.get())
+                    gimg = self.readImage(self.pos_seek.get())
 
                     img_copy = np.copy(gimg)
                     self.draw_court_line(self.pts,img_copy,self.inv_M)
@@ -903,7 +966,7 @@ class Application(tkinter.Frame):
 
     def imageShow(self):  # 画像描画
         if(self.video):
-            gimg = self.readImage(self.myval.get())
+            gimg = self.readImage(self.pos_seek.get())
             img_copy = np.copy(gimg)   
             self.image_change(img_copy)
 
@@ -1015,7 +1078,7 @@ class Application(tkinter.Frame):
 
     def count_frame(self):
             self.frame_no = int(self.video.get(cv2.CAP_PROP_POS_FRAMES))
-            self.myval.set(self.frame_no)
+            self.pos_seek.set(self.frame_no)
 
     def open_video(self):
         dir='../video/'
@@ -1044,12 +1107,12 @@ class Application(tkinter.Frame):
         print("load_data")
         db = database.Database(self.fld, self.score)
         db.load_database()
-        self.score = db.dbToScore()
+        self.score = db.db2score()
         self.draw_contact_all()
         self.set_tree()
-        self.setPointTree()
+        self.set_point_tree()
         curItem = self.tree.get_children()[score.number]
-        self.myval.set(int(self.tree.item(curItem)["values"][1]))            
+        self.pos_seek.set(int(self.tree.item(curItem)["values"][1]))            
 
     def save_data(self):
         if not (self.fld):
@@ -1087,7 +1150,27 @@ class Application(tkinter.Frame):
         self.sub_win.destroy()
         self.updata_button()
 
-        
+    def button_update_tree(self,event):
+        """ Update Tree Data"""
+
+        self.score.array_frame_start[self.score.number]=self.entry_edit_start.get()
+        self.score.array_frame_end[self.score.number]=self.entry_edit_end.get()
+        set_a=self.entry_edit_set_a.get()
+        set_b=self.entry_edit_set_b.get()
+        set_text=set_a+"-"+set_b
+        self.score.arraySet[self.score.number]=set_text
+
+        game_a=self.entry_edit_game_a.get()
+        game_b=self.entry_edit_game_b.get()
+        game_text=game_a+"-"+game_b
+        self.score.arrayGame[self.score.number]=game_text
+
+        score_a=self.entry_edit_score_a.get()
+        score_b=self.entry_edit_score_b.get()
+        score_text=score_a+"-"+score_b
+        self.score.arrayScore[self.score.number]=score_text
+
+        self.set_tree()        
 
     def button_edit_cancel(self,event):
         self.sub_win.destroy()
@@ -1149,7 +1232,7 @@ class Application(tkinter.Frame):
         self.stats_menu.add_command(label='View Stats')
         self.menu_bar.add_cascade(label='Stats', menu=self.stats_menu)
 
-    def create_button(self,pw):
+    def create_button_seek(self,pw):
 
         Button_backward100 = tkinter.Button(text=u'100←', width=10)
         Button_backward100.bind("<Button-1>", self.button_backward100)
@@ -1175,7 +1258,7 @@ class Application(tkinter.Frame):
         Button_forward100.bind("<Button-1>", self.button_forward100)
         pw.add(Button_forward100)
 
-    def create_button2(self,pw):
+    def create_button_play(self,pw):
 
         Button_play = tkinter.Button(text=u'Play', width=10)
         Button_play.bind("<Button-1>", self.play)
@@ -1189,13 +1272,6 @@ class Application(tkinter.Frame):
         Button_play_scene.bind("<Button-1>", self.play_scene)
         pw.add(Button_play_scene)
 
-        # Button_predictCourt = tkinter.Button(text=u'Predict', width=10)
-        # Button_predictCourt.bind("<Button-1>", self.predict_court)
-        # pw.add(Button_predictCourt)
-
-        # Button_predictCourt = tkinter.Button(text=u'LoadPredictModel', width=10)
-        # Button_predictCourt.bind("<Button-1>", self.load_predict_model)
-        # pw.add(Button_predictCourt)
         Button_delete_shot=tkinter.Button(text=u'Delete Show',width=10)
         Button_delete_shot.bind("<Button-1>",self.delete_shot)
         pw.add(Button_delete_shot)
@@ -1211,10 +1287,9 @@ class Application(tkinter.Frame):
         Button_score_text=tkinter.Button(text=u'ScoreText',width=10)
         Button_score_text.bind("<Button-1>",self.score_text)
         pw.add(Button_score_text)
-
         
 
-    def create_button3(self):
+    def create_button_server(self):
         if(self.score.firstServer==0):
             self.label_firstServer=tkinter.Label(text="1stServer:"+self.score.playerA)
         else:
@@ -1250,25 +1325,7 @@ class Application(tkinter.Frame):
         Button_end.bind("<Button-1>", self.button_end)
         self.pw1_3.add(Button_end)
 
-        # self.pw1_3_2 = tkinter.PanedWindow(
-        #     self.pwLeft, orient='vertical')  # ラジオボタン サーバー
-        # self.pw1_3.add(self.pw1_3_2)
-
-        # self.firstServer.set(score.firstServer)
-        # radio3 = tkinter.Radiobutton(
-        #     text=score.playerA,
-        #     variable=self.firstServer,
-        #     value=0,
-        #     command=self.change_state)
-        # self.pw1_3_2.add(radio3)
-        # radio4 = tkinter.Radiobutton(
-        #     text=score.playerB,
-        #     variable=self.firstServer,
-        #     value=1,
-        #     command=self.change_state)
-        # self.pw1_3_2.add(radio4)
-
-    def create_button4(self,pw):
+    def create_button_pointpattern(self,pw):
         self.pw1_4_1 = tkinter.PanedWindow(self.pw1_4, orient='vertical')
         pw.add(self.pw1_4_1)
         self.pw1_4_2 = tkinter.PanedWindow(self.pw1_4, orient='vertical')
@@ -1359,7 +1416,7 @@ class Application(tkinter.Frame):
         pw.add(self.tree)
         
 
-    def create_rightMenu_tree(self):
+    def create_right_menu_tree(self):
         self.menu_top2 = Menu(self,tearoff=False)
         self.menu_2nd2 = Menu(self.menu_top2,tearoff=0)
         self.menu_3rd2 = Menu(self.menu_top2,tearoff=0)
@@ -1373,10 +1430,6 @@ class Application(tkinter.Frame):
         self.menu_2nd2.add_command(label='CourtLeftUp',under=4,command=self.selectCourtLeftUp)
         self.menu_2nd2.add_command(label='CourtLeftDown',under=4,command=self.selectCourtLeftDown)
         self.menu_2nd2.add_command(label='CourtRightDown',under=4,command=self.selectCourtRightDown)
-        #self.menu_2nd.add_cascade(label='Open(O)',under=5,menu=self.menu_3rd)
-
-        #self.menu_3rd.add_command(label='Local File(L)',under=11)
-        #self.menu_3rd.add_command(label='Network(N)',under=8)
 
     def buttonFault_clicked2(self, event):
         if(self.score.faultFlug == 0):
@@ -1415,12 +1468,12 @@ class Application(tkinter.Frame):
         """
 
         if(self.score.number == 0):
-            self.firstFault()
+            self.first_fault()
         else:
             if(self.score.arrayFault[self.score.number - 1] == 1):  # 前のポイントが1stフォルト
-                self.secondFault()
+                self.second_fault()
             else:
-                self.firstFault()
+                self.first_fault()
 
         self.calc_fault_all()
         self.score.calcScore()
@@ -1471,7 +1524,7 @@ class Application(tkinter.Frame):
                     if(self.score.arrayFault[i]==None):
                         self.score.arrayFirstSecond[i] = 0
 
-    def firstFault(self):
+    def first_fault(self):
         print("firstFault")
         self.score.arrayFault[self.score.number] = 1  # 2⇒ダブルフォルト 1⇒フォルト 0⇒フォルトなし
         self.score.arrayFirstSecond[self.score.number] = 1
@@ -1484,7 +1537,7 @@ class Application(tkinter.Frame):
         if(self.score.number == (len(self.score.arrayFault) - 1)):
             self.score.faultFlug = 1
 
-    def secondFault(self):
+    def second_fault(self):
         print("secondFault")
         self.score.arrayFault[self.score.number] = 2  # 2⇒ダブルフォルト 1⇒フォルト 0⇒フォルトなし
         self.score.arrayFirstSecond[self.score.number] = 2
@@ -1499,10 +1552,10 @@ class Application(tkinter.Frame):
             self.score.faultFlug = 0
 
     def button_end(self, event):
-        if(self.myval.get() > self.score.arrayFrameStart[self.score.number]):
-            end = self.score.arrayFrameEnd[self.score.number]  # 次のフレームに行く前に終了フレームを一時記憶
-            self.score.arrayFrameEnd[self.score.number] = int(
-                self.myval.get() - 1)  # 終了フレーム
+        if(self.pos_seek.get() > self.score.array_frame_start[self.score.number]):
+            end = self.score.array_frame_end[self.score.number]  # 次のフレームに行く前に終了フレームを一時記憶
+            self.score.array_frame_end[self.score.number] = int(
+                self.pos_seek.get() - 1)  # 終了フレーム
             #normalPatternButton()
             if(self.score.faultFlug == 1):
                 self.Button_fault["text"] = "ダブルフォルト"
@@ -1511,10 +1564,10 @@ class Application(tkinter.Frame):
 
             #number.set(number.get() + 1)  # 次のシーン
             self.score.number += 1
-            self.score.arrayFrameStart.insert(
+            self.score.array_frame_start.insert(
                 self.score.number, int(
-                    self.myval.get()))  # 開始フレーム
-            self.score.arrayFrameEnd.insert(self.score.number, end)
+                    self.pos_seek.get()))  # 開始フレーム
+            self.score.array_frame_end.insert(self.score.number, end)
             self.score.arrayPointPattern.insert(self.score.number, "")  # パターン
             self.score.arrayPointWinner.insert(self.score.number, "")  # ポイント勝者+
             self.score.pointWin[0].insert(self.score.number, 2)
@@ -1574,18 +1627,18 @@ class Application(tkinter.Frame):
         self.setPattern(5)
 
     def button_forward10(self, event):
-        self.myval.set(self.myval.get() + 10)
+        self.pos_seek.set(self.pos_seek.get() + 10)
 
     def button_backward10(self, event):
-        self.myval.set(self.myval.get() - 10)
+        self.pos_seek.set(self.pos_seek.get() - 10)
     
     
     def button_forward1(self, event):
-        self.myval.set(self.myval.get() + 1)
+        self.pos_seek.set(self.pos_seek.get() + 1)
         self.focus_set()
 
     def play(self, event):
-        self.vid.set_start_frame(self.myval.get())
+        self.vid.set_start_frame(self.pos_seek.get())
         self.vid.set_end_frame(self.frame_count)
         self.mode = 1
         self.update()
@@ -1597,24 +1650,24 @@ class Application(tkinter.Frame):
 
     def stop(self, event):
         # self.vid.set_start_frame(self.myval.get())
-        # self.vid.set_end_frame(score.arrayFrameEnd[score.number])
+        # self.vid.set_end_frame(score.array_frame_end[score.number])
         self.mode = 0
         # self.update()
 
     def play_scene(self, event):
-        self.vid.set_start_frame(self.myval.get())
-        self.vid.set_end_frame(self.score.arrayFrameEnd[self.score.number])
+        self.vid.set_start_frame(self.pos_seek.get())
+        self.vid.set_end_frame(self.score.array_frame_end[self.score.number])
         self.mode = 1
         self.update()
 
     def button_backward1(self, event):
-        self.myval.set(self.myval.get() - 1)
+        self.pos_seek.set(self.pos_seek.get() - 1)
 
     def button_forward100(self, event):
-        self.myval.set(self.myval.get() + 100)
+        self.pos_seek.set(self.pos_seek.get() + 100)
 
     def button_backward100(self, event):
-        self.myval.set(self.myval.get() - 100)
+        self.pos_seek.set(self.pos_seek.get() - 100)
 
     def delete_shot(self,event):
         if(self.score.rally>0):
@@ -1626,13 +1679,13 @@ class Application(tkinter.Frame):
             self.score.arrayBounceHit[self.score.number].pop(-1)
             self.score.arrayForeBack[self.score.number].pop(0-1)
             self.score.arrayDirection[self.score.number].pop(-1)
-            self.setPointTree()
+            self.set_point_tree()
             self.dispPlayerPositionCourtAll()
 
     def no_bound(self,event):
         self.saveArrayShot("","","","","","",1,"NoBounce","","")
         self.score.rally=self.score.rally+1
-        self.setPointTree()
+        self.set_point_tree()
 
     def score_image(self,event):
         # start_list=[0,800,1031,1672,2564,3346,2350,3862,4180,6028,6738,7091,7969,7981,8564,9080,9796,
@@ -1757,9 +1810,10 @@ class Application(tkinter.Frame):
                 self.score.faultFlug = 0
         self.set_tree()
 
-    def setPointTree(self):
+    def set_point_tree(self):
         print("self.score.number:",self.score.number)
-        print("len(self.score.arrayBallPosition[self.score.number]):",len(self.score.arrayBallPosition[self.score.number]))
+        print(self.score.arrayBallPosition)
+        # print("len(self.score.arrayBallPosition[self.score.number]):",len(self.score.arrayBallPosition[self.score.number]))
         for i, t in enumerate(self.point_tree.get_children()):
             self.point_tree.delete(t)
         for i in range(len(self.score.arrayBallPosition[self.score.number])):
@@ -1774,17 +1828,15 @@ class Application(tkinter.Frame):
                                      self.score.arrayBallPosition[self.score.number][i][1]))#self.score.arrayDirection[self.score.number][i]
 
     def set_tree(self):
-        print("setTree", len(self.score.arrayFrameStart))
-        print("arrayFrameEnd", len(self.score.arrayFrameEnd))
 
         for i, t in enumerate(self.tree.get_children()):
             self.tree.delete(t)
-        for i in range(len(self.score.arrayFrameStart)):
+        for i in range(len(self.score.array_frame_start)):
             self.tree.insert("",
                              i,
                              values=(i,
-                                     self.score.arrayFrameStart[i],
-                                     self.score.arrayFrameEnd[i],
+                                     self.score.array_frame_start[i],
+                                     self.score.array_frame_end[i],
                                      self.score.arraySet[i],
                                      self.score.arrayGame[i],
                                      self.score.arrayScore[i],
@@ -1803,9 +1855,57 @@ class Application(tkinter.Frame):
         curItem = self.tree.focus()
         self.score.number = int(self.tree.item(curItem)["values"][0])
         print(self.score.number)
-        self.myval.set(int(self.tree.item(curItem)["values"][1]))#フレーム位置変更
+        self.pos_seek.set(int(self.tree.item(curItem)["values"][1]))#フレーム位置変更
         self.key_activate()
-        self.setPointTree()#追加
+        self.set_point_tree()#追加
+        self.disp_edit_tree(self.score.number)
+
+    def disp_edit_tree(self,i):
+        self.entry_edit_start.delete(0, tkinter.END)
+        self.entry_edit_end.delete(0, tkinter.END)
+        self.entry_edit_set_a.delete(0, tkinter.END)
+        self.entry_edit_set_b.delete(0, tkinter.END)
+        self.entry_edit_game_a.delete(0, tkinter.END)
+        self.entry_edit_game_b.delete(0, tkinter.END)
+        self.entry_edit_score_a.delete(0, tkinter.END)
+        self.entry_edit_score_b.delete(0, tkinter.END)
+
+        print(self.score.arraySet[i])
+
+        self.entry_edit_start.insert(tkinter.END,self.score.array_frame_start[i])
+        self.entry_edit_end.insert(tkinter.END,self.score.array_frame_end[i])
+
+        if self.score.arraySet[i] is not None:
+            text_set=self.score.arraySet[i]
+            left=re.findall(r'([0-9a-zA-Z]*)-',text_set)
+            right=re.findall(r'-([0-9a-zA-Z]*)',text_set)
+            if(len(left)):
+                self.entry_edit_set_a.insert(tkinter.END,left[0])
+            if(len(right)):
+                self.entry_edit_set_b.insert(tkinter.END,right[0])
+
+        if self.score.arrayGame[i] is not None:
+            text_game=self.score.arrayGame[i]
+            left=re.findall(r'([0-9a-zA-Z]*)-',text_game)
+            right=re.findall(r'-([0-9a-zA-Z]*)',text_game)
+            if(len(left)):
+                self.entry_edit_game_a.insert(tkinter.END,left[0])
+            if(len(right)):
+                self.entry_edit_game_b.insert(tkinter.END,right[0])
+
+        if self.score.arrayScore[i] is not None:
+            text_score=self.score.arrayScore[i]
+            left=re.findall(r'([0-9a-zA-Z]*)-',text_score)
+            right=re.findall(r'-([0-9a-zA-Z]*)',text_score)
+            if(len(left)):
+                self.entry_edit_score_a.insert(tkinter.END,left[0])
+            if(len(right)):
+                self.entry_edit_score_b.insert(tkinter.END,right[0])
+
+        self.variable_serve.set(self.score.firstSecondString[self.score.arrayFirstSecond[i]])
+        self.variable_which_server.set(self.score.arrayServer[i])
+        self.variable_winner.set(self.score.arrayPointWinner[i])
+        self.variable_pattern.set(self.score.arrayPointPattern[i])
 
     def close(self):
         if(self.vid):

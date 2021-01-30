@@ -43,10 +43,10 @@ class Score():
         self.arrayContactServe = []
         self.arrayContactServe.append([0, 0])
 
-        self.arrayFrameStart = []
-        self.arrayFrameStart.append(0)
-        self.arrayFrameEnd = []
-        self.arrayFrameEnd.append(0)
+        self.array_frame_start = []
+        self.array_frame_start.append(0)
+        self.array_frame_end = []
+        self.array_frame_end.append(0)
         self.arraySet = []  # セット
         self.arraySet.append("")
         self.arrayGame = []  # ゲーム
@@ -59,6 +59,19 @@ class Score():
         self.arrayServer.append("")
         self.arrayPointWinner = []  # ウィナーの名前
         self.arrayPointWinner.append("")
+
+        # self.array_set_a=[]
+        # self.array_set_a.append("")
+        # self.array_set_b=[]
+        # self.array_set_b.append("")
+        # self.array_game_a=[]
+        # self.array_game_a.append("")
+        # self.array_game_b=[]
+        # self.array_game_b.append("")
+        # self.array_score_a=[]
+        # self.array_score_a.append("")
+        # self.array_score_b=[]
+        # self.array_score_b.append("")
 
         self.pointWin = []
         self.pointWin = []

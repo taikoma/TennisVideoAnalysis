@@ -96,19 +96,27 @@ class TestDatabase(unittest.TestCase):
         self.assertEqual([[], [''], [''], ['Fore', ''], ['', 'Back', '', '']],array_foreback)
         self.assertEqual([[], ['Cross'], ['Cross'], ['Cross', 'Cross'], ['Cross', 'Cross', 'Cross', 'Cross']],array_direction)
 
-    def test_load_database_score(self):
+    def test_load_database_score_init(self):
         sc = score.Score(0)
-        db_name="./data/test.db"
+        db_name="./tests/temp.db"
         db = database.Database(db_name, sc)
         db.save_database_score(db_name)
-        self.assertEqual(1,self.db.load_database_score(db_name))#初期scoreテーブル
+        self.assertEqual(1,db.load_database_score(db_name))#初期scoreテーブル
 
-    def test_load_database_shot(self):
-        sc = score.Score(0)
+    def test_load_database_score(self):
         db_name="./data/test.db"
+        self.assertEqual(3,self.db.load_database_score(db_name))
+
+    def test_load_database_shot_init(self):
+        sc = score.Score(0)
+        db_name="./tests/temp.db"
         db = database.Database(db_name, sc)
         db.save_database_shot(db_name)
-        self.assertEqual(0,self.db.load_database_shot(db_name))#初期shotテーブル
+        self.assertEqual(0,db.load_database_shot(db_name))
+
+    def test_load_database_shot(self):
+        db_name="./data/test.db"
+        self.assertEqual(3,self.db.load_database_shot(db_name))
 
     def test_load_database_basic(self):
         sc = score.Score(0)
@@ -116,5 +124,15 @@ class TestDatabase(unittest.TestCase):
         db = database.Database(db_name, sc)
         db.save_database_basic(db_name)
         self.assertEqual(1,self.db.load_database_basic(db_name))#初期basicテーブル
-        
-        
+
+    def test_db2score(self):
+        self.create_temp_data_score()
+        self.create_temp_data_shot()
+        self.db.db2score()
+        self.assertEqual(self.db.arrayBallPosition,self.db.score.arrayBallPosition)
+        self.assertEqual(self.db.arrayPlayerAPosition,self.db.score.arrayPlayerAPosition)
+        self.assertEqual(self.db.arrayPlayerBPosition,self.db.score.arrayPlayerBPosition)
+        self.assertEqual(self.db.arrayHitPlayer,self.db.score.arrayHitPlayer)
+        self.assertEqual(self.db.arrayBounceHit,self.db.score.arrayBounceHit)
+        self.assertEqual(self.db.arrayForeBack,self.db.score.arrayForeBack)
+        self.assertEqual(self.db.arrayDirection,self.db.score.arrayDirection)
