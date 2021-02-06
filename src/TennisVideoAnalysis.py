@@ -113,7 +113,6 @@ class Application(tkinter.Frame):
         self.frame_count = vid.frame_count
         self.score.array_frame_end[len(
             self.score.array_frame_end) - 1] = self.frame_count
-        # print("END:",self.score.array_frame_end)
 
         self.vid.set_start_frame(self.vid.start_frame)
         self.vid.set_end_frame(self.vid.end_frame)
@@ -1280,8 +1279,12 @@ class Application(tkinter.Frame):
         Button_no_bound.bind("<Button-1>",self.no_bound)
         pw.add(Button_no_bound)
 
+        Button_score_image_one=tkinter.Button(text=u'ScoreImageOne',width=10)#score_one_image
+        Button_score_image_one.bind("<Button-1>",self.score_image_one)
+        pw.add(Button_score_image_one)
+
         Button_score_image=tkinter.Button(text=u'ScoreImage',width=10)
-        Button_score_image.bind("<Button-1>",self.score_image)
+        Button_score_image.bind("<Button-1>",self.score_image_all)
         pw.add(Button_score_image)
 
         Button_score_text=tkinter.Button(text=u'ScoreText',width=10)
@@ -1687,12 +1690,24 @@ class Application(tkinter.Frame):
         self.score.rally=self.score.rally+1
         self.set_point_tree()
 
-    def score_image(self,event):
+    def score_image_one(self,event):
+        """save trim bounding box image at one start_frame to png file"""
+        start_list=self.score.array_frame_start
+        i=self.score.number
+        self.ds.frame2oneimage(i,start_list,self.vid.videoFileName)
+        game_a,game_b,score_a,score_b=self.ds.image2onescore(i)
+        print(game_a,game_b,score_a,score_b)
+        self.score.arrayGame[i]=str(game_a)+"-"+str(game_b)
+        self.score.arrayScore[i]=str(score_a)+"-"+str(score_b)
+        self.set_tree()
+
+    def score_image_all(self,event):
+        """save trim bounding box image at all start_frame to png file"""
         # start_list=[0,800,1031,1672,2564,3346,2350,3862,4180,6028,6738,7091,7969,7981,8564,9080,9796,
         #             10172,11097,11498,11900]
         start_list=[0,800,1031,1672,2564]
         self.ds.frame2images(start_list,self.vid.videoFileName)
-
+        
     def score_text(self,event):
         
         game_a_array,game_b_array,score_a_array,score_b_array=self.ds.image2scores()
