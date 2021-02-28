@@ -19,6 +19,9 @@ class TestTennisVideoAnalysis(unittest.TestCase):
         self.app=TennisVideoAnalysis.Application(self.score,mode_predict_court,mode_predict_player,mode_detect_score, master=self.root)
         self.app.create_widgets(360, 640)
 
+    # def test_get_winner(self):
+    
+
     # def test_calc_inv_matrix(self):
     #     p1=[215,86]
     #     p2=[112,258]

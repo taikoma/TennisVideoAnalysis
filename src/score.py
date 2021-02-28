@@ -11,6 +11,7 @@ import csv
 import threading
 from tkinter import filedialog
 import os
+import re
 
 import const
 
@@ -416,3 +417,27 @@ class Score():
                 gameA = 0
                 gameB = 0
         return gameA, gameB, setA, setB
+
+    def divide_left_right(self,text_score):
+        left=re.findall(r'([0-9a-zA-Z]*)-',text_score)
+        right=re.findall(r'-([0-9a-zA-Z]*)',text_score)
+        if len(left) > 0:
+            left=left[0]
+        if len(right) > 0:
+            right=right[0]
+        return left,right
+
+    def get_winner(self,array_score):
+        print("get_winner")
+        score_a_array=[]
+        score_b_array=[]
+        winner_array=[]#0 1 2 3Fault
+        for i in range(len(array_score)):
+            l,r=self.divide_left_right(array_score[i])
+            score_a_array.append(l)
+            score_b_array.append(r)
+            if i > 0:
+                if (score_a_array[i-1] == score_a_array[i]) and (score_b_array[i-1] == score_b_array[i]):
+                    winner_array.append(3)
+                
+        

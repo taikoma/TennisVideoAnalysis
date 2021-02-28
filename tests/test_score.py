@@ -114,6 +114,16 @@ class TestScore(unittest.TestCase):
                     self.assertEqual([gameA,gameB],[0,0])
                     self.assertEqual([setA,setB],[s[0],s[1]+1])
 
+    def test_devide_left_right(self):
+        text_score = "15-30"
+        l,r=self.score.divide_left_right(text_score)
+        self.assertEqual("15",l)
+        self.assertEqual("30",r)
+
+    def test_get_winner(self):
+        print("test_get_winnder")
+        array_score=["0-0","0-15","0-15","15-15","15-30"]
+        self.score.get_winner(array_score)
     
 
 
