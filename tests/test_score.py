@@ -119,11 +119,52 @@ class TestScore(unittest.TestCase):
         l,r=self.score.divide_left_right(text_score)
         self.assertEqual("15",l)
         self.assertEqual("30",r)
+        
+        text_score = ""
+        l,r=self.score.divide_left_right(text_score)
+        self.assertEqual("",l)
+        self.assertEqual("",r)
+
 
     def test_get_winner(self):
+        winner=self.score.get_winner(0,0,0,0)
+        self.assertEqual(2,winner)
+        winner=self.score.get_winner(0,1,0,0)
+        self.assertEqual(0,winner)
+        
+
+    def test_get_winner_list(self):
         print("test_get_winnder")
-        array_score=["0-0","0-15","0-15","15-15","15-30"]
-        self.score.get_winner(array_score)
+        array_score=["0-0","0-15","0-15","15-15","15-30","15-40","30-40","40-40","40-A","40-40"]
+        winner_array=self.score.get_winner_list(array_score)
+        self.assertEqual([3,1,2,0,1,1,0,0,1,0],winner_array)
+
+        array_score=["0-0","0-15","0-15","","15-15","15-30","15-40","30-40","40-40","40-A","40-40"]
+        winner_array=self.score.get_winner_list(array_score)
+        self.assertEqual([3,1,2,3,0,1,1,0,0,1,0],winner_array)
+
+        array_score=["0-0","0-15","0-15","","","15-15","15-30","15-40","30-40","40-40","40-A","40-40"]
+        winner_array=self.score.get_winner_list(array_score)
+        self.assertEqual([3,1,2,3,3,0,1,1,0,0,1,0],winner_array)
+
+        array_score=["0-0","0-15","0-15","","","0-15","15-15","15-30","15-40","30-40","40-40","40-A","40-40"]
+        winner_array=self.score.get_winner_list(array_score)
+        self.assertEqual([3,1,2,3,3,2,0,1,1,0,0,1,0],winner_array)
+
+
+    def test_score2count(self):
+        score="0"
+        self.assertEqual(0,self.score.score2count(score))
+        score="15"
+        self.assertEqual(1,self.score.score2count(score))
+        score="30"
+        self.assertEqual(2,self.score.score2count(score))
+        score="40"
+        self.assertEqual(3,self.score.score2count(score))
+        score="A"
+        self.assertEqual(4,self.score.score2count(score))
+        score="fasdf"
+        self.assertEqual(-1,self.score.score2count(score))
     
 
 

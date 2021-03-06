@@ -423,21 +423,107 @@ class Score():
         right=re.findall(r'-([0-9a-zA-Z]*)',text_score)
         if len(left) > 0:
             left=left[0]
+        else:
+            left=""
         if len(right) > 0:
             right=right[0]
+        else:
+            right=""
         return left,right
 
-    def get_winner(self,array_score):
-        print("get_winner")
-        score_a_array=[]
-        score_b_array=[]
-        winner_array=[]#0 1 2 3Fault
+    def score2count(self,score):
+        """
+        convert string score to count
+
+        Parameters
+        ----------
+        score:string
+
+        Returns
+        ----------
+        count:int
+        """
+        if score == "0":
+            count=0
+        elif score == "15":
+            count=1
+        elif score == "30":
+            count = 2
+        elif score == "40":
+            count = 3
+        elif score == "A":
+            count = 4
+        else:
+            count = -1
+        return count
+
+    def get_winner(self,pre_count_a,count_a,pre_count_b,count_b):#１つ前のデータと次のデータを比較
+        """
+        convert string score to count
+
+        Parameters
+        ----------
+        count_a:int
+        count_b:int
+
+        Returns
+        ----------
+        winner:int
+        """
+        winner = 3
+        # if count_a == -1 or count_b == -1:
+        if pre_count_a == count_a and pre_count_b == count_b:
+            winner = 2
+        elif pre_count_a == 4 and count_a == 3:
+            winner = 1
+        elif pre_count_b == 4 and count_b == 3:
+            winner = 0
+        elif pre_count_a < count_a and pre_count_b == count_b:
+            winner = 0
+        elif pre_count_a == count_a and pre_count_b < count_b:
+            winner = 1
+        # elif pre_count_b == -1 or pre_count_b == -1:
+
+        return winner
+        
+    def get_winner_list(self,array_score):
+        """
+        convert array_score to winner_array
+
+        Parameters
+        ----------
+        array_score:list["0-0","0-15"]
+
+        Returns
+        ----------
+        winner_array:list[int,int]
+        0 winner a
+        1 winner b
+        2 fault
+        3 not point 
+        """
+        winner_array=[]
+        pre_l = -1
+        pre_r = -1
+        l_count = -1
+        r_count = -1
         for i in range(len(array_score)):
             l,r=self.divide_left_right(array_score[i])
-            score_a_array.append(l)
-            score_b_array.append(r)
+            l_count=self.score2count(l)
+            r_count=self.score2count(r)
             if i > 0:
-                if (score_a_array[i-1] == score_a_array[i]) and (score_b_array[i-1] == score_b_array[i]):
+                if l_count > -1 and r_count > -1 and pre_l > -1 and pre_r > -1:
+                    winner = self.get_winner(pre_l,l_count,pre_r,r_count)
+                    winner_array.append(winner)
+                else:
                     winner_array.append(3)
+            else:
+                winner_array.append(3)
+
+            if l_count > -1 or r_count > -1:
+                pre_l = l_count
+                pre_r = r_count
+
+        return winner_array
                 
         
