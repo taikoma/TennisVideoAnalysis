@@ -6,6 +6,7 @@ import numpy as np
 sys.path.append(str(Path(__file__).parent.parent))
 sys.path.append(str(Path(__file__).parent.parent / "src"))
 import src.score as score
+import src.const as const
 
 class TestScore(unittest.TestCase):
     def setUp(self):#設定 save_temp_db
@@ -137,19 +138,19 @@ class TestScore(unittest.TestCase):
         print("test_get_winnder")
         array_score=["0-0","0-15","0-15","15-15","15-30","15-40","30-40","40-40","40-A","40-40"]
         winner_array=self.score.get_winner_list(array_score)
-        self.assertEqual([3,1,2,0,1,1,0,0,1,0],winner_array)
+        self.assertEqual([1,2,0,1,1,0,0,1,0,3],winner_array)
 
         array_score=["0-0","0-15","0-15","","15-15","15-30","15-40","30-40","40-40","40-A","40-40"]
         winner_array=self.score.get_winner_list(array_score)
-        self.assertEqual([3,1,2,3,0,1,1,0,0,1,0],winner_array)
+        self.assertEqual([1,2,3,0,1,1,0,0,1,0,3],winner_array)
 
         array_score=["0-0","0-15","0-15","","","15-15","15-30","15-40","30-40","40-40","40-A","40-40"]
         winner_array=self.score.get_winner_list(array_score)
-        self.assertEqual([3,1,2,3,3,0,1,1,0,0,1,0],winner_array)
+        self.assertEqual([1,2,3,3,0,1,1,0,0,1,0,3],winner_array)
 
         array_score=["0-0","0-15","0-15","","","0-15","15-15","15-30","15-40","30-40","40-40","40-A","40-40"]
         winner_array=self.score.get_winner_list(array_score)
-        self.assertEqual([3,1,2,3,3,2,0,1,1,0,0,1,0],winner_array)
+        self.assertEqual([1,2,3,3,2,0,1,1,0,0,1,0,3],winner_array)
 
 
     def test_score2count(self):
@@ -165,6 +166,17 @@ class TestScore(unittest.TestCase):
         self.assertEqual(4,self.score.score2count(score))
         score="fasdf"
         self.assertEqual(-1,self.score.score2count(score))
+
+    def test_winner2player_fault(self):
+        player_name=["a","b"]
+        winner_array=[0,1,1,2,2,3,0,2]
+        point_pattern=["","","","","","","",""]
+        point_winner_array,first_second_array,point_pattern=self.score.winner2player_fault(winner_array,player_name,point_pattern)
+        self.assertEqual(["a","b","b","","","","a",""],point_winner_array)
+        self.assertEqual([1,1,1,1,2,0,1,1],first_second_array)#0:not point 1:1st 2:2nd
+        self.assertEqual(["","","",const.PATTERN[6],const.PATTERN[7],"","",const.PATTERN[6]],point_pattern)#0:not point 1:1st 2:2nd
+
+
     
 
 

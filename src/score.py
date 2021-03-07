@@ -86,7 +86,7 @@ class Score():
 
         self.arrayPointPattern = []  # ポイントパターン
         self.arrayPointPattern.append("")
-        self.arrayFirstSecond = []  # 0    1    2
+        self.arrayFirstSecond = [] #0:not fault    1:1st fault    2:2nd fault
         self.arrayFirstSecond.append(0)
         # self.arrayForeBack = []  # サーバー
         # self.arrayForeBack.append("")
@@ -470,9 +470,9 @@ class Score():
         ----------
         winner:int
         """
-        winner = 3
+        winner = 3#not point
         # if count_a == -1 or count_b == -1:
-        if pre_count_a == count_a and pre_count_b == count_b:
+        if pre_count_a == count_a and pre_count_b == count_b:#fault
             winner = 2
         elif pre_count_a == 4 and count_a == 3:
             winner = 1
@@ -503,27 +503,84 @@ class Score():
         3 not point 
         """
         winner_array=[]
-        pre_l = -1
-        pre_r = -1
-        l_count = -1
-        r_count = -1
+        pre_l_count = -1
+        pre_r_count = -1
+        temp_flug=False
+        temp_index=0
         for i in range(len(array_score)):
             l,r=self.divide_left_right(array_score[i])
             l_count=self.score2count(l)
             r_count=self.score2count(r)
-            if i > 0:
-                if l_count > -1 and r_count > -1 and pre_l > -1 and pre_r > -1:
-                    winner = self.get_winner(pre_l,l_count,pre_r,r_count)
+
+            if i+1 < len(array_score):
+                n_l,n_r=self.divide_left_right(array_score[i+1])
+                next_l_count=self.score2count(n_l)
+                next_r_count=self.score2count(n_r)
+                if l_count > -1 and r_count > -1 and next_l_count > -1 and next_r_count > -1:
+                    winner = self.get_winner(l_count,next_l_count,r_count,next_r_count)
                     winner_array.append(winner)
+                    if temp_flug:
+                        winner = self.get_winner(pre_l_count,l_count,pre_r_count,r_count)
+                        winner_array[temp_index]=winner
+                        temp_flug=False
                 else:
                     winner_array.append(3)
+                    temp_flug=True
+                    temp_index=i
             else:
                 winner_array.append(3)
-
             if l_count > -1 or r_count > -1:
-                pre_l = l_count
-                pre_r = r_count
-
+                pre_l_count=l_count
+                pre_r_count=r_count
         return winner_array
+
+    def winner2player_fault(self,winner_array,player_name,point_pattern):#TODO 1st 2nd　winnerポイントにもつける
+        """
+        convert array_score to winner_array
+
+        Parameters
+        ----------
+        winner_array:list[0,1,,]
+        player_name:list["playername_a","playername_b"]
+        point_pattern:list["Fault","DoubleFault",,,]
+
+        Returns
+        ----------
+        point_winner_array:list[string,string,,]
+        first_second_array:list[int,int,,]
+        0:not point
+        1:1st point
+        2:2nd point
+        point_pattern:list[string,string,,]
+        """
+
+        point_winner_array=[]
+        first_second_array=[]
+        # pre_first_second=0
+        fault_flug = False
+        for i in range(len(winner_array)):
+            if winner_array[i] < 2:#point winner 0 1
+                point_winner_array.append(player_name[winner_array[i]])
+                if fault_flug == False:
+                    first_second_array.append(1)
+                else:
+                    first_second_array.append(2)
+                    fault_flug = False
+            else:#fault or not point
+                point_winner_array.append("")
+                if winner_array[i] == 2:#fault
+                    if fault_flug == False:#
+                        point_pattern[i]=const.PATTERN[6]
+                        first_second_array.append(1)
+                        fault_flug = True
+                    else:
+                        point_pattern[i]=const.PATTERN[7]
+                        first_second_array.append(2)
+                        fault_flug = False
+                elif winner_array[i] == 3:#not point
+                    first_second_array.append(0)
+            pre_first_second = first_second_array[-1]
+                
+        return point_winner_array,first_second_array,point_pattern
                 
         

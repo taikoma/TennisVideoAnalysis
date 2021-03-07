@@ -358,11 +358,14 @@ class Application(tkinter.Frame):
         if(self.video):
             if(len(self.score.array_frame_start)>self.score.number+1):
                 print(len(self.score.array_frame_start))
+                print(self.pos_seek.get())
+                print(self.score.array_frame_start[self.score.number+1])
                 print(self.score.number)
-                if(self.pos_seek.get() > self.score.array_frame_start[self.score.number+1]):
+                pos=int(self.pos_seek.get())
+                if(pos > self.score.array_frame_start[self.score.number+1]):
                     self.score.number += 1
                     self.tree.selection_set(self.tree.get_children()[self.score.number])
-            elif(self.pos_seek.get() < self.score.array_frame_start[self.score.number]):
+            elif(pos < self.score.array_frame_start[self.score.number]):
                 self.score.number -= 1
                 self.tree.selection_set(self.tree.get_children()[self.score.number])
             if(self.mode == 0):
@@ -1152,8 +1155,8 @@ class Application(tkinter.Frame):
     def button_update_tree(self,event):
         """ Update Tree Data"""
 
-        self.score.array_frame_start[self.score.number]=self.entry_edit_start.get()
-        self.score.array_frame_end[self.score.number]=self.entry_edit_end.get()
+        self.score.array_frame_start[self.score.number]=int(self.entry_edit_start.get())
+        self.score.array_frame_end[self.score.number]=int(self.entry_edit_end.get())
         set_a=self.entry_edit_set_a.get()
         set_b=self.entry_edit_set_b.get()
         set_text=set_a+"-"+set_b
@@ -1289,6 +1292,10 @@ class Application(tkinter.Frame):
 
         Button_score_text=tkinter.Button(text=u'ScoreText',width=10)
         Button_score_text.bind("<Button-1>",self.score_text)
+        pw.add(Button_score_text)
+
+        Button_score_text=tkinter.Button(text=u'CalcScore',width=10)
+        Button_score_text.bind("<Button-1>",self.calc_score)
         pw.add(Button_score_text)
         
 
@@ -1722,6 +1729,17 @@ class Application(tkinter.Frame):
         print(self.score.arrayGame)
         print(self.score.arrayScore)
         self.set_tree()
+
+    def calc_score(self,event):
+        winner_list = self.score.get_winner_list(self.score.arrayScore)
+        print(winner_list)
+        point_winner_array,first_second_array,self.score.arrayPointPattern=self.score.winner2player_fault(winner_list,self.score.playerName,self.score.arrayPointPattern)
+        self.score.arrayPointWinner=point_winner_array
+        self.score.arrayFirstSecond=first_second_array
+        print(point_winner_array)
+        print(first_second_array)
+        self.set_tree()
+
 
     def show_pattern_message(self,pattern):
         print("show_pattern_message")
