@@ -46,7 +46,8 @@ class Application(tkinter.Frame):
 
         self.delay = 33
         self.frame_count = 1
-        self.mode = 0
+        # self.mode = 0
+        self.mode_play=False
         self.courtsize=360/27.77*0.8
 
         self.pts = np.array([[0,0]],dtype=int)
@@ -346,7 +347,7 @@ class Application(tkinter.Frame):
 
 
     def create_seekbar(self,pw):
-        self.pos_seek = tkinter.DoubleVar()
+        self.pos_seek = tkinter.IntVar()
         self.pos_seek.trace("w", self.pos_seek_changed)
         self.sc = tkinter.Scale(
             variable=self.pos_seek, orient='horizontal', length=self.w, from_=0, to=(
@@ -356,19 +357,20 @@ class Application(tkinter.Frame):
     def pos_seek_changed(self, *args):
         """if pos_seek changed"""
         if(self.video):
+            pos=int(self.pos_seek.get())
             if(len(self.score.array_frame_start)>self.score.number+1):
                 print(len(self.score.array_frame_start))
                 print(self.pos_seek.get())
                 print(self.score.array_frame_start[self.score.number+1])
                 print(self.score.number)
-                pos=int(self.pos_seek.get())
+                
                 if(pos > self.score.array_frame_start[self.score.number+1]):
                     self.score.number += 1
                     self.tree.selection_set(self.tree.get_children()[self.score.number])
             elif(pos < self.score.array_frame_start[self.score.number]):
                 self.score.number -= 1
                 self.tree.selection_set(self.tree.get_children()[self.score.number])
-            if(self.mode == 0):
+            if not (self.mode_play):
                 self.imageShow()
 
     def showPopup(self,event):
@@ -1064,7 +1066,7 @@ class Application(tkinter.Frame):
         cv2.ellipse(img_copy, ((x2, y2), (rx2, ry2), 0), (0, 0, 255))
 
     def update(self):
-        if(self.mode == 1):
+        if self.mode_play:
             ret, frame = self.vid.get_frame()
             if ret:
                 frame = cv2.resize(frame, ( self.w,self.h))
@@ -1076,7 +1078,7 @@ class Application(tkinter.Frame):
                 thread.start()
                 self.master.after(self.delay, self.update)
             else:
-                self.mode = 0
+                self.mode_play=False
 
     def count_frame(self):
             self.frame_no = int(self.video.get(cv2.CAP_PROP_POS_FRAMES))
@@ -1248,6 +1250,10 @@ class Application(tkinter.Frame):
         Button_backward1.bind("<Button-1>", self.button_backward1)
         pw.add(Button_backward1)
 
+        Button_play_scene = tkinter.Button(text=u'Play\nScene', width=8)
+        Button_play_scene.bind("<Button-1>", self.play_scene)
+        pw.add(Button_play_scene)
+
         Button_forward1 = tkinter.Button(text=u'→1', width=10)
         Button_forward1.bind("<Button-1>", self.button_forward1)
         pw.add(Button_forward1)
@@ -1262,39 +1268,39 @@ class Application(tkinter.Frame):
 
     def create_button_play(self,pw):
 
-        Button_play = tkinter.Button(text=u'Play', width=10)
-        Button_play.bind("<Button-1>", self.play)
-        pw.add(Button_play)
+        # Button_play = tkinter.Button(text=u'Play', width=8)
+        # Button_play.bind("<Button-1>", self.play)
+        # pw.add(Button_play)
 
-        Button_stop = tkinter.Button(text=u'Stop', width=10)
-        Button_stop.bind("<Button-1>", self.stop)
-        pw.add(Button_stop)
+        # Button_stop = tkinter.Button(text=u'Stop', width=8)
+        # Button_stop.bind("<Button-1>", self.stop)
+        # pw.add(Button_stop)
 
-        Button_play_scene = tkinter.Button(text=u'Play\nScene', width=10)
-        Button_play_scene.bind("<Button-1>", self.play_scene)
-        pw.add(Button_play_scene)
+        # Button_play_scene = tkinter.Button(text=u'Play\nScene', width=8)
+        # Button_play_scene.bind("<Button-1>", self.play_scene)
+        # pw.add(Button_play_scene)
 
-        Button_delete_shot=tkinter.Button(text=u'Delete Show',width=10)
+        Button_delete_shot=tkinter.Button(text=u'Delete Show',width=8)
         Button_delete_shot.bind("<Button-1>",self.delete_shot)
         pw.add(Button_delete_shot)
 
-        Button_no_bound=tkinter.Button(text=u'No Bounce',width=10)
+        Button_no_bound=tkinter.Button(text=u'No Bounce',width=8)
         Button_no_bound.bind("<Button-1>",self.no_bound)
         pw.add(Button_no_bound)
 
-        Button_score_image_one=tkinter.Button(text=u'ScoreImageOne',width=10)#score_one_image
+        Button_score_image_one=tkinter.Button(text=u'ScoreImageOne',width=8)#score_one_image
         Button_score_image_one.bind("<Button-1>",self.score_image_one)
         pw.add(Button_score_image_one)
 
-        Button_score_image=tkinter.Button(text=u'ScoreImage',width=10)
+        Button_score_image=tkinter.Button(text=u'ScoreImage',width=8)
         Button_score_image.bind("<Button-1>",self.score_image_all)
         pw.add(Button_score_image)
 
-        Button_score_text=tkinter.Button(text=u'ScoreText',width=10)
+        Button_score_text=tkinter.Button(text=u'ScoreText',width=8)
         Button_score_text.bind("<Button-1>",self.score_text)
         pw.add(Button_score_text)
 
-        Button_score_text=tkinter.Button(text=u'CalcScore',width=10)
+        Button_score_text=tkinter.Button(text=u'CalcScore',width=8)
         Button_score_text.bind("<Button-1>",self.calc_score)
         pw.add(Button_score_text)
         
@@ -1650,7 +1656,7 @@ class Application(tkinter.Frame):
     def play(self, event):
         self.vid.set_start_frame(self.pos_seek.get())
         self.vid.set_end_frame(self.frame_count)
-        self.mode = 1
+        self.mode = True
         self.update()
     def keyA(self,event):
         print("test!")
@@ -1661,14 +1667,18 @@ class Application(tkinter.Frame):
     def stop(self, event):
         # self.vid.set_start_frame(self.myval.get())
         # self.vid.set_end_frame(score.array_frame_end[score.number])
-        self.mode = 0
+        self.mode_play = False
         # self.update()
 
     def play_scene(self, event):
-        self.vid.set_start_frame(self.pos_seek.get())
-        self.vid.set_end_frame(self.score.array_frame_end[self.score.number])
-        self.mode = 1
-        self.update()
+        if self.vid:
+            if self.mode_play:
+                self.mode_play=False
+            else:
+                self.vid.set_start_frame(self.pos_seek.get())
+                self.vid.set_end_frame(self.score.array_frame_end[self.score.number])
+                self.mode_play = True
+                self.update()
 
     def button_backward1(self, event):
         self.pos_seek.set(self.pos_seek.get() - 1)
