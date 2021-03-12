@@ -82,7 +82,7 @@ class Score():
         self.pointB.append(0)
         self.pointWin.append(self.pointA)  # pointA 勝ったら1を格納
         self.pointWin.append(self.pointB)  # pointB 勝ったら1を格納
-        print("pointwin",self.pointWin)
+        # print("pointwin",self.pointWin)
 
         self.arrayPointPattern = []  # ポイントパターン
         self.arrayPointPattern.append("")
@@ -457,7 +457,7 @@ class Score():
             count = -1
         return count
 
-    def get_winner(self,pre_count_a,count_a,pre_count_b,count_b):#１つ前のデータと次のデータを比較
+    def get_winner(self,pre_count_a,count_a,pre_count_b,count_b):#１つ前のデータと比較
         """
         convert string score to count
 
@@ -482,7 +482,6 @@ class Score():
             winner = 0
         elif pre_count_a == count_a and pre_count_b < count_b:
             winner = 1
-        # elif pre_count_b == -1 or pre_count_b == -1:
 
         return winner
         
@@ -524,11 +523,11 @@ class Score():
                         winner_array[temp_index]=winner
                         temp_flug=False
                 else:
-                    winner_array.append(3)
+                    winner_array.append(3)#not point
                     temp_flug=True
                     temp_index=i
             else:
-                winner_array.append(3)
+                winner_array.append(3)#not point
             if l_count > -1 or r_count > -1:
                 pre_l_count=l_count
                 pre_r_count=r_count
@@ -556,7 +555,6 @@ class Score():
 
         point_winner_array=[]
         first_second_array=[]
-        # pre_first_second=0
         fault_flug = False
         for i in range(len(winner_array)):
             if winner_array[i] < 2:#point winner 0 1
@@ -573,7 +571,7 @@ class Score():
                         point_pattern[i]=const.PATTERN[6]
                         first_second_array.append(1)
                         fault_flug = True
-                    else:
+                    else:#double fault
                         point_pattern[i]=const.PATTERN[7]
                         first_second_array.append(2)
                         fault_flug = False
@@ -582,5 +580,69 @@ class Score():
             pre_first_second = first_second_array[-1]
                 
         return point_winner_array,first_second_array,point_pattern
+
+    def position_data2array(self,xball,yball,xa,ya,xb,yb,servereturn,hitBounce,foreback,crossstreat,pos_seek):
+        """
+        position_data2array
+
+        Parameters
+        ----------
+        xball:
+        yball:
+        xa:
+        ya:
+        xb:
+        yb:
+        servereturn:int which player hitting server or returner 0:server 1:returner
+        hitBounce
+        foreback
+        cressstreat
+        ----------
+
+        Returns
+        ----------
+
+        ----------
+        """
+        num=self.number
+        self.arrayBallPosition[num].append([num,pos_seek,xball,yball])
+        self.arrayPlayerAPosition[num].append([num,pos_seek,xa,ya])
+        self.arrayPlayerBPosition[num].append([num,pos_seek,xb,yb])
+        self.arrayHitPlayer[num].append(self.playerName[(self.firstServer + servereturn + self.totalGame) % 2])
+        self.arrayBounceHit[num].append(hitBounce)
+        self.arrayForeBack[num].append(foreback)
+        self.arrayDirection[num].append(crossstreat)
+
+    def position_data2array_fix(self,xball,yball,xa,ya,xb,yb,servereturn,hitBounce,foreback,crossstreat,pos_seek):#(self,xball,yball,xa,ya,xb,yb,servereturn,y1,y2):
+        num=self.number
+        rally=self.rally
+        self.arrayBallPosition[num][rally-1]=[num,pos_seek,xball,yball]
+        self.arrayPlayerAPosition[num][rally-1]=[num,pos_seek,xa,ya]
+        self.arrayPlayerBPosition[num][rally-1]=[num,pos_seek,xb,yb]
+        self.arrayHitPlayer[num][rally-1]=self.playerName[(self.firstServer + servereturn + self.totalGame) % 2]
+        self.arrayBounceHit[num][rally-1]=hitBounce
+        self.arrayForeBack[num][rally-1]=foreback
+        self.arrayDirection[num][rally-1]=crossstreat
+
+    def delete_position_data(self,i):
+        """
+        delete position data which is selected tree data
+        Parameters
+        ----------
+        i:selected num
+        """
+        num=self.number
+        j=self.arrayBallPosition[num][i][0]
+        self.arrayBallPosition[num].pop(i)
+        self.arrayPlayerAPosition[num].pop(i)
+        self.arrayPlayerBPosition[num].pop(i)
+        self.arrayHitPlayer[num].pop(i)
+        self.arrayBounceHit[num].pop(i)
+        self.arrayForeBack[num].pop(i)
+        self.arrayDirection[num].pop(i)
+
+        for j in range(len(self.arrayBallPosition[num])):
+            self.arrayBallPosition[num][j][0]=j+1
+
                 
         

@@ -10,7 +10,6 @@ import src.const as const
 
 class TestScore(unittest.TestCase):
     def setUp(self):#設定 save_temp_db
-        print("setUP")
         self.score=score.Score(0)
 
     def test_convert_set(self):
@@ -135,7 +134,6 @@ class TestScore(unittest.TestCase):
         
 
     def test_get_winner_list(self):
-        print("test_get_winnder")
         array_score=["0-0","0-15","0-15","15-15","15-30","15-40","30-40","40-40","40-A","40-40"]
         winner_array=self.score.get_winner_list(array_score)
         self.assertEqual([1,2,0,1,1,0,0,1,0,3],winner_array)
@@ -176,9 +174,95 @@ class TestScore(unittest.TestCase):
         self.assertEqual([1,1,1,1,2,0,1,1],first_second_array)#0:not point 1:1st 2:2nd
         self.assertEqual(["","","",const.PATTERN[6],const.PATTERN[7],"","",const.PATTERN[6]],point_pattern)#0:not point 1:1st 2:2nd
 
+    def test_position_data2array(self):
+        self.score.playerName=["A","B"]
+        self.score.firstServer=0
+        self.score.totalGame=1
+        
+        self.score.arrayBallPosition=[[],[],[],[]]
+        self.score.arrayPlayerAPosition=[[],[],[],[]]
+        self.score.arrayPlayerBPosition=[[],[],[],[]]
+        self.score.arrayHitPlayer=[[],[],[],[]]
+        self.score.arrayBounceHit=[[],[],[],[]]
+        self.score.arrayForeBack=[[],[],[],[]]
+        self.score.arrayDirection=[[],[],[],[]]
+        
+        num=2
+        self.score.number=num
+        pos_seek=100
+        xball=10
+        yball=20
+        self.score.position_data2array(xball,yball,3,4,5,6,0,"Hit","Fore","Cross",pos_seek)
+        self.assertEqual([[],[],[[num,pos_seek,xball,yball]],[]],self.score.arrayBallPosition)
+        self.assertEqual([[],[],["B"],[]],self.score.arrayHitPlayer)
 
-    
+    def test_position_data2array_fix(self):
+        self.score.playerName=["A","B"]
+        self.score.firstServer=0
+        self.score.totalGame=1
+        
+        self.score.arrayBallPosition=[[],[],[[1,11,1,2],[2,51,3,4]],[]]
+        self.score.arrayPlayerAPosition=[[],[],[[11,12],[13,14]],[]]
+        self.score.arrayPlayerBPosition=[[],[],[[21,22],[23,24]],[]]
+        self.score.arrayHitPlayer=[[],[],["A","A"],[]]
+        self.score.arrayBounceHit=[[],[],["Bounce","Hit"],[]]
+        self.score.arrayForeBack=[[],[],["Fore","Back"],[]]
+        self.score.arrayDirection=[[],[],["Cross","Cross"],[]]
+        
+        num=2
+        self.score.number=num
+        rally=2
+        self.score.rally=rally
+        pos_seek=100
+        xball=10
+        yball=20
+        self.score.position_data2array_fix(xball,yball,3,4,5,6,0,"Hit","Fore","Cross",pos_seek)
+        self.assertEqual([[],[],[[1,11,1,2],[rally,pos_seek,xball,yball]],[]],self.score.arrayBallPosition)
+        self.assertEqual([[],[],["A","B"],[]],self.score.arrayHitPlayer)
 
+    def test_delete_position_data(self):
+        #delete middle
+        self.score.arrayBallPosition=[[],[],[[1,11,1,2],[2,51,3,4],[3,101,5,6]],[]]
+        self.score.arrayPlayerAPosition=[[],[],[[11,12],[13,14],[15,16]],[]]
+        self.score.arrayPlayerBPosition=[[],[],[[21,22],[23,24],[25,26]],[]]
+        self.score.arrayHitPlayer=[[],[],["A","A","B"],[]]
+        self.score.arrayBounceHit=[[],[],["Bounce","Hit","Bounce"],[]]
+        self.score.arrayForeBack=[[],[],["Fore","Back","Back"],[]]
+        self.score.arrayDirection=[[],[],["Cross","Cross","Cross"],[]]
+        num=2
+        self.score.number=num
+        i=1
+        self.score.delete_position_data(i)
+        self.assertEqual([[],[],[[1,11,1,2],[2,101,5,6]],[]],self.score.arrayBallPosition)
+        self.assertEqual([[],[],[[11,12],[15,16]],[]],self.score.arrayPlayerAPosition)
 
+        #delete last
+        self.score.arrayBallPosition=[[],[],[[1,11,1,2],[2,51,3,4],[3,101,5,6]],[]]
+        self.score.arrayPlayerAPosition=[[],[],[[11,12],[13,14],[15,16]],[]]
+        self.score.arrayPlayerBPosition=[[],[],[[21,22],[23,24],[25,26]],[]]
+        self.score.arrayHitPlayer=[[],[],["A","A","B"],[]]
+        self.score.arrayBounceHit=[[],[],["Bounce","Hit","Bounce"],[]]
+        self.score.arrayForeBack=[[],[],["Fore","Back","Back"],[]]
+        self.score.arrayDirection=[[],[],["Cross","Cross","Cross"],[]]
+        num=2
+        self.score.number=num
+        i=2
+        self.score.delete_position_data(i)
+        self.assertEqual([[],[],[[1,11,1,2],[2,51,3,4]],[]],self.score.arrayBallPosition)
+        self.assertEqual([[],[],[[11,12],[13,14]],[]],self.score.arrayPlayerAPosition)
 
+        #delete first
+        self.score.arrayBallPosition=[[],[],[[1,11,1,2],[2,51,3,4],[3,101,5,6]],[]]
+        self.score.arrayPlayerAPosition=[[],[],[[11,12],[13,14],[15,16]],[]]
+        self.score.arrayPlayerBPosition=[[],[],[[21,22],[23,24],[25,26]],[]]
+        self.score.arrayHitPlayer=[[],[],["A","A","B"],[]]
+        self.score.arrayBounceHit=[[],[],["Bounce","Hit","Bounce"],[]]
+        self.score.arrayForeBack=[[],[],["Fore","Back","Back"],[]]
+        self.score.arrayDirection=[[],[],["Cross","Cross","Cross"],[]]
+        num=2
+        self.score.number=num
+        i=0
+        self.score.delete_position_data(i)
+        self.assertEqual([[],[],[[1,51,3,4],[2,101,5,6]],[]],self.score.arrayBallPosition)
+        self.assertEqual([[],[],[[13,14],[15,16]],[]],self.score.arrayPlayerAPosition)
 
