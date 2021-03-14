@@ -266,3 +266,29 @@ class TestScore(unittest.TestCase):
         self.assertEqual([[],[],[[1,51,3,4],[2,101,5,6]],[]],self.score.arrayBallPosition)
         self.assertEqual([[],[],[[13,14],[15,16]],[]],self.score.arrayPlayerAPosition)
 
+
+    def test_divide_track_data(self):
+        self.score.arrayBallPosition=[[],[],[],[],[],[],[],[],[],[],[],[]]#num12
+        self.score.arrayPlayerAPosition=[[],[],[],[],[],[],[],[],[],[],[],[]]#num12
+        self.score.arrayPlayerBPosition=[[],[],[],[],[],[],[],[],[],[],[],[]]#num12
+        self.score.arrayHitPlayer=[[],[],[],[],[],[],[],[],[],[],[],[]]#num12
+        self.score.arrayBounceHit=[[],[],[],[],[],[],[],[],[],[],[],[]]#num12
+        self.score.arrayForeBack=[[],[],[],[],[],[],[],[],[],[],[],[]]#num12
+        self.score.arrayDirection=[[],[],[],[],[],[],[],[],[],[],[],[]]#num12
+        self.score.arrayBounceHit=[[],[],[],[],[],[],[],[],[],[],[],[]]#num12
+        start_frame=[0,40,70,120,1000]
+        track_frame=[15,20,30,50,100,115,120,130,150,200]
+        bx=[1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0]
+        by=[11.0,12.0,13.0,14.0,15.0,16.0,17.0,18.0,19.0,20.0]
+        xa=[1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0]
+        ya=[11.0,12.0,13.0,14.0,15.0,16.0,17.0,18.0,19.0,20.0]
+        xb=[1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0]
+        yb=[11.0,12.0,13.0,14.0,15.0,16.0,17.0,18.0,19.0,20.0]
+        hit_bounce=["Front_Hit","Front_Bounce","Back_Hit","Back_Bounce","Front_Hit","Front_Bounce","Back_Hit","Back_Bounce","Front_Hit","Front_Bounce"]
+        self.score.divide_track_data(start_frame,track_frame,bx,by,xa,ya,xb,yb,hit_bounce)
+        # print(self.score.arrayBallPosition)
+        self.assertEqual([[[0,15,1.0,11.0],[0,20,2.0,12.0],[0,30,3.0,13.0]],[[1,50,4.0,14.0]],[[2,100,5.0,15.0],[2,115,6.0,16.0]],[[3,120,7.0,17.0],[3,130,8.0,18.0],[3,150,9.0,19.0],[3,200,10.0,20.0]], [], [], [], [], [], [], [], []],self.score.arrayBallPosition)
+        self.assertEqual([[[0,15,1.0,11.0],[0,20,2.0,12.0],[0,30,3.0,13.0]],[[1,50,4.0,14.0]],[[2,100,5.0,15.0],[2,115,6.0,16.0]],[[3,120,7.0,17.0],[3,130,8.0,18.0],[3,150,9.0,19.0],[3,200,10.0,20.0]], [], [], [], [], [], [], [], []],self.score.arrayPlayerAPosition)
+        self.assertEqual([["Hit","Bounce","Hit"],["Bounce"],["Hit","Bounce"],["Hit","Bounce","Hit","Bounce"],[], [], [], [], [], [], [], []],self.score.arrayBounceHit)
+
+

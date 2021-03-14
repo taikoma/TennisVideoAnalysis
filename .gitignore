@@ -16,4 +16,5 @@ analysis/.ipynb_checkpoints/*
 # /detect_score.py
 # /src/detect_score.py
 /src/predict/*
+/memo/*
 

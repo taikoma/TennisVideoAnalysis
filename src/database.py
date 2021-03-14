@@ -10,7 +10,6 @@ import tkinter.messagebox
 import csv
 import threading
 from tkinter import filedialog
-# import score as scr
 
 import const
 

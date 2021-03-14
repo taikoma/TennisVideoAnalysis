@@ -13,14 +13,16 @@ import threading
 from tkinter import filedialog
 import os
 import sys
+import logging
+import time
+import re
+
 import score
 import setting
 import video
 import view
 import database
-import logging
-import time
-import re
+import track_data
 
 
 class Application(tkinter.Frame):
@@ -81,6 +83,8 @@ class Application(tkinter.Frame):
             import predict.detect_score as detect_score
             from predict import  detect_score
             self.ds=detect_score.DetectScore()
+
+        self.track_data=track_data.TrackData()
             
         self.xa=0
         self.ya=0
@@ -588,7 +592,7 @@ class Application(tkinter.Frame):
     def disp_after_position(self,img_copy):
         #display position on court
         print("disp")
-        self.dispPlayerPositionCourtAll()#plotposition全て
+        self.disp_track_data_court_all()#plotposition全て
 
         #update image
         self.draw_court_line(self.pts,img_copy,self.inv_M)
@@ -685,7 +689,7 @@ class Application(tkinter.Frame):
 
         foreback,self.yball=self.whichForeBack(self.xball,self.yball,self.xa,self.ya,self.xb,self.yb)#aの位置とbの位置でボールに近い方のy座標をボールの座標として変換
         self.score.position_data2array_fix(self.xball,self.yball,self.xa,self.ya,self.xb,self.yb,1,"Hit",foreback,"Cross",self.pos_seek.get())
-        self.dispPlayerPositionCourtAll()
+        self.disp_track_data_court_all()
         self.clickPlayerA=False
         self.image_change(img_copy)
         self.set_point_tree()
@@ -755,7 +759,7 @@ class Application(tkinter.Frame):
 
             foreback,self.yball=self.whichForeBack(self.xball,self.yball,self.xa,self.ya,self.xb,self.yb)#aの位置とbの位置でボールに近い方のy座標をボールの座標として変換
             self.score.position_data2array_fix(self.xball,self.yball,self.xa,self.ya,self.xb,self.yb,1,"Hit",foreback,"Cross",self.pos_seek.get())
-            self.dispPlayerPositionCourtAll()#plotposition全て
+            self.disp_track_data_court_all()#plotposition全て
             
             self.clickPlayerB=False
             self.image_change(img_copy)
@@ -990,9 +994,26 @@ class Application(tkinter.Frame):
             ymin=self.ds.y1
             xmax=self.ds.x2
             ymax=self.ds.y2
-            print(xmin)
             cv2.rectangle(img_copy,(xmin,ymin),(xmax,ymax),(0,0,255),thickness=2)
+            print(self.pos_seek.get())
+            # print(self.track_data.frame_array.index(self.pos_seek.get()))
+            if self.pos_seek.get() in self.track_data.frame_array:
+                print("ball")
+                index=self.track_data.frame_array.index(self.pos_seek.get())
+                x=self.track_data.all_track_ball_x[index]
+                y=self.track_data.all_track_ball_y[index]
+                print(x,y)
+                x,y=self.resize_xy_origin2disp(x,y)
+                print(x,y)
+                cv2.circle(img_copy,(x,y),2,(0,255,255),1)
             self.image_change(img_copy)
+
+    def resize_xy_origin2disp(self,x,y):
+        # x=int(x/self.w*self.vid.width)
+        # y=int(y/self.h*self.vid.height)
+        x=int(x/self.vid.width*self.w)
+        y=int(y/self.vid.height*self.h)
+        return x,y
 
     def whichForeBack(self,xball,yball,xa,ya,xb,yb):
         """Compare the coordinates ball and player position a,b and return fore or back,ball y position
@@ -1035,7 +1056,7 @@ class Application(tkinter.Frame):
         return foreback,yball
 
 
-    def plotBallLine(self):
+    def plot_ball_line(self):
         s=self.courtsize
         out=5*s
         net=0.914*s
@@ -1049,33 +1070,44 @@ class Application(tkinter.Frame):
                 self.canvas1.create_line(xball_pre*s+out,yball_pre*s+out,xball*s+out,yball*s+out,fill='#ffff00',width=w)
                 w=w+0.2
 
-    def dispPlayerPositionCourtAll(self):
-        # print("dispPlayerPositionCourtAll")
-        # print(len(self.score.arrayBallPosition[self.score.number]))
+    def disp_track_data_court_all(self):
+        """
+        display track data ball and player position xy on court
+        """
+        print("disp_track_data_court_all")
         self.canvas1.delete("all")
         self.create_court(self.canvas1,self.courtsize,self.pw_right_up_left)
-        self.plotBallLine()
+        self.plot_ball_line()
         for i in range(len(self.score.arrayBallPosition[self.score.number])):
-            xball=self.score.arrayBallPosition[self.score.number][i][2]
-            yball=self.score.arrayBallPosition[self.score.number][i][3]
-            xa=self.score.arrayPlayerAPosition[self.score.number][i][2]
-            ya=self.score.arrayPlayerAPosition[self.score.number][i][3]
-            xb=self.score.arrayPlayerBPosition[self.score.number][i][2]
-            yb=self.score.arrayPlayerBPosition[self.score.number][i][3]
+            self.disp_track_data_court(i)
 
-            if(xball!="" and yball!=""):#ballを表示
-                xball,yball=self.xy2leftup(xball,yball)
-                if(i%2==0):
-                    self.plot_position(xball,yball,'#ffff00')
-                else:
-                    self.plot_position(xball,yball,'#FF6E00')
-            if(xa!="" and ya!=""):
-                xa,ya=self.xy2leftup(xa,ya)
-                self.plot_position(xa,ya,'#0000FF')#赤#0000FF
-            if(xb!="" and yb!=""):
-                xb,yb=self.xy2leftup(xb,yb)
-                self.plot_position(xb,yb,'#FF0000')#青
-            print(i,xball,yball,xa,ya,xb,yb)
+    def disp_track_data_court_one(self,i):
+        self.canvas1.delete("all")
+        self.create_court(self.canvas1,self.courtsize,self.pw_right_up_left)
+        # self.plot_ball_line()
+        self.disp_track_data_court(i)
+
+    def disp_track_data_court(self,i):
+        xball=self.score.arrayBallPosition[self.score.number][i][2]
+        yball=self.score.arrayBallPosition[self.score.number][i][3]
+        xa=self.score.arrayPlayerAPosition[self.score.number][i][2]
+        ya=self.score.arrayPlayerAPosition[self.score.number][i][3]
+        xb=self.score.arrayPlayerBPosition[self.score.number][i][2]
+        yb=self.score.arrayPlayerBPosition[self.score.number][i][3]
+
+        if(xball!="" and yball!=""):#ballを表示
+            xball,yball=self.xy2leftup(xball,yball)
+            if(i%2==0):
+                self.plot_position(xball,yball,'#ffff00')
+            else:
+                self.plot_position(xball,yball,'#FF6E00')
+        if(xa!="" and ya!=""):
+            xa,ya=self.xy2leftup(xa,ya)
+            self.plot_position(xa,ya,'#0000FF')#赤#0000FF
+        if(xb!="" and yb!=""):
+            xb,yb=self.xy2leftup(xb,yb)
+            self.plot_position(xb,yb,'#FF0000')#青
+        print(i,xball,yball,xa,ya,xb,yb)
 
     def dispPlayerPositionCourt(self,xball,yball,xa,ya,xb,yb):
         # print("dispPlayerPositionCourt")
@@ -1133,9 +1165,39 @@ class Application(tkinter.Frame):
             initialdir=dir, filetypes=[
                 ('Db Files', ('.db'))])
         if(self.fld):
-            msg = tkinter.messagebox.askyesno('save', '現在のデータ上書きします。データを読み込みますか？')
+            msg = tkinter.messagebox.askyesno('load', '現在のデータ上書きします。データを読み込みますか？')
             if msg == 1:  # true
                 self.load_data()
+
+    def open_track_data(self):
+        dir='../data/'
+        fld = filedialog.askopenfilename(
+            initialdir=dir, filetypes=[
+                ('CSV Files', ('.csv'))])
+        if(fld):
+            msg = tkinter.messagebox.askyesno('load', '現在のデータ上書きします。データを読み込みますか？')
+            if msg == 1:  # true
+                self.load_track_data(fld)
+
+    def load_track_data(self,fld):
+        filename=fld
+        self.track_data.load_track_data(filename)
+        frame_start=self.score.array_frame_start
+        track_fame=self.track_data.track_frame_array
+        bx=self.track_data.track_ball_x
+        by=self.track_data.track_ball_y
+        xa=self.track_data.track_player_a_x
+        ya=self.track_data.track_player_a_y
+        xb=self.track_data.track_player_b_x
+        yb=self.track_data.track_player_b_y
+        bounce_hit=self.track_data.track_hit_bounce
+        self.score.divide_track_data(frame_start,track_fame,bx,by,xa,ya,xb,yb,bounce_hit)
+
+        self.set_point_tree()
+
+    def load_track_ball_data(self,filename):
+        self.track_data.load_ball_data(filename) 
+
     
     def load_data(self):
         print("load_data")
@@ -1146,7 +1208,9 @@ class Application(tkinter.Frame):
         self.set_tree()
         self.set_point_tree()
         curItem = self.tree.get_children()[score.number]
-        self.pos_seek.set(int(self.tree.item(curItem)["values"][1]))            
+        self.pos_seek.set(int(self.tree.item(curItem)["values"][1]))
+
+          
 
     def save_data(self):
         if not (self.fld):
@@ -1257,6 +1321,7 @@ class Application(tkinter.Frame):
         self.file_menu = Menu(self.menu_bar, tearoff=0)
         self.file_menu.add_command(label='Open Video', command=self.open_video)
         self.file_menu.add_command(label='Open Data', command=self.open_data)
+        self.file_menu.add_command(label='Open Track Data', command=self.open_track_data)
         self.file_menu.add_command(label='Save Data', command=self.save_data)
         self.file_menu.add_command(label='Save Data As', command=self.save_data_as)
         self.file_menu.add_command(label='Settings', command=self.edit_setting)
@@ -1736,7 +1801,7 @@ class Application(tkinter.Frame):
             self.score.arrayForeBack[self.score.number].pop(0-1)
             self.score.arrayDirection[self.score.number].pop(-1)
             self.set_point_tree()
-            self.dispPlayerPositionCourtAll()
+            self.disp_track_data_court_all()
 
     def no_bound(self):
         self.score.position_data2array("","","","","","",1,"NoBounce","","",self.pos_seek.get())
@@ -1905,7 +1970,6 @@ class Application(tkinter.Frame):
 
     def set_point_tree(self):
         print("self.score.number:",self.score.number)
-        print(self.score.arrayBallPosition)
         # print("len(self.score.arrayBallPosition[self.score.number]):",len(self.score.arrayBallPosition[self.score.number]))
         for i, t in enumerate(self.point_tree.get_children()):
             self.point_tree.delete(t)
@@ -1954,9 +2018,14 @@ class Application(tkinter.Frame):
         self.disp_edit_tree(self.score.number)
 
     def select_point(self, event):
-        print("tree_select_point")
+        """
+        when select point tree
+        """
         curItem = self.point_tree.focus()
-        self.pos_seek.set(int(self.point_tree.item(curItem)["values"][2]))#フレーム位置変更
+        self.pos_seek.set(int(self.point_tree.item(curItem)["values"][2]))
+        num_shot=int(self.point_tree.item(curItem)["values"][1])-1
+        self.disp_track_data_court_one(num_shot)
+        
 
 
     def disp_edit_tree(self,i):
@@ -2054,7 +2123,12 @@ if __name__ == "__main__":
         filename=settings.dataFile
         app.fld=filename
         app.load_data()
-        
+    
+    filename="../data/ball-pos.csv"
+    app.load_track_ball_data(filename)
+
+    filename="../data/track-data.csv"
+    app.load_track_data(filename)
 
     app.bind("<Right>", app.button_forward1)#右矢印をクリックしたらフレーム+1
     app.bind("<Control-Right>", app.button_forward10)#ctrf+右矢印をクリックしたらフレーム+10

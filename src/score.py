@@ -644,5 +644,34 @@ class Score():
         for j in range(len(self.arrayBallPosition[num])):
             self.arrayBallPosition[num][j][0]=j+1
 
+    def divide_track_data(self,start_frame,track_frame,bx,by,xa,ya,xb,yb,hit_bounce):
+        for i in range(len(start_frame)-1):
+            for j in range(len(track_frame)):
+                # print(start_frame[i],track_frame[j],start_frame[i+1])
+                if start_frame[i]<=track_frame[j] and track_frame[j]<start_frame[i+1]:
+                    # print(i,track_frame[j],bx[j],by[j])
+                    self.arrayBallPosition[i].append([i,track_frame[j],bx[j],by[j]])
+                    self.arrayPlayerAPosition[i].append([i,track_frame[j],xa[j],ya[j]])
+                    self.arrayPlayerBPosition[i].append([i,track_frame[j],xb[j],yb[j]])
+                    
+                    if "Hit" in hit_bounce[j]:
+                        self.arrayBounceHit[i].append("Hit")#TODO
+                    elif "Bounce" in hit_bounce[j]:
+                        self.arrayBounceHit[i].append("Bounce")#TODO
+                    else:
+                        self.arrayBounceHit[i].append("")#TODO
+                    self.arrayHitPlayer[i].append("TEST")#TODO
+                    self.arrayForeBack[i].append("TEST")#TODO
+                    self.arrayDirection[i].append("TEST")#TODO
+    
+    # def add_bounce_hit(self,):
+    #     Front_Hit
+    #     Front_Bounce
+    #     Back_Hit
+    #     Back_Boucne
+
+    #     return label
+
+        
                 
         
