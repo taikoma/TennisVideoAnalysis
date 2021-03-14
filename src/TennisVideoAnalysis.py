@@ -410,7 +410,7 @@ class Application(tkinter.Frame):
     def delete_tree_point(self):
         curItem = self.point_tree.focus()
         if curItem:
-            i = int(self.point_tree.item(curItem)["values"][1])
+            i = int(self.point_tree.item(curItem)["values"][1])-1
             self.score.delete_position_data(i)
             self.set_point_tree()
         else:
