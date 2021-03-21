@@ -24,25 +24,21 @@ class Score():
         self.firstSecondString = ["", "1st", "2nd"]
 
         self.pointXYNum = 0
-        self.arrayPointXY = []  # コートのXY座標
+        self.arrayPointXY = []  # コートのXY座標 [[x1,y1],[x2,y2],[x3,y3],[x4,y4]]
         self.arrayPointXY.append([0, 0])
         self.arrayPointXY.append([0, 0])
         self.arrayPointXY.append([0, 0])
         self.arrayPointXY.append([0, 0])
 
-        self.arrayPointXY2 = []  # コートのXY座標
-        self.arrayPointXY2.append([0, 0])
-        self.arrayPointXY2.append([0, 0])
-        self.arrayPointXY2.append([0, 0])
-        self.arrayPointXY2.append([0, 0])
-
-        self.arrayCourt = [[], [], [], []]
+        self.arrayCourt = [[], [], [], []]#[[], [], [], []]
         self.arrayCourt[0].append([0, 0])
         self.arrayCourt[1].append([0, 0])
         self.arrayCourt[2].append([0, 0])
         self.arrayCourt[3].append([0, 0])
         self.arrayContactServe = []
         self.arrayContactServe.append([0, 0])
+
+        
 
         self.array_frame_start = []
         self.array_frame_start.append(0)
@@ -61,21 +57,8 @@ class Score():
         self.arrayPointWinner = []  # ウィナーの名前
         self.arrayPointWinner.append("")
 
-        # self.array_set_a=[]
-        # self.array_set_a.append("")
-        # self.array_set_b=[]
-        # self.array_set_b.append("")
-        # self.array_game_a=[]
-        # self.array_game_a.append("")
-        # self.array_game_b=[]
-        # self.array_game_b.append("")
-        # self.array_score_a=[]
-        # self.array_score_a.append("")
-        # self.array_score_b=[]
-        # self.array_score_b.append("")
-
         self.pointWin = []
-        self.pointWin = []
+        # self.pointWin = []
         self.pointA = []
         self.pointB = []
         self.pointA.append(0)
@@ -112,8 +95,6 @@ class Score():
         self.serve_point.append(0)
 
         #追加
-        # self.arrayRally=[]
-        # self.arrayRally.append([])
         self.arrayHitPlayer=[]
         self.arrayHitPlayer.append([])
         self.arrayBounceHit=[]
@@ -129,6 +110,7 @@ class Score():
         self.arrayPlayerAPosition.append([])
         self.arrayPlayerBPosition = []
         self.arrayPlayerBPosition.append([])
+
 
     def nextAppend(self):#button_endで呼び出される
         self.rally=0
@@ -640,11 +622,12 @@ class Score():
         self.arrayBounceHit[num].pop(i)
         self.arrayForeBack[num].pop(i)
         self.arrayDirection[num].pop(i)
+        
 
         for j in range(len(self.arrayBallPosition[num])):
             self.arrayBallPosition[num][j][0]=j+1
 
-    def divide_track_data(self,start_frame,track_frame,bx,by,xa,ya,xb,yb,hit_bounce):
+    def divide_track_data(self,start_frame,track_frame,bx,by,xa,ya,xb,yb,hit_bounce,x1,y1,x2,y2,x3,y3,x4,y4):
         for i in range(len(start_frame)-1):
             for j in range(len(track_frame)):
                 # print(start_frame[i],track_frame[j],start_frame[i+1])
@@ -663,6 +646,16 @@ class Score():
                     self.arrayHitPlayer[i].append("TEST")#TODO
                     self.arrayForeBack[i].append("TEST")#TODO
                     self.arrayDirection[i].append("TEST")#TODO
+
+    def courtxy2xy(self,i):
+        self.arrayPointXY[0][0] = points[3][0]
+        self.arrayPointXY[0][1] = points[3][1]
+        self.arrayPointXY[1][0] = points[0][0]
+        self.arrayPointXY[1][1] = points[0][1]
+        self.arrayPointXY[2][0] = points[1][0]
+        self.arrayPointXY[2][1] = points[1][1]
+        self.arrayPointXY[3][0] = points[2][0]
+
     
     # def add_bounce_hit(self,):
     #     Front_Hit

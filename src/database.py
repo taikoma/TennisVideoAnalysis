@@ -288,7 +288,7 @@ class Database():
         bh=df_shot['bouncehit'].values.tolist()
         fb=df_shot['foreback'].values.tolist()
         d=df_shot['direction'].values.tolist()
-        print(df_shot)
+        # print(df_shot)
         
         self.arrayBallPosition.extend(self.array2arrays(point,frame,ballx,bally))
         self.arrayPlayerAPosition.extend(self.array2arrays(point,frame,pax,pay))

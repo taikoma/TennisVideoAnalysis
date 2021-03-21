@@ -60,6 +60,7 @@ class TestDatabase(unittest.TestCase):
         self.assertEqual(3,self.db.save_database_score(self.db_name))#仮データ 3
 
     def test_save_database_shot(self):
+        """calc length of saved dataframe"""
         self.assertEqual(0,self.db.save_database_shot(self.db_name))#初期データ　0
 
         self.create_temp_data_shot()

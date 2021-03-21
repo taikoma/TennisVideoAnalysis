@@ -1,6 +1,7 @@
 import unittest
 # import pandas as pd
 import numpy as np
+import pandas as pd
 
 import src.track_data as track_data
 
@@ -14,6 +15,38 @@ class TestTrackData(unittest.TestCase):
         self.track_data.load_ball_data(filename)
         self.assertEqual([5,819,448],[self.track_data.frame_array[0],self.track_data.all_track_ball_x[0],self.track_data.all_track_ball_y[0]])
 
+    def test_df2data(self):
+        frame=[100,200,300,400,500]
+        x_ball=[np.NaN]*5
+        y_ball=[np.NaN]*5
+        x_a=[""]*5
+        y_a=[""]*5
+        x_b=[""]*5
+        y_b=[""]*5
+        hb=[""]*5
+        x1,y1,x2,y2,x3,y3,x4,y4=[""]*5,[""]*5,[""]*5,[""]*5,[""]*5,[""]*5,[""]*5,[""]*5
+        df=pd.DataFrame({"Frame":frame,
+                            "X_Ball_onC":x_ball,
+                            "Y_Ball_onC":y_ball,
+                            "X_A_onC":x_a,
+                            "Y_A_onC":y_a,
+                            "X_B_onC":x_b,
+                            "Y_B_onC":y_b,
+                            "HitBounce":hb,
+                            "X1":x1,
+                            "Y1":y1,
+                            "X2":x2,
+                            "Y2":y2,
+                            "X3":x3,
+                            "Y3":y3,
+                            "X4":x4,
+                            "Y4":y4}
+                            )
+        self.track_data.df2data(df)
+        self.assertEqual(len(self.track_data.track_frame_array),len(self.track_data.track_x1))
+
+
+    @unittest.skip("test")
     def test_load_track_data(self):
         filename="./data/track-data.csv"
         self.track_data.load_track_data(filename)
