@@ -173,24 +173,24 @@ class TrackData():
     
     def df2data(self,df):
         self.track_frame_array = df["Frame"].astype(np.int64).values.tolist()
-        self.track_ball_x = self.df_float2int(df["X_Ball_onC"]).values.tolist()
-        self.track_ball_y = self.df_float2int(df["Y_Ball_onC"]).values.tolist()
-        self.track_player_a_x = self.df_float2int(df["X_A_onC"]).values.tolist()
-        self.track_player_a_y = self.df_float2int(df["Y_A_onC"]).values.tolist()
-        self.track_player_b_x = self.df_float2int(df["X_B_onC"]).values.tolist()
-        self.track_player_b_y = self.df_float2int(df["Y_B_onC"]).values.tolist()
+        self.track_ball_x = self.df_float2fillna(df["X_Ball_onC"]).values.tolist()
+        self.track_ball_y = self.df_float2fillna(df["Y_Ball_onC"]).values.tolist()
+        self.track_player_a_x = self.df_float2fillna(df["X_A_onC"]).values.tolist()
+        self.track_player_a_y = self.df_float2fillna(df["Y_A_onC"]).values.tolist()
+        self.track_player_b_x = self.df_float2fillna(df["X_B_onC"]).values.tolist()
+        self.track_player_b_y = self.df_float2fillna(df["Y_B_onC"]).values.tolist()
         self.track_hit_bounce = df["HitBounce"].fillna("").values.tolist()
 
-        self.track_x1 = self.df_float2int(df["X1"]).values.tolist()
-        self.track_y1 = self.df_float2int(df["Y1"]).values.tolist()
-        self.track_x2 = self.df_float2int(df["X2"]).values.tolist()
-        self.track_y2 = self.df_float2int(df["Y2"]).values.tolist()
-        self.track_x3 = self.df_float2int(df["X3"]).values.tolist()
-        self.track_y3 = self.df_float2int(df["Y3"]).values.tolist()
-        self.track_x4 = self.df_float2int(df["X4"]).values.tolist()
-        self.track_y4 = self.df_float2int(df["Y4"]).values.tolist()
+        self.track_x1 = self.df_float2fillna(df["X1"]).values.tolist()
+        self.track_y1 = self.df_float2fillna(df["Y1"]).values.tolist()
+        self.track_x2 = self.df_float2fillna(df["X2"]).values.tolist()
+        self.track_y2 = self.df_float2fillna(df["Y2"]).values.tolist()
+        self.track_x3 = self.df_float2fillna(df["X3"]).values.tolist()
+        self.track_y3 = self.df_float2fillna(df["Y3"]).values.tolist()
+        self.track_x4 = self.df_float2fillna(df["X4"]).values.tolist()
+        self.track_y4 = self.df_float2fillna(df["Y4"]).values.tolist()
 
-    def df_float2int(self, df):
+    def df_float2fillna(self, df):
         """convert nan to str"" because cannot convert str directly ,once convert to num 999
 
         Parameters
@@ -203,7 +203,7 @@ class TrackData():
         """
         df = pd.to_numeric(df, errors="coerce")
         df = df.fillna(999)
-        df = df.astype(np.int64)
+        # df = df.astype(np.int64)
         df = df.replace(999, "")
         df = df
         return df
@@ -230,8 +230,16 @@ class TrackData():
         """
         convert xy to center reference 
         """
-        x = round(x - 10.97/ 2, 2)
-        y = round(y - 23.78 / 2, 2)
+        # x = round(x - 10.97/ 2, 2)
+        # y = round(y - 23.78 / 2, 2)
+        x = x - 10.97/ 2
+        y = y - 23.78 / 2
+        return x, y
+
+    def xy2leftup(self, x, y):
+        """convert xy to leftup reference"""
+        x = x + 10.97 / 2
+        y = y + 23.77 / 2
         return x, y
 
     def transform_position(self,x,y,matrix):

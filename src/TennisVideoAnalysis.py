@@ -2025,14 +2025,37 @@ class Application(tkinter.Frame):
         self.score.arrayPointXY[3]=[self.track_data.track_x4[index]*kx,self.track_data.track_y4[index]*ky]
         self.array2invM()
         self.draw_court_line(self.pts,resized_image_copy,self.inv_M)
-    
 
-        self.xa=self.track_data.track_player_a_x[index]*kx
-        self.ya=self.track_data.track_player_a_y[index]*ky
-        self.xb=self.track_data.track_player_b_x[index]*kx
-        self.yb=self.track_data.track_player_b_y[index]*ky
+        #xy2leftup
+        print(self.track_data.track_player_a_x[index],self.track_data.track_player_a_y[index])
+        print(self.track_data.track_player_b_x[index],self.track_data.track_player_b_y[index])
+        self.xa_c,self.ya_c=self.track_data.xy2leftup(self.track_data.track_player_a_x[index],self.track_data.track_player_a_y[index])
+        self.xb_c,self.yb_c=self.track_data.xy2leftup(self.track_data.track_player_b_x[index],self.track_data.track_player_b_y[index])
 
+        print(self.xa_c,self.ya_c)
+        print(self.xb_c,self.yb_c)
 
+        # xa,ya=self.track_data.transform_position(self.xa_c,self.ya_c,self.M)
+        # xb,yb=self.track_data.transform_position(self.xb_c,self.yb_c,self.M)
+
+        pts=np.array([[[float(self.xa_c),float(self.ya_c)]]])
+        dst = cv2.perspectiveTransform(pts,self.inv_M)#self.M
+        hx=dst[0][0][0]
+        hy=dst[0][0][1]
+        xa=hx
+        ya=hy
+
+        pts=np.array([[[float(self.xb_c),float(self.yb_c)]]])
+        dst = cv2.perspectiveTransform(pts,self.inv_M)#self.M
+        hx=dst[0][0][0]
+        hy=dst[0][0][1]
+        xb=hx
+        yb=hy
+
+        self.xa=xa
+        self.ya=ya
+        self.xb=xb
+        self.yb=yb
 
         x1=self.xa
         y1=self.ya
@@ -2043,7 +2066,7 @@ class Application(tkinter.Frame):
         rx2=self.rx2
         ry2=self.ry2
 
-        print(x1,y1,x2,y2)#-2.1052631578947367 -5.070422535211268 1.263157894736842 4.225352112676056 逆変換が必要
+        print("position:",x1,y1,x2,y2)#-2.1052631578947367 -5.070422535211268 1.263157894736842 4.225352112676056 逆変換が必要
 
         self.disp_circle_on_position(resized_image_copy,x1,y1,x2,y2,rx1,ry1,rx2,ry2)
 
