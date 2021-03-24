@@ -162,6 +162,7 @@ class Application(tkinter.Frame):
 
         self.create_point_tree(self.pw_right_up_right)
         self.point_tree.bind('<ButtonRelease-1>', self.select_point)  # Double-1
+        self.point_tree.bind('<Shift-ButtonRelease-1>', self.shift_select)  # Double-1
 
         self.pw_left_down = tkinter.PanedWindow(self.pw_left, orient='horizontal') # 左画面の下側 
         self.pw_left.add(self.pw_left_down)
@@ -253,6 +254,7 @@ class Application(tkinter.Frame):
         self.create_tree(self.pw_right_down_down)#タグ一覧を右に描画
         self.set_tree()
         self.tree.bind('<ButtonRelease-1>', self.select)  # Double-1
+        
         self.tree.selection_set(self.tree.get_children()[0])
 
         self.change_state()
@@ -412,13 +414,11 @@ class Application(tkinter.Frame):
     def delete_tree_point(self):
         curItem = self.point_tree.focus()
         if curItem:
-            i = int(self.point_tree.item(curItem)["values"][1])-1
-            self.score.delete_position_data(i)
+            self.score.delete_tree_point_shift(self.start_shot,self.end_shot)
             self.set_point_tree()
         else:
             tkinter.messagebox.showinfo("Error", "データが選択されていません")
 
-    
 
     def create_image(self,pw):
         gimg = np.zeros((self.h,self.w,  3), dtype=np.uint8)
@@ -1177,7 +1177,7 @@ class Application(tkinter.Frame):
         y4=self.track_data.track_y4
 
         bounce_hit=self.track_data.track_hit_bounce
-        self.score.divide_track_data(frame_start,track_fame,bx,by,xa,ya,xb,yb,bounce_hit,x1,y1,x2,y2,x3,y3,x4,y4)
+        self.score.divide_track_data(frame_start,track_fame,bx,by,xa,ya,xb,yb,bounce_hit)#,x1,y1,x2,y2,x3,y3,x4,y4
 
         self.set_point_tree()
 
@@ -2002,6 +2002,23 @@ class Application(tkinter.Frame):
         self.key_activate()
         self.set_point_tree()#追加
         self.disp_edit_tree(self.score.number)
+        
+    def shift_select(self, event):
+        print("shift")
+        # tree = event.widget
+
+        i=self.num_shot
+        cur_item = self.point_tree.focus()
+        j=int(self.point_tree.item(cur_item)["values"][1])-1
+        self.start_shot=min(i,j)
+        self.end_shot=max(i,j)
+        for i in range(self.start_shot,self.end_shot):
+            self.point_tree.selection_add(self.point_tree.get_children()[i])
+
+            # self.point_tree.selection_add([self.point_tree.get_children()[0], self.point_tree.get_children()[4]])
+        # next_item = self.point_tree.next(cur_item)
+        # self.point_tree.focus(next_item)
+        # self.point_tree.selection_add([self.point_tree.get_children()[0], self.point_tree.get_children()[4]])
 
     def select_point(self, event):
         """
@@ -2011,7 +2028,9 @@ class Application(tkinter.Frame):
         self.pos_seek.set(int(self.point_tree.item(curItem)["values"][2]))
         self.num_shot=int(self.point_tree.item(curItem)["values"][1])-1
         self.disp_track_data_court_one(self.num_shot)
-
+        self.start_shot=self.num_shot
+        self.end_shot=self.num_shot
+        
         #disp 4 corner points
         #search match frame
         index=self.track_data.track_frame_array.index(int(self.point_tree.item(curItem)["values"][2]))

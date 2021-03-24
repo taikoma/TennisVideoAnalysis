@@ -266,6 +266,85 @@ class TestScore(unittest.TestCase):
         self.assertEqual([[],[],[[1,51,3,4],[2,101,5,6]],[]],self.score.arrayBallPosition)
         self.assertEqual([[],[],[[13,14],[15,16]],[]],self.score.arrayPlayerAPosition)
 
+    def test_delete_point_shift(self):
+        #middle
+        print("test_delete_point_shift")
+        self.score.arrayBallPosition=[[],[],[[1,11,1,2],[2,51,3,4],[3,101,5,6],[4,201,7,8]],[]]
+        self.score.arrayPlayerAPosition=[[],[],[[11,12],[13,14],[15,16],[17,18]],[]]
+        self.score.arrayPlayerBPosition=[[],[],[[21,22],[23,24],[25,26],[17,18]],[]]
+        self.score.arrayHitPlayer=[[],[],["A","A","B","A"],[]]
+        self.score.arrayBounceHit=[[],[],["Bounce","Hit","Bounce","Hit"],[]]
+        self.score.arrayForeBack=[[],[],["Fore","Back","Back","Back"],[]]
+        self.score.arrayDirection=[[],[],["Cross","Cross","Cross","Cross"],[]]
+        num=2
+        self.score.number=num
+        start_shot=1
+        end_shot=2
+        self.score.delete_tree_point_shift(start_shot,end_shot)
+        self.assertEqual([[],[],[[1,11,1,2],[2,201,7,8]],[]],self.score.arrayBallPosition)
+        
+        #all
+        self.score.arrayBallPosition=[[],[],[[1,11,1,2],[2,51,3,4],[3,101,5,6],[4,201,7,8]],[]]
+        self.score.arrayPlayerAPosition=[[],[],[[11,12],[13,14],[15,16],[17,18]],[]]
+        self.score.arrayPlayerBPosition=[[],[],[[21,22],[23,24],[25,26],[17,18]],[]]
+        self.score.arrayHitPlayer=[[],[],["A","A","B","A"],[]]
+        self.score.arrayBounceHit=[[],[],["Bounce","Hit","Bounce","Hit"],[]]
+        self.score.arrayForeBack=[[],[],["Fore","Back","Back","Back"],[]]
+        self.score.arrayDirection=[[],[],["Cross","Cross","Cross","Cross"],[]]
+        num=2
+        self.score.number=num
+        start_shot=0
+        end_shot=3
+        self.score.delete_tree_point_shift(start_shot,end_shot)
+        self.assertEqual([[],[],[],[]],self.score.arrayBallPosition)
+
+        #last2
+        print("test_delete_point_shift")
+        self.score.arrayBallPosition=[[],[],[[1,11,1,2],[2,51,3,4],[3,101,5,6],[4,201,7,8]],[]]
+        self.score.arrayPlayerAPosition=[[],[],[[11,12],[13,14],[15,16],[17,18]],[]]
+        self.score.arrayPlayerBPosition=[[],[],[[21,22],[23,24],[25,26],[17,18]],[]]
+        self.score.arrayHitPlayer=[[],[],["A","A","B","A"],[]]
+        self.score.arrayBounceHit=[[],[],["Bounce","Hit","Bounce","Hit"],[]]
+        self.score.arrayForeBack=[[],[],["Fore","Back","Back","Back"],[]]
+        self.score.arrayDirection=[[],[],["Cross","Cross","Cross","Cross"],[]]
+        num=2
+        self.score.number=num
+        start_shot=2
+        end_shot=3
+        self.score.delete_tree_point_shift(start_shot,end_shot)
+        self.assertEqual([[],[],[[1,11,1,2],[2,51,3,4]],[]],self.score.arrayBallPosition)
+
+        #last1
+        print("test_delete_point_shift")
+        self.score.arrayBallPosition=[[],[],[[1,11,1,2],[2,51,3,4],[3,101,5,6],[4,201,7,8]],[]]
+        self.score.arrayPlayerAPosition=[[],[],[[11,12],[13,14],[15,16],[17,18]],[]]
+        self.score.arrayPlayerBPosition=[[],[],[[21,22],[23,24],[25,26],[17,18]],[]]
+        self.score.arrayHitPlayer=[[],[],["A","A","B","A"],[]]
+        self.score.arrayBounceHit=[[],[],["Bounce","Hit","Bounce","Hit"],[]]
+        self.score.arrayForeBack=[[],[],["Fore","Back","Back","Back"],[]]
+        self.score.arrayDirection=[[],[],["Cross","Cross","Cross","Cross"],[]]
+        num=2
+        self.score.number=num
+        start_shot=3
+        end_shot=3
+        self.score.delete_tree_point_shift(start_shot,end_shot)
+        self.assertEqual([[],[],[[1,11,1,2],[2,51,3,4],[3,101,5,6]],[]],self.score.arrayBallPosition)
+
+        #1st1
+        print("test_delete_point_shift")
+        self.score.arrayBallPosition=[[],[],[[1,11,1,2],[2,51,3,4],[3,101,5,6],[4,201,7,8]],[]]
+        self.score.arrayPlayerAPosition=[[],[],[[11,12],[13,14],[15,16],[17,18]],[]]
+        self.score.arrayPlayerBPosition=[[],[],[[21,22],[23,24],[25,26],[17,18]],[]]
+        self.score.arrayHitPlayer=[[],[],["A","A","B","A"],[]]
+        self.score.arrayBounceHit=[[],[],["Bounce","Hit","Bounce","Hit"],[]]
+        self.score.arrayForeBack=[[],[],["Fore","Back","Back","Back"],[]]
+        self.score.arrayDirection=[[],[],["Cross","Cross","Cross","Cross"],[]]
+        num=2
+        self.score.number=num
+        start_shot=0
+        end_shot=0
+        self.score.delete_tree_point_shift(start_shot,end_shot)
+        self.assertEqual([[],[],[[1,51,3,4],[2,101,5,6],[3,201,7,8]],[]],self.score.arrayBallPosition)
 
     def test_divide_track_data(self):
         self.score.arrayBallPosition=[[],[],[],[],[],[],[],[],[],[],[],[]]#num12

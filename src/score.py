@@ -613,6 +613,7 @@ class Score():
         ----------
         i:selected num
         """
+        
         num=self.number
         j=self.arrayBallPosition[num][i][0]
         self.arrayBallPosition[num].pop(i)
@@ -622,12 +623,15 @@ class Score():
         self.arrayBounceHit[num].pop(i)
         self.arrayForeBack[num].pop(i)
         self.arrayDirection[num].pop(i)
-        
 
         for j in range(len(self.arrayBallPosition[num])):
             self.arrayBallPosition[num][j][0]=j+1
 
-    def divide_track_data(self,start_frame,track_frame,bx,by,xa,ya,xb,yb,hit_bounce,x1,y1,x2,y2,x3,y3,x4,y4):
+    def delete_tree_point_shift(self,start_shot,end_shot):
+        for i in reversed(range(start_shot,end_shot+1)):#1,2
+            self.delete_position_data(i)
+
+    def divide_track_data(self,start_frame,track_frame,bx,by,xa,ya,xb,yb,hit_bounce):#,x1,y1,x2,y2,x3,y3,x4,y4
         for i in range(len(start_frame)-1):
             for j in range(len(track_frame)):
                 # print(start_frame[i],track_frame[j],start_frame[i+1])
