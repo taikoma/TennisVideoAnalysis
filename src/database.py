@@ -24,16 +24,10 @@ class Database():
         self.arrayFrameStart = score.array_frame_start
         self.arrayFrameEnd = score.array_frame_end
         self.arraySet = score.arraySet
-        # self.array_set_a=score.array_set_a
-        # self.array_set_b=score.array_set_b
 
         self.arrayGame = score.arrayGame
-        # self.array_game_a=score.array_game_a
-        # self.array_game_b=score.array_game_b
 
         self.arrayScore = score.arrayScore
-        # self.array_score_a=score.array_score_a
-        # self.array_score_b=score.array_score_b
 
         self.arrayScoreResult = score.arrayScoreResult
         self.arrayFirstSecond = score.arrayFirstSecond
@@ -42,7 +36,6 @@ class Database():
         self.arrayPointWinner = score.arrayPointWinner
         self.pointWin = score.pointWin
         self.arrayPointPattern = score.arrayPointPattern
-        # self.arrayForeBack = score.arrayForeBack
 
         self.arrayContactServe = score.arrayContactServe
         self.arrayCourt = score.arrayCourt
@@ -55,13 +48,22 @@ class Database():
         self.faultFlug = score.faultFlug
         self.arrayFault = score.arrayFault
 
-        self.arrayBallPosition=score.arrayBallPosition
+        self.array_ball_position_shot=score.array_ball_position_shot
         self.arrayPlayerAPosition=score.arrayPlayerAPosition
         self.arrayPlayerBPosition=score.arrayPlayerBPosition
         self.arrayHitPlayer=score.arrayHitPlayer
         self.arrayBounceHit=score.arrayBounceHit
         self.arrayForeBack=score.arrayForeBack
         self.arrayDirection=score.arrayDirection
+
+        self.array_x1=score.array_x1
+        self.array_y1=score.array_y1
+        self.array_x2=score.array_x2
+        self.array_y2=score.array_y2
+        self.array_x3=score.array_x3
+        self.array_y3=score.array_y3
+        self.array_x4=score.array_x4
+        self.array_y4=score.array_y4
 
     def save_temp_db(self):#
         conn = sqlite3.connect(self.dbName)
@@ -124,14 +126,22 @@ class Database():
         bh=[]
         fb=[]
         d=[]
-        print(len(self.arrayBallPosition))
+        x1=[]
+        y1=[]
+        x2=[]
+        y2=[]
+        x3=[]
+        y3=[]
+        x4=[]
+        y4=[]
+        print(len(self.array_ball_position_shot))
         try:
-            for i in range(len(self.arrayBallPosition)):
-                for j in range(len(self.arrayBallPosition[i])):
-                    point.append(self.arrayBallPosition[i][j][0])
-                    frame.append(self.arrayBallPosition[i][j][1])
-                    bx.append(self.arrayBallPosition[i][j][2])
-                    by.append(self.arrayBallPosition[i][j][3])
+            for i in range(len(self.array_ball_position_shot)):
+                for j in range(len(self.array_ball_position_shot[i])):
+                    point.append(self.array_ball_position_shot[i][j][0])
+                    frame.append(self.array_ball_position_shot[i][j][1])
+                    bx.append(self.array_ball_position_shot[i][j][2])
+                    by.append(self.array_ball_position_shot[i][j][3])
                     pax.append(self.arrayPlayerAPosition[i][j][2])
                     pay.append(self.arrayPlayerAPosition[i][j][3])
                     pbx.append(self.arrayPlayerBPosition[i][j][2])
@@ -140,12 +150,22 @@ class Database():
                     bh.append(self.arrayBounceHit[i][j])
                     fb.append(self.arrayForeBack[i][j])#arrayDirection
                     d.append(self.arrayDirection[i][j])
+                    x1.append(self.array_x1[i][j])
+                    y1.append(self.array_y1[i][j])
+                    x2.append(self.array_x2[i][j])
+                    y2.append(self.array_y2[i][j])
+                    x3.append(self.array_x3[i][j])
+                    y3.append(self.array_y3[i][j])
+                    x4.append(self.array_x4[i][j])
+                    y4.append(self.array_y4[i][j])
         except IndexError as e:
             print("Error",e)
         try:
             df_shot=pd.DataFrame({'point':point,'frame':frame,'ballx':bx,'bally':by,
                             'playerAx':pax,'playerAy':pay,'playerBx':pbx,'playerBy':pby,
-                            'hitplayer':h,'bouncehit':bh,'foreback':fb,'direction':d
+                            'hitplayer':h,'bouncehit':bh,'foreback':fb,'direction':d,
+                            'x1':x1,'y1':y1,'x2':x2,'y2':y2,
+                            'x3':x3,'y3':y3,'x4':x4,'y4':y4
             })
         except ValueError as e:
             print("Error",e)
@@ -200,7 +220,7 @@ class Database():
         self.arrayCourt.clear()
         self.arrayContactServe.clear()
         self.arrayFault.clear()
-        self.arrayBallPosition.clear()
+        self.array_ball_position_shot.clear()
         self.arrayPlayerAPosition.clear()
         self.arrayPlayerBPosition.clear()
         self.arrayHitPlayer.clear()
@@ -288,29 +308,61 @@ class Database():
         bh=df_shot['bouncehit'].values.tolist()
         fb=df_shot['foreback'].values.tolist()
         d=df_shot['direction'].values.tolist()
-        # print(df_shot)
-        
-        self.arrayBallPosition.extend(self.array2arrays(point,frame,ballx,bally))
+
+        x1=self.pop_array_from_df(df_shot,"x1")
+        y1=self.pop_array_from_df(df_shot,"y1")
+        x2=self.pop_array_from_df(df_shot,"x2")
+        y2=self.pop_array_from_df(df_shot,"y2")
+        x3=self.pop_array_from_df(df_shot,"x3")
+        y3=self.pop_array_from_df(df_shot,"y3")
+        x4=self.pop_array_from_df(df_shot,"x4")
+        y4=self.pop_array_from_df(df_shot,"y4")
+
+        self.array_ball_position_shot.extend(self.array2arrays(point,frame,ballx,bally))
         self.arrayPlayerAPosition.extend(self.array2arrays(point,frame,pax,pay))
         self.arrayPlayerBPosition.extend(self.array2arrays(point,frame,pbx,pby))
 
-        array_hit,array_bouncehit,array_foreback,array_direction=self.array2arrays2(point,hit,bh,fb,d)
+        array_hit,array_bouncehit,array_foreback,array_direction,array_x1,array_y1,array_x2,array_y2,array_x3,array_y3,array_x4,array_y4=self.array2arrays2(point,hit,bh,fb,d,x1,y1,x2,y2,x3,y3,x4,y4)
         self.arrayHitPlayer.extend(array_hit)
         self.arrayBounceHit.extend(array_bouncehit)
         self.arrayForeBack.extend(array_foreback)
         self.arrayDirection.extend(array_direction)
+        self.array_x1.extend(array_x1)
+        self.array_y1.extend(array_y1)
+        self.array_x2.extend(array_x2)
+        self.array_y2.extend(array_y2)
+        self.array_x3.extend(array_x3)
+        self.array_y3.extend(array_y3)
+        self.array_x4.extend(array_x4)
+        self.array_y4.extend(array_y4)
 
-        if(self.number==len(self.arrayBallPosition)):
-            self.arrayBallPosition.append([])
+        if(self.number==len(self.array_ball_position_shot)):#if last data is none add []
+            self.array_ball_position_shot.append([])
             self.arrayPlayerAPosition.append([])
             self.arrayPlayerBPosition.append([])
             self.arrayHitPlayer.append([])
             self.arrayBounceHit.append([])
             self.arrayForeBack.append([])
             self.arrayDirection.append([])
+            self.array_x1.append([])
+            self.array_y1.append([])
+            self.array_x2.append([])
+            self.array_y2.append([])
+            self.array_x3.append([])
+            self.array_y3.append([])
+            self.array_x4.append([])
+            self.array_y4.append([])
+
         conn.close()
         r=len(df_shot)
         return r
+
+    def pop_array_from_df(self,df,label):
+        if label in df.columns.values:
+            array=df[label].values.tolist()
+        else:
+            array=[[]]*len(df)
+        return array
 
     def load_database(self):
         print("loadDatabase")
@@ -320,6 +372,12 @@ class Database():
         self.load_database_shot(self.dbName)
 
     def array2arrays(self,point,frame,ballx,bally):
+        """convert array to arrays by point num
+        example
+        point=[1,2,3,3,4,4,4,4]
+        hit=["A","B","A","B","A","B","A","B"]
+        array_hit=[[], ['A'], ['B'], ['A', 'B'], ['A', 'B', 'A', 'B']]
+        """
         if len(point)>0:
             lastP=point[len(point)-1]+1
         else:
@@ -340,7 +398,7 @@ class Database():
             r[n].append(temp)
         return r
 
-    def array2arrays2(self,point,hit,bouncehit,foreback,direction):
+    def array2arrays2(self,point,hit,bouncehit,foreback,direction,x1,y1,x2,y2,x3,y3,x4,y4):
         if len(point)>0:
             lastP=point[len(point)-1]+1
         else:
@@ -350,11 +408,27 @@ class Database():
         array_bouncehit=[]
         array_foreback=[]
         array_direction=[]
+        array_x1=[]
+        array_y1=[]
+        array_x2=[]
+        array_y2=[]
+        array_x3=[]
+        array_y3=[]
+        array_x4=[]
+        array_y4=[]
         for i in range(lastP):
             array_hit.append([])
             array_bouncehit.append([])
             array_foreback.append([])
             array_direction.append([])
+            array_x1.append([])
+            array_y1.append([])
+            array_x2.append([])
+            array_y2.append([])
+            array_x3.append([])
+            array_y3.append([])
+            array_x4.append([])
+            array_y4.append([])
 
         for i in range(len(point)):
             n=point[i]
@@ -363,16 +437,31 @@ class Database():
             array_bouncehit[n].append(bouncehit[i])
             array_foreback[n].append(foreback[i])
             array_direction[n].append(direction[i])
-        # print(array_hit)
-        # print(array_bouncehit)
-        # print(array_foreback)
-        # print(array_direction)
-        return array_hit,array_bouncehit,array_foreback,array_direction    
+            array_x1[n].append(x1[i])
+            array_y1[n].append(y1[i])
+            array_x2[n].append(x2[i])
+            array_y2[n].append(y2[i])
+            array_x3[n].append(x3[i])
+            array_y3[n].append(y3[i])
+            array_x4[n].append(x4[i])
+            array_y4[n].append(y4[i])
 
-    
-    def db2score(self):#return
+        return array_hit,array_bouncehit,array_foreback,array_direction,array_x1,array_y1,array_x2,array_y2,array_x3,array_y3,array_x4,array_y4
+
+    def check_size_return_array(self,db_array,size):
+        if(len(db_array)<size):
+            score_array = db_array
+            for i in range(len(db_array),size):
+                score_array.append([])
+        else:
+            score_array = db_array
+        return score_array
+
+    def db2score(self):
+        """
+        convert database array to score array
+        """
         print("db2score")
-        # score=src.Score()
         self.score.array_frame_start = self.arrayFrameStart
         self.score.array_frame_end = self.arrayFrameEnd
         self.score.arraySet = self.arraySet
@@ -397,40 +486,23 @@ class Database():
         self.score.faultFlug = self.faultFlug
         self.score.arrayFault = self.arrayFault
 
-        if(len(self.arrayBallPosition)<len(self.score.array_frame_start)):
-            self.score.arrayBallPosition=[[] for i in range(len(self.arrayBallPosition),len(self.score.array_frame_start))]
-        else:
-            self.score.arrayBallPosition = self.arrayBallPosition
+        size=len(self.score.array_frame_start)
 
-        if(len(self.arrayPlayerAPosition)<len(self.score.array_frame_start)):
-            self.score.arrayPlayerAPosition=[[] for i in range(len(self.arrayPlayerAPosition),len(self.score.array_frame_start))]
-        else:
-            self.score.arrayPlayerAPosition = self.arrayPlayerAPosition
+        self.score.array_ball_position_shot=self.check_size_return_array(self.array_ball_position_shot,size)
+        self.score.arrayPlayerAPosition=self.check_size_return_array(self.arrayPlayerAPosition,size)
+        self.score.arrayPlayerBPosition=self.check_size_return_array(self.arrayPlayerBPosition,size)
+        self.score.arrayHitPlayer=self.check_size_return_array(self.arrayHitPlayer,size)
+        self.score.arrayBounceHit=self.check_size_return_array(self.arrayBounceHit,size)
+        self.score.arrayForeBack=self.check_size_return_array(self.arrayForeBack,size)
+        self.score.arrayDirection=self.check_size_return_array(self.arrayDirection,size)
 
-        if(len(self.arrayPlayerBPosition)<len(self.score.array_frame_start)):
-            self.score.arrayPlayerBPosition=[[] for i in range(len(self.arrayPlayerBPosition),len(self.score.array_frame_start))]
-        else:
-            self.score.arrayPlayerBPosition = self.arrayPlayerBPosition
-
-        if(len(self.arrayHitPlayer)<len(self.score.array_frame_start)):
-            self.score.arrayHitPlayer=[[] for i in range(len(self.arrayHitPlayer),len(self.score.array_frame_start))]
-        else:
-            self.score.arrayHitPlayer = self.arrayHitPlayer
-
-        if(len(self.arrayBounceHit)<len(self.score.array_frame_start)):
-            self.score.arrayBounceHit=[[] for i in range(len(self.arrayBounceHit),len(self.score.array_frame_start))]
-        else:
-            self.score.arrayBounceHit = self.arrayBounceHit
-        
-        if(len(self.arrayForeBack)<len(self.score.array_frame_start)):
-            self.score.arrayForeBack=[[] for i in range(len(self.arrayForeBack),len(self.score.array_frame_start))]
-        else:
-            self.score.arrayForeBack = self.arrayForeBack
-
-        if(len(self.arrayDirection)<len(self.score.array_frame_start)):
-            self.score.arrayDirection=[[] for i in range(len(self.arrayDirection),len(self.score.array_frame_start))]
-        else:
-            self.score.arrayDirection = self.arrayDirection
-
+        self.score.array_x1=self.check_size_return_array(self.array_x1,size)
+        self.score.array_y1=self.check_size_return_array(self.array_y1,size)
+        self.score.array_x2=self.check_size_return_array(self.array_x2,size)
+        self.score.array_y2=self.check_size_return_array(self.array_y2,size)
+        self.score.array_x3=self.check_size_return_array(self.array_x3,size)
+        self.score.array_y3=self.check_size_return_array(self.array_y3,size)
+        self.score.array_x4=self.check_size_return_array(self.array_x4,size)
+        self.score.array_y4=self.check_size_return_array(self.array_y4,size)
 
         return self.score

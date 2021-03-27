@@ -2,13 +2,18 @@ import unittest
 # import pandas as pd
 import numpy as np
 import pandas as pd
-
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).parent.parent))
+sys.path.append(str(Path(__file__).parent.parent / "src"))
+import src.score as score
 import src.track_data as track_data
 
 class TestTrackData(unittest.TestCase):
     def setUp(self):
         print("setup")
         self.track_data=track_data.TrackData()
+        self.score=score.Score(0)
 
     def test_load_ball_data(self):
         filename="./data/ball-pos.csv"
@@ -68,3 +73,62 @@ class TestTrackData(unittest.TestCase):
         x_array,y_array=self.track_data.detect_front_hit_frame(f,x,y,NET_LINE,THRESH)
         self.assertEqual([],x_array)
         self.assertEqual([],y_array)
+
+    def test_load_track_to_score(self):
+        start_track=[0,15,450,1000]
+        self.score.array_frame_start=start_track
+        self.score.array_ball_position_shot=[[],[],[],[]]
+        self.score.arrayPlayerAPosition=[[],[],[],[]]
+        self.score.arrayPlayerBPosition=[[],[],[],[]]
+        self.score.arrayHitPlayer=[[],[],[],[]]
+        self.score.arrayBounceHit=[[],[],[],[]]
+        self.score.arrayForeBack=[[],[],[],[]]
+        self.score.arrayDirection=[[],[],[],[]]
+        self.score.arrayBounceHit=[[],[],[],[]]
+        self.score.array_x1=[[],[],[],[]]
+        self.score.array_y1=[[],[],[],[]]
+        self.score.array_x2=[[],[],[],[]]
+        self.score.array_y2=[[],[],[],[]]
+        self.score.array_x3=[[],[],[],[]]
+        self.score.array_y3=[[],[],[],[]]
+        self.score.array_x4=[[],[],[],[]]
+        self.score.array_y4=[[],[],[],[]]
+
+        frame=[100,200,300,400,500]
+        x_ball=[np.NaN]*5
+        y_ball=[np.NaN]*5
+        x_a=[""]*5
+        y_a=[""]*5
+        x_b=[""]*5
+        y_b=[""]*5
+        hb=[""]*5
+        x1=[1,2,3,4,5]
+        y1=[1,2,3,4,5]
+        x2=[1,2,3,4,5]
+        y2=[1,2,3,4,5]
+        x3=[1,2,3,4,5]
+        y3=[1,2,3,4,5]
+        x4=[1,2,3,4,5]
+        y4=[1,2,3,4,5]
+        # x1,y1,x2,y2,x3,y3,x4,y4=[""]*5,[""]*5,[""]*5,[""]*5,[""]*5,[""]*5,[""]*5,[""]*5
+        df=pd.DataFrame({"Frame":frame,
+                            "X_Ball_onC":x_ball,
+                            "Y_Ball_onC":y_ball,
+                            "X_A_onC":x_a,
+                            "Y_A_onC":y_a,
+                            "X_B_onC":x_b,
+                            "Y_B_onC":y_b,
+                            "HitBounce":hb,
+                            "X1":x1,
+                            "Y1":y1,
+                            "X2":x2,
+                            "Y2":y2,
+                            "X3":x3,
+                            "Y3":y3,
+                            "X4":x4,
+                            "Y4":y4}
+                            )
+        self.track_data.df2data(df)#df->track_data
+        
+        self.track_data.load_track_to_score(self.score)#track_data->score
+        self.assertEqual([[],[1,2,3,4],[5],[]],self.score.array_x1)

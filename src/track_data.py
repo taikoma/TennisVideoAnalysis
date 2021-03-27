@@ -4,6 +4,8 @@ import pandas as pd
 import numpy as np
 import cv2
 
+import score
+
 # from predict import predict as predict
 # from predict import playerDetect as playerDetect
 
@@ -12,7 +14,7 @@ class TrackData():
         super().__init__()
         print("init")
         self.frame_array=[]
-        self.all_track_ball_x=[]
+        self.all_track_ball_x=[]#
         self.all_track_ball_y=[]
 
         self.track_frame_array=[]
@@ -23,7 +25,14 @@ class TrackData():
         self.track_player_b_x=[]
         self.track_player_b_y=[]
         self.track_hit_bounce=[]
-
+        self.track_x1=[]
+        self.track_y1=[]
+        self.track_x2=[]
+        self.track_y2=[]
+        self.track_x3=[]
+        self.track_y3=[]
+        self.track_x4=[]
+        self.track_y4=[]
 
     def load_ball_data(self,filename):
         print("load_data")
@@ -391,12 +400,42 @@ class TrackData():
         df["Y4"]=p4_y_array
         df.to_csv("../data/track-data2.csv") 
 
+    def load_track_to_score(self,score):
+        
+        frame_start=score.array_frame_start
+        track_fame=self.track_frame_array
+
+        bx=self.track_ball_x
+        by=self.track_ball_y
+        xa=self.track_player_a_x
+        ya=self.track_player_a_y
+        xb=self.track_player_b_x
+        yb=self.track_player_b_y
+        x1=self.track_x1
+        y1=self.track_y1
+        x2=self.track_x2
+        y2=self.track_y2
+        x3=self.track_x3
+        y3=self.track_y3
+        x4=self.track_x4
+        y4=self.track_y4
+        
+        bounce_hit=self.track_hit_bounce
+        score.divide_track_data(frame_start,track_fame,bx,by,xa,ya,xb,yb,bounce_hit,x1,y1,x2,y2,x3,y3,x4,y4)
+
+    def load_database(self):
+        track_filename="./data/track_frame2.csv"
+        score=score.Score(0)
+        db = database.Database(track_filename, score)
+        db.load_database()
+        score = db.db2score()
+
 if __name__ == "__main__":
-    td=TrackData()
+        td=TrackData()
+        td.load_database()
     # td.load_ball_data("../data/ball-pos-000000-020000.csv")
     # output_filename="../data/track_frame-test.csv"
     # td.ball_data2df(output_filename)
-    track_filename="../data/track_frame2.csv"
-    video_filename='../video/nishikori-medvedev.avi'
-    td.predict_court_player(track_filename,video_filename)
-
+    # track_filename="./data/track_frame2.csv"
+    # video_filename='./video/nishikori-medvedev.avi'
+    # td.predict_court_player(track_filename,video_filename)

@@ -3,5 +3,5 @@
     "playerB": "Nishikori",
     "firstServer": 0,
     "videoFile": "../video/nishikori-medvedev.avi",
-    "database": "../data/nishikori-medvedev.db"
+    "database": "../data/add_track.db"
 }

@@ -86,20 +86,22 @@ class Application(tkinter.Frame):
 
         self.track_data=track_data.TrackData()
             
-        self.xa_c=0#player a x potision on court
-        self.ya_c=0#player a y potision on court
-        self.xb_c=0#player b x potision on court
-        self.yb_c=0#player b y potision on court
+        self.xa_c=0#player a x position on court
+        self.ya_c=0#player a y position on court
+        self.xb_c=0#player b x position on court
+        self.yb_c=0#player b y position on court
+
         self.bx_clicked=0
         self.by_clicked=0
-        self.xa=0
-        self.xb=0
-        self.ya=0
-        self.yb=0
-        self.rx1=40
-        self.ry1=20
-        self.rx2=40
-        self.ry2=20
+
+        self.xa=0#player a x position on resized image
+        self.xb=0#player a y position on resized image
+        self.ya=0#player b x position on resized image
+        self.yb=0#player b y position on resized image
+        self.rxa=40
+        self.rya=20
+        self.rxb=40
+        self.ryb=20
 
         self.sx1=0
         self.sy1=0
@@ -539,6 +541,7 @@ class Application(tkinter.Frame):
         
 
     def image_change(self,img_copy):
+        "image_change"
         image_change = cv2.cvtColor(img_copy, cv2.COLOR_BGR2RGB)
         im = Image.fromarray(image_change)
         self.imgtk = ImageTk.PhotoImage(image=im)
@@ -585,11 +588,12 @@ class Application(tkinter.Frame):
         self.array2invM()
         self.draw_court_line(self.pts,img_copy,self.inv_M)
 
-    def disp_after_position(self,img_copy):
-        #display position on court
-        print("disp")
-        self.disp_track_data_court_all()#plotposition全て
-
+    def disp_position_on_image_court(self,img_copy):
+        """display position on court and image
+        """
+        print("disp_position_on_image_court")
+        i=self.num_shot
+        self.disp_track_data_court_one(i)
         #update image
         self.draw_court_line(self.pts,img_copy,self.inv_M)
         cv2.circle(img_copy,(self.bx_clicked,self.by_clicked),2,(0,255,255),-1)
@@ -597,14 +601,14 @@ class Application(tkinter.Frame):
 
     def calc_bounce_shot(self,img_copy,serve_return):
         """
-        ball bounce positioin data to array
+        ball bounce position data to array
         """
         self.score.position_data2array(self.xball,self.yball,"","","","",serve_return,"Bounce","","Cross",self.pos_seek.get())
 
     def calc_bounce_shot_fix(self,img_copy,serve_return):
-        self.xball,self.yball=self.track_data.self.transform_position(self.bx_clicked,self.by_clicked,self.M)
+        self.xball,self.yball=self.track_data.transform_position(self.bx_clicked,self.by_clicked,self.M)
         self.score.position_data2array_fix(self.xball,self.yball,"","","","",serve_return,"Bounce","","Cross",self.pos_seek.get())
-        self.disp_after_position(img_copy)
+        
 
     def calc_hit_shot(self,gimg,img_copy,serve_return):
         """
@@ -614,27 +618,40 @@ class Application(tkinter.Frame):
         positioin data to array
         """
         #calc player position
-        self.x1,self.y1,self.x2,self.y2,self.rx1,self.ry1,self.rx2,self.ry2=self.detect_player(gimg)#追加
-        self.xa,self.ya=self.track_data.self.transform_position(self.xa,self.ya,self.M)
-        self.xb,self.yb=self.track_data.self.transform_position(self.xb,self.yb,self.M)
+        self.xa,self.ya,self.xb,self.yb,self.rxa,self.rya,self.rxb,self.ryb=self.detect_player(gimg)
+        self.xa_c,self.ya_c=self.track_data.transform_position(self.xa,self.ya,self.M)
+        self.xb_c,self.yb_c=self.track_data.transform_position(self.xb,self.yb,self.M)
         #disp player position on image
-        self.disp_circle_on_position(img_copy,self.xa,self.ya,self.xb,self.yb,self.rx1,self.ry1,self.rx2,self.ry2)#プレイヤーの位置を左画面に表示
+        self.disp_circle_on_position(img_copy,self.xa_c,self.ya_c,self.xb_c,self.yb_c,self.rxa,self.rya,self.rxb,self.ryb)#プレイヤーの位置を左画面に表示
         foreback,self.yball=self.whichForeBack(self.xball,self.yball,self.xa_c,self.ya_c,self.xb_c,self.yb_c)#aの位置とbの位置でボールに近い方のy座標をボールの座標として変換
         self.score.position_data2array(self.xball,self.yball,self.xa_c,self.ya_c,self.xb_c,self.yb_c,serve_return,"Hit",foreback,"Cross",self.pos_seek.get())
         
     
 
-    def calc_hist_shot_fix(self,gimg,img_copy,serve_return):
-        # print("hitShotFix")
-        self.xball,self.yball=self.track_data.self.transform_position(self.bx_clicked,self.by_clicked,self.M)
-
-        self.xa,self.ya=self.track_data.self.transform_position(self.xa,self.ya,self.M)
-        
-        self.xb,self.yb=self.track_data.self.transform_position(self.xb,self.yb,self.M)
-        self.disp_circle_on_position(img_copy,self.xa,self.ya,self.xb,self.yb,self.rx1,self.ry1,self.rx2,self.ry2)#プレイヤーの位置を左画面に表示
+    def calc_hit_shot_fix(self,gimg,img_copy,serve_return):
+        self.xball,self.yball=self.track_data.transform_position(self.bx_clicked,self.by_clicked,self.M)
+        self.xa_c,self.ya_c=self.track_data.transform_position(self.xa,self.ya,self.M)
+        self.xb_c,self.yb_c=self.track_data.transform_position(self.xb,self.yb,self.M)
+        self.disp_circle_on_position(img_copy,self.xa_c,self.ya_c,self.xb_c,self.yb_c,self.rxa,self.rya,self.rxb,self.ryb)#プレイヤーの位置を左画面に表示
         foreback,self.yball=self.whichForeBack(self.xball,self.yball,self.xa_c,self.ya_c,self.xb_c,self.yb_c)#aの位置とbの位置でボールに近い方のy座標をボールの座標として変換
         self.score.position_data2array_fix(self.xball,self.yball,self.xa_c,self.ya_c,self.xb_c,self.yb_c,serve_return,"Hit",foreback,"Cross",self.pos_seek.get())
-        self.disp_after_position(img_copy)
+        
+
+        #save track data
+        curItem = self.point_tree.get_children()[self.num_shot]
+        index=self.track_data.track_frame_array.index(int(self.point_tree.item(curItem)["values"][2]))
+
+        kx=self.vid.width/self.w
+        ky=self.vid.height/self.h
+        self.track_data.track_x1[index]=self.score.arrayPointXY[0][0]*kx
+        self.track_data.track_y1[index]=self.score.arrayPointXY[0][1]*ky
+        self.track_data.track_x2[index]=self.score.arrayPointXY[1][0]*kx
+        self.track_data.track_y2[index]=self.score.arrayPointXY[1][1]*ky
+
+        self.track_data.track_x3[index]=self.score.arrayPointXY[2][0]*kx
+        self.track_data.track_y3[index]=self.score.arrayPointXY[2][1]*ky
+        self.track_data.track_x4[index]=self.score.arrayPointXY[3][0]*kx
+        self.track_data.track_y4[index]=self.score.arrayPointXY[3][1]*ky
 
     def mouse_motion(self,event):
         if(self.click_select_score_range_active):
@@ -651,7 +668,26 @@ class Application(tkinter.Frame):
 
             self.image_change(img_copy)
 
+    def reselect_player(self,resized_image_copy):
+        #映像画面に表示 x1,y1,x2,y2を使用する
+        self.disp_circle_on_position(resized_image_copy,self.xa_c,self.ya_c,self.xb_c,self.yb_c,self.rxa,self.rya,self.rxb,self.ryb)
+        self.draw_court_line(self.pts,resized_image_copy,self.inv_M)
+
+        self.xball,self.yball=self.track_data.transform_position(self.bx_clicked,self.by_clicked,self.M)
+        foreback,self.yball=self.whichForeBack(self.xball,self.yball,self.xa_c,self.ya_c,self.xb_c,self.yb_c)#aの位置とbの位置でボールに近い方のy座標をボールの座標として変換
+
+        #arrayデータに格納
+        self.score.position_data2array_fix(self.xball,self.yball,self.xa_c,self.ya_c,self.xb_c,self.yb_c,1,"Hit",foreback,"Cross",self.pos_seek.get())
+        
+        #テニスコート画面に表示
+        self.disp_position_on_image_court(resized_image_copy)
+
+        # self.disp_track_data_court_one(self.num_shot)
+        # self.image_change(resized_image_copy)
+        self.set_point_tree()
+
     def reselect_player_a(self,event):
+        self.clickPlayerA=False
         print("reselect_player_a")
         resized_image = self.read_resized_image(self.pos_seek.get())
         resized_image_copy = np.copy(resized_image)
@@ -662,22 +698,25 @@ class Application(tkinter.Frame):
         xa_c,ya_c=self.track_data.transform_position(self.xa,self.ya,self.M)#コート座標に変換
         self.score.arrayPlayerAPosition[self.score.number][self.num_shot][2]=xa_c
         self.score.arrayPlayerAPosition[self.score.number][self.num_shot][3]=ya_c
-
-        #映像画面に表示 x1,y1,x2,y2を使用する
-        self.disp_circle_on_position(resized_image_copy,self.xa,self.ya,self.xb,self.yb,self.rx1,self.ry1,self.rx2,self.ry2)
-        self.draw_court_line(self.pts,resized_image_copy,self.inv_M)
-
-        self.xball,self.yball=self.track_data.transform_position(self.bx_clicked,self.by_clicked,self.M)
-        foreback,self.yball=self.whichForeBack(self.xball,self.yball,self.xa_c,self.ya_c,self.xb_c,self.yb_c)#aの位置とbの位置でボールに近い方のy座標をボールの座標として変換
-
-        #arrayデータに格納
-        self.score.position_data2array_fix(self.xball,self.yball,self.xa_c,self.ya_c,self.xb_c,self.yb_c,1,"Hit",foreback,"Cross",self.pos_seek.get())
         
-        #テニスコート画面に表示
-        self.disp_track_data_court_one(self.num_shot)
+        self.reselect_player(resized_image_copy)
+
+    def reselect_player_b(self,event):
         self.clickPlayerA=False
-        self.image_change(resized_image_copy)
-        self.set_point_tree()
+        
+        print("reselect_player_b")
+        resized_image = self.read_resized_image(self.pos_seek.get())
+        resized_image_copy = np.copy(resized_image)
+        
+        #x2,y2の処理 残す
+        self.xb=event.x
+        self.yb=event.y
+        xb_c,yb_c=self.track_data.transform_position(self.xb,self.yb,self.M)#コート座標に変換
+        self.score.arrayPlayerBPosition[self.score.number][self.num_shot][2]=xb_c
+        self.score.arrayPlayerBPosition[self.score.number][self.num_shot][3]=yb_c
+
+        self.reselect_player(resized_image_copy)
+
 
     def option_serve(self,*args):
         self.score.arrayFirstSecond[self.score.number]=self.score.firstSecondString.index(self.variable_serve.get())
@@ -698,12 +737,7 @@ class Application(tkinter.Frame):
 
     def mouse_clicked(self, event):
         """画像範囲内をマウスクリックしたときの処理
-
         """
-        
-        # mouseevent 着弾点をマウスでクリック
-        # print("mouseclicked")
-
         if self.click_select_score_range:#スコア範囲選択
             if(self.click_select_score_range_active!=True):
                 self.sx1=event.x
@@ -723,6 +757,7 @@ class Application(tkinter.Frame):
                 
         elif self.clickPlayerA:#プレイヤーAの位置
             self.reselect_player_a(event)
+            self.point_tree.selection_set(self.point_tree.get_children()[self.num_shot])
 
         elif self.clickPlayerB:#プレイヤーBの位置
             resized_image = self.read_resized_image(self.pos_seek.get())
@@ -732,7 +767,7 @@ class Application(tkinter.Frame):
             self.yb=y2
             rx2=40
             ry2=20
-            self.xb,self.yb=self.track_data.self.transform_position(x2,y2,self.M)
+            self.xb,self.yb=self.track_data.transform_position(x2,y2,self.M)
             x1=self.xa
             y1=self.ya
             rx1=self.rx1
@@ -740,7 +775,7 @@ class Application(tkinter.Frame):
             self.disp_circle_on_position(resized_image_copy,x1,y1,x2,y2,rx1,ry1,rx2,ry2)
             self.draw_court_line(self.pts,resized_image_copy,self.inv_M)
 
-            self.xball,self.yball=self.track_data.self.transform_position(self.bx_clicked,self.by_clicked,self.M)
+            self.xball,self.yball=self.track_data.transform_position(self.bx_clicked,self.by_clicked,self.M)
 
             foreback,self.yball=self.whichForeBack(self.xball,self.yball,self.xa_c,self.ya_c,self.xb_c,self.yb_c)#aの位置とbの位置でボールに近い方のy座標をボールの座標として変換
             self.score.position_data2array_fix(self.xball,self.yball,self.xa_c,self.ya_c,self.xb_c,self.yb_c,1,"Hit",foreback,"Cross",self.pos_seek.get())
@@ -759,13 +794,14 @@ class Application(tkinter.Frame):
             self.clickCourtRightUp=False
             r=self.score.rally-1
             if(r%4==0):#サーブの着地 #self.bounceAdd(self.bx,self.by_clicked,0)
-                self.calc_bounce_shot_fix(resized_image_copy)
+                self.calc_bounce_shot_fix(resized_image_copy,0)
             elif(r%4==1):#リターン側の打点
-                self.calc_hist_shot_fix(resized_image,resized_image_copy)
+                self.calc_hit_shot_fix(resized_image,resized_image_copy,1)
             elif(r%4==2):#リターンの着地
-                self.calc_bounce_shot_fix(resized_image_copy)
+                self.calc_bounce_shot_fix(resized_image_copy,1)
             elif(r%4==3):#サーブ側の打点
-                self.calc_hist_shot_fix(resized_image,resized_image_copy)
+                self.calc_hit_shot_fix(resized_image,resized_image_copy,0)
+            self.disp_position_on_image_court(resized_image_copy)
             self.set_point_tree()
 
         elif(self.clickCourtLeftUp):#self.score.rally-1にデータを入れていく必要がある
@@ -777,13 +813,14 @@ class Application(tkinter.Frame):
             self.clickCourtLeftUp=False
             r=self.score.rally-1
             if(r%4==0):#サーブの着地 #self.bounceAdd(self.bx,self.by_clicked,0)
-                self.calc_bounce_shot_fix(resized_image_copy)
+                self.calc_bounce_shot_fix(resized_image_copy,0)
             elif(r%4==1):#リターン側の打点
-                self.calc_hist_shot_fix(resized_image,resized_image_copy)
+                self.calc_hit_shot_fix(resized_image,resized_image_copy,1)
             elif(r%4==2):#リターンの着地
-                self.calc_bounce_shot_fix(resized_image_copy)
+                self.calc_bounce_shot_fix(resized_image_copy,1)
             elif(r%4==3):#サーブ側の打点
-                self.calc_hist_shot_fix(resized_image,resized_image_copy)
+                self.calc_hit_shot_fix(resized_image,resized_image_copy,0)
+            self.disp_position_on_image_court(resized_image_copy)
             self.set_point_tree()
         elif(self.clickCourtLeftDown):
             resized_image = self.read_resized_image(self.pos_seek.get())
@@ -794,14 +831,16 @@ class Application(tkinter.Frame):
             self.clickCourtLeftDown=False
             r=self.score.rally-1
             if(r%4==0):#サーブの着地 #self.bounceAdd(self.bx,self.by_clicked,0)
-                self.calc_bounce_shot_fix(resized_image_copy)
+                self.calc_bounce_shot_fix(resized_image_copy,0)
             elif(r%4==1):#リターン側の打点
-                self.calc_hist_shot_fix(resized_image,resized_image_copy)
+                self.calc_hit_shot_fix(resized_image,resized_image_copy,1)
             elif(r%4==2):#リターンの着地
-                self.calc_bounce_shot_fix(resized_image_copy)
+                self.calc_bounce_shot_fix(resized_image_copy,1)
             elif(r%4==3):#サーブ側の打点
-                self.calc_hist_shot_fix(resized_image,resized_image_copy)
+                self.calc_hit_shot_fix(resized_image,resized_image_copy,0)
+            self.disp_position_on_image_court(resized_image_copy)
             self.set_point_tree()
+
         elif(self.clickCourtRightDown):
             resized_image = self.read_resized_image(self.pos_seek.get())
             resized_image_copy = np.copy(resized_image)
@@ -811,13 +850,14 @@ class Application(tkinter.Frame):
             self.clickCourtRightDown=False
             r=self.score.rally-1
             if(r%4==0):#サーブの着地 #self.bounceAdd(self.bx,self.by_clicked,0)
-                self.calc_bounce_shot_fix(resized_image_copy)
+                self.calc_bounce_shot_fix(resized_image_copy,0)
             elif(r%4==1):#リターン側の打点
-                self.calc_hist_shot_fix(resized_image,resized_image_copy)
+                self.calc_hit_shot_fix(resized_image,resized_image_copy,1)
             elif(r%4==2):#リターンの着地
-                self.calc_bounce_shot_fix(resized_image_copy)
+                self.calc_bounce_shot_fix(resized_image_copy,1)
             elif(r%4==3):#サーブ側の打点
-                self.calc_hist_shot_fix(resized_image,resized_image_copy)
+                self.calc_hit_shot_fix(resized_image,resized_image_copy,0)
+            self.disp_position_on_image_court(resized_image_copy)
             self.set_point_tree()
 
         elif(self.mode_predict):#予測モード
@@ -825,7 +865,7 @@ class Application(tkinter.Frame):
             resized_image_copy = np.copy(resized_image)
             self.predictTransformMatrix(resized_image)#テニスコート4点予測し変換行列を作成
             self.bx_clicked,self.by_clicked=self.detect_ball(event)#ボールを検出
-            self.xball,self.yball=self.track_data.self.transform_position(self.bx_clicked,self.by_clicked,self.M)#clicked position to court position
+            self.xball,self.yball=self.track_data.transform_position(self.bx_clicked,self.by_clicked,self.M)#clicked position to court position
             r=self.score.rally
 
             if r%4==0:#server bounce
@@ -837,7 +877,7 @@ class Application(tkinter.Frame):
             elif r%4==3:
                 self.calc_hit_shot(resized_image,resized_image_copy,0)
 
-            self.disp_after_position(resized_image_copy)
+            self.disp_position_on_image_court(resized_image_copy)
             self.score.rally=self.score.rally+1
             self.set_point_tree()
 
@@ -962,17 +1002,14 @@ class Application(tkinter.Frame):
             xmax=self.ds.x2
             ymax=self.ds.y2
             cv2.rectangle(img_copy,(xmin,ymin),(xmax,ymax),(0,0,255),thickness=2)
-            print(self.pos_seek.get())
-            # print(self.track_data.frame_array.index(self.pos_seek.get()))
-            if self.pos_seek.get() in self.track_data.frame_array:
-                print("ball")
-                index=self.track_data.frame_array.index(self.pos_seek.get())
-                x=self.track_data.all_track_ball_x[index]
-                y=self.track_data.all_track_ball_y[index]
-                print(x,y)
-                x,y=self.resize_xy_origin2disp(x,y)
-                print(x,y)
-                cv2.circle(img_copy,(x,y),2,(0,255,255),1)
+            # if self.pos_seek.get() in self.track_data.frame_array:
+            #     index=self.track_data.frame_array.index(self.pos_seek.get())
+            #     x=self.track_data.all_track_ball_x[index]
+            #     y=self.track_data.all_track_ball_y[index]
+            #     print(x,y)
+            #     x,y=self.resize_xy_origin2disp(x,y)
+            #     print(x,y)
+            #     cv2.circle(img_copy,(x,y),2,(0,255,255),1)
             self.image_change(img_copy)
 
     def resize_xy_origin2disp(self,x,y):
@@ -1028,12 +1065,12 @@ class Application(tkinter.Frame):
         out=5*s
         net=0.914*s
         w=0.5
-        for i in range(1,len(self.score.arrayBallPosition[self.score.number])):
+        for i in range(1,len(self.score.array_ball_position_shot[self.score.number])):
             if(i%2==0 and self.score.arrayBounceHit[self.score.number][i]=="Bounce"):
-                xball_pre=self.score.arrayBallPosition[self.score.number][i-1][2]
-                yball_pre=self.score.arrayBallPosition[self.score.number][i-1][3]
-                xball=self.score.arrayBallPosition[self.score.number][i][2]
-                yball=self.score.arrayBallPosition[self.score.number][i][3]
+                xball_pre=self.score.array_ball_position_shot[self.score.number][i-1][2]
+                yball_pre=self.score.array_ball_position_shot[self.score.number][i-1][3]
+                xball=self.score.array_ball_position_shot[self.score.number][i][2]
+                yball=self.score.array_ball_position_shot[self.score.number][i][3]
                 self.canvas1.create_line(xball_pre*s+out,yball_pre*s+out,xball*s+out,yball*s+out,fill='#ffff00',width=w)
                 w=w+0.2
 
@@ -1045,17 +1082,18 @@ class Application(tkinter.Frame):
         self.canvas1.delete("all")
         self.create_court(self.canvas1,self.courtsize,self.pw_right_up_left)
         self.plot_ball_line()
-        for i in range(len(self.score.arrayBallPosition[self.score.number])):
+        for i in range(len(self.score.array_ball_position_shot[self.score.number])):
             self.disp_track_data_court(i)
 
     def disp_track_data_court_one(self,i):
+        print(i)
         self.canvas1.delete("all")
         self.create_court(self.canvas1,self.courtsize,self.pw_right_up_left)
         self.disp_track_data_court(i)
 
     def disp_track_data_court(self,i):
-        xball=self.score.arrayBallPosition[self.score.number][i][2]
-        yball=self.score.arrayBallPosition[self.score.number][i][3]
+        xball=self.score.array_ball_position_shot[self.score.number][i][2]
+        yball=self.score.array_ball_position_shot[self.score.number][i][3]
         xa=self.score.arrayPlayerAPosition[self.score.number][i][2]
         ya=self.score.arrayPlayerAPosition[self.score.number][i][3]
         xb=self.score.arrayPlayerBPosition[self.score.number][i][2]
@@ -1177,7 +1215,7 @@ class Application(tkinter.Frame):
         y4=self.track_data.track_y4
 
         bounce_hit=self.track_data.track_hit_bounce
-        self.score.divide_track_data(frame_start,track_fame,bx,by,xa,ya,xb,yb,bounce_hit)#,x1,y1,x2,y2,x3,y3,x4,y4
+        self.score.divide_track_data(frame_start,track_fame,bx,by,xa,ya,xb,yb,bounce_hit,x1,y1,x2,y2,x3,y3,x4,y4)#
 
         self.set_point_tree()
 
@@ -1195,8 +1233,6 @@ class Application(tkinter.Frame):
         self.set_point_tree()
         curItem = self.tree.get_children()[score.number]
         self.pos_seek.set(int(self.tree.item(curItem)["values"][1]))
-
-          
 
     def save_data(self):
         if not (self.fld):
@@ -1686,7 +1722,7 @@ class Application(tkinter.Frame):
             self.score.arrayCourt[2].insert(self.score.number, [0, 0])
             self.score.arrayCourt[3].insert(self.score.number, [0, 0])
             self.score.arrayContactServe.insert(self.score.number, [0, 0])
-            print("self.score.arrayBallPosition:",self.score.arrayBallPosition)
+            print("self.score.array_ball_position_shot:",self.score.array_ball_position_shot)
             self.score.arrayFault.insert(self.score.number, 0)
             self.score.nextAppend()
             self.setButtonFault()
@@ -1779,7 +1815,7 @@ class Application(tkinter.Frame):
         print("delete_last_shot")
         if(self.score.rally>0):
             self.score.rally=self.score.rally-1
-            self.score.arrayBallPosition[self.score.number].pop(-1)
+            self.score.array_ball_position_shot[self.score.number].pop(-1)
             self.score.arrayPlayerAPosition[self.score.number].pop(-1)
             self.score.arrayPlayerBPosition[self.score.number].pop(-1)
             self.score.arrayHitPlayer[self.score.number].pop(-1)
@@ -1956,19 +1992,20 @@ class Application(tkinter.Frame):
 
     def set_point_tree(self):
         print("self.score.number:",self.score.number)
-        # print("len(self.score.arrayBallPosition[self.score.number]):",len(self.score.arrayBallPosition[self.score.number]))
+        # print("len(self.score.array_ball_position_shot[self.score.number]):",len(self.score.array_ball_position_shot[self.score.number]))
         for i, t in enumerate(self.point_tree.get_children()):
             self.point_tree.delete(t)
-        for i in range(len(self.score.arrayBallPosition[self.score.number])):
+        for i in range(len(self.score.array_ball_position_shot[self.score.number])):
             print("i",i)
             self.point_tree.insert("",
                              i,
                              values=(self.score.number,
                                      (i+1),
-                                     self.score.arrayBallPosition[self.score.number][i][1],
+                                     self.score.array_ball_position_shot[self.score.number][i][1],
                                      self.score.arrayHitPlayer[self.score.number][i],
                                      self.score.arrayBounceHit[self.score.number][i],
                                      self.score.arrayForeBack[self.score.number][i]))#self.score.arrayDirection[self.score.number][i]
+        # self.point_tree.selection_set(self.point_tree.get_children()[self.num_shot])
 
     def set_tree(self):
 
@@ -2015,11 +2052,6 @@ class Application(tkinter.Frame):
         for i in range(self.start_shot,self.end_shot):
             self.point_tree.selection_add(self.point_tree.get_children()[i])
 
-            # self.point_tree.selection_add([self.point_tree.get_children()[0], self.point_tree.get_children()[4]])
-        # next_item = self.point_tree.next(cur_item)
-        # self.point_tree.focus(next_item)
-        # self.point_tree.selection_add([self.point_tree.get_children()[0], self.point_tree.get_children()[4]])
-
     def select_point(self, event):
         """
         when select point tree
@@ -2054,9 +2086,6 @@ class Application(tkinter.Frame):
         print(self.xa_c,self.ya_c)
         print(self.xb_c,self.yb_c)
 
-        # xa,ya=self.track_data.transform_position(self.xa_c,self.ya_c,self.M)
-        # xb,yb=self.track_data.transform_position(self.xb_c,self.yb_c,self.M)
-
         pts=np.array([[[float(self.xa_c),float(self.ya_c)]]])
         dst = cv2.perspectiveTransform(pts,self.inv_M)#self.M
         hx=dst[0][0][0]
@@ -2080,16 +2109,19 @@ class Application(tkinter.Frame):
         y1=self.ya
         x2=self.xb
         y2=self.yb
-        rx1=self.rx1
-        ry1=self.ry1
-        rx2=self.rx2
-        ry2=self.ry2
+        rx1=self.rxa
+        ry1=self.rya
+        rx2=self.rxb
+        ry2=self.ryb
 
-        print("position:",x1,y1,x2,y2)#-2.1052631578947367 -5.070422535211268 1.263157894736842 4.225352112676056 逆変換が必要
+        print("position:",x1,y1,x2,y2)
 
         self.disp_circle_on_position(resized_image_copy,x1,y1,x2,y2,rx1,ry1,rx2,ry2)
 
         self.image_change(resized_image_copy)
+
+        
+
 
     def disp_edit_tree(self,i):
         self.entry_edit_start.delete(0, tkinter.END)
@@ -2184,16 +2216,17 @@ if __name__ == "__main__":
     if(settings.dataFile!=""):
         print(settings.dataFile)
         filename=settings.dataFile
+        "../data/add_track.db"
         app.fld=filename
         app.load_data()
     
-    filename="../data/ball-pos.csv"
-    filename="../data/ball-pos-000000-020000.csv"
-    app.load_track_ball_data(filename)
+    # filename="../data/ball-pos.csv"
+    # filename="../data/ball-pos-000000-020000.csv"
+    # app.load_track_ball_data(filename)
 
-    filename="../data/track-data.csv"
-    filename="../data/track-data2.csv"
-    app.load_track_data(filename)
+    # filename="../data/track-data.csv"
+    # filename="../data/track-data2.csv"
+    # app.load_track_data(filename)
 
     app.bind("<Right>", app.button_forward1)#右矢印をクリックしたらフレーム+1
     app.bind("<Control-Right>", app.button_forward10)#ctrf+右矢印をクリックしたらフレーム+10
