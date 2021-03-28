@@ -1235,17 +1235,19 @@ class Application(tkinter.Frame):
         self.pos_seek.set(int(self.tree.item(curItem)["values"][1]))
 
     def save_data(self):
+        print("save_data")
+        print(self.fld)
         if not (self.fld):
-            dir = 'C:\\'
+            dir='../data/'
             self.fld = filedialog.asksaveasfilename(
                 initialdir=dir, filetypes=[
                     ('Db Files', ('.db'))])
-            if(self.fld):
-                db = database.Database(self.fld, self.score)
-                db.save_database()
+        if(self.fld):
+            db = database.Database(self.fld, self.score)
+            db.save_database()
 
     def save_data_as(self):
-        dir = 'C:\\'
+        dir='../data/'
         self.fld = filedialog.asksaveasfilename(
             initialdir=dir, filetypes=[
                 ('Db Files', ('.db'))])
@@ -2059,64 +2061,64 @@ class Application(tkinter.Frame):
         curItem = self.point_tree.focus()
         self.pos_seek.set(int(self.point_tree.item(curItem)["values"][2]))
         self.num_shot=int(self.point_tree.item(curItem)["values"][1])-1
-        self.disp_track_data_court_one(self.num_shot)
+        # self.disp_track_data_court_one(self.num_shot)
         self.start_shot=self.num_shot
         self.end_shot=self.num_shot
         
         #disp 4 corner points
         #search match frame
-        index=self.track_data.track_frame_array.index(int(self.point_tree.item(curItem)["values"][2]))
+        # index=self.track_data.track_frame_array.index(int(self.point_tree.item(curItem)["values"][2]))
         risized_image = self.read_resized_image(self.pos_seek.get())
         resized_image_copy = np.copy(risized_image)
-        kx=self.w/self.vid.width
-        ky=self.h/self.vid.height
-        self.score.arrayPointXY[0]=[self.track_data.track_x1[index]*kx,self.track_data.track_y1[index]*ky]
-        self.score.arrayPointXY[1]=[self.track_data.track_x2[index]*kx,self.track_data.track_y2[index]*ky]
-        self.score.arrayPointXY[2]=[self.track_data.track_x3[index]*kx,self.track_data.track_y3[index]*ky]
-        self.score.arrayPointXY[3]=[self.track_data.track_x4[index]*kx,self.track_data.track_y4[index]*ky]
-        self.array2invM()
-        self.draw_court_line(self.pts,resized_image_copy,self.inv_M)
+        # kx=self.w/self.vid.width
+        # ky=self.h/self.vid.height
+        # self.score.arrayPointXY[0]=[self.track_data.track_x1[index]*kx,self.track_data.track_y1[index]*ky]
+        # self.score.arrayPointXY[1]=[self.track_data.track_x2[index]*kx,self.track_data.track_y2[index]*ky]
+        # self.score.arrayPointXY[2]=[self.track_data.track_x3[index]*kx,self.track_data.track_y3[index]*ky]
+        # self.score.arrayPointXY[3]=[self.track_data.track_x4[index]*kx,self.track_data.track_y4[index]*ky]
+        # self.array2invM()
+        # self.draw_court_line(self.pts,resized_image_copy,self.inv_M)
 
-        #xy2leftup
-        print(self.track_data.track_player_a_x[index],self.track_data.track_player_a_y[index])
-        print(self.track_data.track_player_b_x[index],self.track_data.track_player_b_y[index])
-        self.xa_c,self.ya_c=self.track_data.xy2leftup(self.track_data.track_player_a_x[index],self.track_data.track_player_a_y[index])
-        self.xb_c,self.yb_c=self.track_data.xy2leftup(self.track_data.track_player_b_x[index],self.track_data.track_player_b_y[index])
+        # #xy2leftup
+        # print(self.track_data.track_player_a_x[index],self.track_data.track_player_a_y[index])
+        # print(self.track_data.track_player_b_x[index],self.track_data.track_player_b_y[index])
+        # self.xa_c,self.ya_c=self.track_data.xy2leftup(self.track_data.track_player_a_x[index],self.track_data.track_player_a_y[index])
+        # self.xb_c,self.yb_c=self.track_data.xy2leftup(self.track_data.track_player_b_x[index],self.track_data.track_player_b_y[index])
 
-        print(self.xa_c,self.ya_c)
-        print(self.xb_c,self.yb_c)
+        # print(self.xa_c,self.ya_c)
+        # print(self.xb_c,self.yb_c)
 
-        pts=np.array([[[float(self.xa_c),float(self.ya_c)]]])
-        dst = cv2.perspectiveTransform(pts,self.inv_M)#self.M
-        hx=dst[0][0][0]
-        hy=dst[0][0][1]
-        xa=hx
-        ya=hy
+        # pts=np.array([[[float(self.xa_c),float(self.ya_c)]]])
+        # dst = cv2.perspectiveTransform(pts,self.inv_M)#self.M
+        # hx=dst[0][0][0]
+        # hy=dst[0][0][1]
+        # xa=hx
+        # ya=hy
 
-        pts=np.array([[[float(self.xb_c),float(self.yb_c)]]])
-        dst = cv2.perspectiveTransform(pts,self.inv_M)#self.M
-        hx=dst[0][0][0]
-        hy=dst[0][0][1]
-        xb=hx
-        yb=hy
+        # pts=np.array([[[float(self.xb_c),float(self.yb_c)]]])
+        # dst = cv2.perspectiveTransform(pts,self.inv_M)#self.M
+        # hx=dst[0][0][0]
+        # hy=dst[0][0][1]
+        # xb=hx
+        # yb=hy
 
-        self.xa=xa
-        self.ya=ya
-        self.xb=xb
-        self.yb=yb
+        # self.xa=xa
+        # self.ya=ya
+        # self.xb=xb
+        # self.yb=yb
 
-        x1=self.xa
-        y1=self.ya
-        x2=self.xb
-        y2=self.yb
-        rx1=self.rxa
-        ry1=self.rya
-        rx2=self.rxb
-        ry2=self.ryb
+        # x1=self.xa
+        # y1=self.ya
+        # x2=self.xb
+        # y2=self.yb
+        # rx1=self.rxa
+        # ry1=self.rya
+        # rx2=self.rxb
+        # ry2=self.ryb
 
-        print("position:",x1,y1,x2,y2)
+        # print("position:",x1,y1,x2,y2)
 
-        self.disp_circle_on_position(resized_image_copy,x1,y1,x2,y2,rx1,ry1,rx2,ry2)
+        # self.disp_circle_on_position(resized_image_copy,x1,y1,x2,y2,rx1,ry1,rx2,ry2)
 
         self.image_change(resized_image_copy)
 

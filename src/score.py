@@ -111,6 +111,8 @@ class Score():
         self.array_y3=self.init_array()
         self.array_x4=self.init_array()
         self.array_y4=self.init_array()
+        print("score self.arrayHitPlayer",self.arrayHitPlayer)
+        print("score self.array_x1",self.array_x1)
 
     def init_array(self):
         array=[]
@@ -126,6 +128,15 @@ class Score():
         self.arrayBounceHit.append([])
         self.arrayForeBack.append([])
         self.arrayDirection.append([])
+
+        self.array_x1.append([])
+        self.array_y1.append([])
+        self.array_x2.append([])
+        self.array_y2.append([])
+        self.array_x3.append([])
+        self.array_y3.append([])
+        self.array_x4.append([])
+        self.array_y4.append([])
 
     def load_scene(self,num_scene):
         self.array_ball_position_shot=[[] for i in range(len(self.array_ball_position_shot),num_scene)]
