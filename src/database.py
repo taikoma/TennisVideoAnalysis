@@ -300,6 +300,8 @@ class Database():
         r=len(df_basic)
         return r
 
+    
+
     def load_database_shot(self,db_name):
         r=0
         conn = sqlite3.connect(db_name)
@@ -310,10 +312,16 @@ class Database():
         frame=df_shot['frame'].values.tolist()
         ballx=df_shot['ballx'].values.tolist()
         bally=df_shot['bally'].values.tolist()
-        pax=df_shot['playerAx'].values.tolist()
-        pay=df_shot['playerAy'].values.tolist()
-        pbx=df_shot['playerBx'].values.tolist()
-        pby=df_shot['playerBy'].values.tolist()
+        # pax=df_shot['playerAx'].values.tolist()
+        # pay=df_shot['playerAy'].values.tolist()
+        # pbx=df_shot['playerBx'].values.tolist()
+        # pby=df_shot['playerBy'].values.tolist()
+
+        pax=self.df_float2fillna(df_shot['playerAx']).values.tolist()
+        pay=self.df_float2fillna(df_shot['playerAy']).values.tolist()
+        pbx=self.df_float2fillna(df_shot['playerBx']).values.tolist()
+        pby=self.df_float2fillna(df_shot['playerBy']).values.tolist()
+
 
         hit=df_shot['hitplayer'].values.tolist()
         bh=df_shot['bouncehit'].values.tolist()
@@ -374,10 +382,28 @@ class Database():
 
     def pop_array_from_df(self,df,label):
         if label in df.columns.values:
-            array=df[label].values.tolist()
+            array=self.df_float2fillna(df[label]).values.tolist()
         else:
             array=[[]]*len(df)
         return array
+
+    def df_float2fillna(self, df):
+        """convert nan to str"" because cannot convert str directly ,once convert to num 999
+
+        Parameters
+        ----------
+        df:pandas dataframe
+
+        Returns
+        ----------
+        df:pandas dataframe
+        """
+        df = pd.to_numeric(df, errors="coerce")
+        df = df.fillna(999)
+        # df = df.astype(np.int64)
+        df = df.replace(999, "")
+        df = df
+        return df
 
     def load_database(self):
         print("loadDatabase")
