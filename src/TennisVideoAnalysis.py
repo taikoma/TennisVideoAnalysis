@@ -162,9 +162,9 @@ class Application(tkinter.Frame):
         self.pw_right_up_right=tkinter.PanedWindow(self.pw_right_up,orient='horizontal')#pwRightUpRight
         self.pw_right_up.add(self.pw_right_up_right)
 
-        self.create_point_tree(self.pw_right_up_right)
-        self.point_tree.bind('<ButtonRelease-1>', self.select_point)  # Double-1
-        self.point_tree.bind('<Shift-ButtonRelease-1>', self.shift_select)  # Double-1
+        self.create_shot_tree(self.pw_right_up_right)
+        self.shot_tree.bind('<ButtonRelease-1>', self.select_shot)  # Double-1
+        self.shot_tree.bind('<Shift-ButtonRelease-1>', self.shift_select)  # Double-1
 
         self.pw_left_down = tkinter.PanedWindow(self.pw_left, orient='horizontal') # 左画面の下側 
         self.pw_left.add(self.pw_left_down)
@@ -414,10 +414,10 @@ class Application(tkinter.Frame):
         self.click_select_score_range=False
 
     def delete_tree_point(self):
-        curItem = self.point_tree.focus()
+        curItem = self.shot_tree.focus()
         if curItem:
             self.score.delete_tree_point_shift(self.start_shot,self.end_shot)
-            self.set_point_tree()
+            self.set_shot_tree()
         else:
             tkinter.messagebox.showinfo("Error", "データが選択されていません")
 
@@ -638,8 +638,8 @@ class Application(tkinter.Frame):
         
 
         #save track data
-        curItem = self.point_tree.get_children()[self.num_shot]
-        index=self.track_data.track_frame_array.index(int(self.point_tree.item(curItem)["values"][2]))
+        curItem = self.shot_tree.get_children()[self.num_shot]
+        index=self.track_data.track_frame_array.index(int(self.shot_tree.item(curItem)["values"][2]))
 
         kx=self.vid.width/self.w
         ky=self.vid.height/self.h
@@ -684,7 +684,7 @@ class Application(tkinter.Frame):
 
         # self.disp_track_data_court_one(self.num_shot)
         # self.image_change(resized_image_copy)
-        self.set_point_tree()
+        self.set_shot_tree()
 
     def reselect_player_a(self,event):
         self.clickPlayerA=False
@@ -757,7 +757,7 @@ class Application(tkinter.Frame):
                 
         elif self.clickPlayerA:#プレイヤーAの位置
             self.reselect_player_a(event)
-            self.point_tree.selection_set(self.point_tree.get_children()[self.num_shot])
+            self.shot_tree.selection_set(self.shot_tree.get_children()[self.num_shot])
 
         elif self.clickPlayerB:#プレイヤーBの位置
             resized_image = self.read_resized_image(self.pos_seek.get())
@@ -784,7 +784,7 @@ class Application(tkinter.Frame):
             
             self.clickPlayerB=False
             self.image_change(resized_image_copy)
-            self.set_point_tree()
+            self.set_shot_tree()
         elif(self.clickCourtRightUp):
             resized_image = self.read_resized_image(self.pos_seek.get())
             resized_image_copy = np.copy(resized_image)
@@ -802,7 +802,7 @@ class Application(tkinter.Frame):
             elif(r%4==3):#サーブ側の打点
                 self.calc_hit_shot_fix(resized_image,resized_image_copy,0)
             self.disp_position_on_image_court(resized_image_copy)
-            self.set_point_tree()
+            self.set_shot_tree()
 
         elif(self.clickCourtLeftUp):#self.score.rally-1にデータを入れていく必要がある
             resized_image = self.read_resized_image(self.pos_seek.get())
@@ -821,7 +821,7 @@ class Application(tkinter.Frame):
             elif(r%4==3):#サーブ側の打点
                 self.calc_hit_shot_fix(resized_image,resized_image_copy,0)
             self.disp_position_on_image_court(resized_image_copy)
-            self.set_point_tree()
+            self.set_shot_tree()
         elif(self.clickCourtLeftDown):
             resized_image = self.read_resized_image(self.pos_seek.get())
             resized_image_copy = np.copy(resized_image)
@@ -839,7 +839,7 @@ class Application(tkinter.Frame):
             elif(r%4==3):#サーブ側の打点
                 self.calc_hit_shot_fix(resized_image,resized_image_copy,0)
             self.disp_position_on_image_court(resized_image_copy)
-            self.set_point_tree()
+            self.set_shot_tree()
 
         elif(self.clickCourtRightDown):
             resized_image = self.read_resized_image(self.pos_seek.get())
@@ -858,7 +858,7 @@ class Application(tkinter.Frame):
             elif(r%4==3):#サーブ側の打点
                 self.calc_hit_shot_fix(resized_image,resized_image_copy,0)
             self.disp_position_on_image_court(resized_image_copy)
-            self.set_point_tree()
+            self.set_shot_tree()
 
         elif(self.mode_predict):#予測モード
             resized_image = self.read_resized_image(self.pos_seek.get())
@@ -879,7 +879,7 @@ class Application(tkinter.Frame):
 
             self.disp_position_on_image_court(resized_image_copy)
             self.score.rally=self.score.rally+1
-            self.set_point_tree()
+            self.set_shot_tree()
 
         else:#予測モード以外　手動でコート4隅をクリックする
             if((self.score.arrayContactServe[self.score.number][0] > 0) and(self.score.arrayContactServe[self.score.number][1] > 0)):
@@ -1098,9 +1098,11 @@ class Application(tkinter.Frame):
         ya=self.score.arrayPlayerAPosition[self.score.number][i][3]
         xb=self.score.arrayPlayerBPosition[self.score.number][i][2]
         yb=self.score.arrayPlayerBPosition[self.score.number][i][3]
+        
+        print(i,xball,yball,xa,ya,xb,yb)
 
         if(xball!="" and yball!=""):#ballを表示
-            xball,yball=self.xy2leftup(xball,yball)
+            xball,yball=self.xy2leftup(xball,yball)#xball,yball,
             if(i%2==0):
                 self.plot_position(xball,yball,'#ffff00')
             else:
@@ -1111,7 +1113,7 @@ class Application(tkinter.Frame):
         if(xb!="" and yb!=""):
             xb,yb=self.xy2leftup(xb,yb)
             self.plot_position(xb,yb,'#FF0000')#青
-        print(i,xball,yball,xa,ya,xb,yb)
+        
 
     def dispPlayerPositionCourt(self,xball,yball,xa,ya,xb,yb):
         # print("dispPlayerPositionCourt")
@@ -1217,7 +1219,7 @@ class Application(tkinter.Frame):
         bounce_hit=self.track_data.track_hit_bounce
         self.score.divide_track_data(frame_start,track_fame,bx,by,xa,ya,xb,yb,bounce_hit,x1,y1,x2,y2,x3,y3,x4,y4)#
 
-        self.set_point_tree()
+        self.set_shot_tree()
 
     def load_track_ball_data(self,filename):
         self.track_data.load_ball_data(filename) 
@@ -1230,7 +1232,7 @@ class Application(tkinter.Frame):
         self.score = db.db2score()
         self.draw_contact_all()
         self.set_tree()
-        self.set_point_tree()
+        self.set_shot_tree()
         curItem = self.tree.get_children()[score.number]
         self.pos_seek.set(int(self.tree.item(curItem)["values"][1]))
 
@@ -1471,25 +1473,25 @@ class Application(tkinter.Frame):
         self.radio2["text"]=self.score.playerB
 
 
-    def create_point_tree(self,pw):
-        self.point_tree = ttk.Treeview(self.master, selectmode="browse",takefocus=1)
-        self.point_tree["columns"]=(1,2,3,4,5,6)
-        self.point_tree["show"]="headings"
-        self.point_tree.column(1, width=30)
-        self.point_tree.column(2, width=35)
-        self.point_tree.column(3, width=40)
-        self.point_tree.column(4, width=40)
-        self.point_tree.column(5, width=40)
-        self.point_tree.column(6, width=40)
-        self.point_tree.heading(1, text="No")
-        self.point_tree.heading(2, text="Rally")
-        self.point_tree.heading(3, text="Frame")
-        self.point_tree.heading(4, text="Player")
-        self.point_tree.heading(5, text="Bce/Hit")
-        self.point_tree.heading(6, text="Fr/Bc")
-        pw.add(self.point_tree)
+    def create_shot_tree(self,pw):
+        self.shot_tree = ttk.Treeview(self.master, selectmode="browse",takefocus=1)
+        self.shot_tree["columns"]=(1,2,3,4,5,6)
+        self.shot_tree["show"]="headings"
+        self.shot_tree.column(1, width=30)
+        self.shot_tree.column(2, width=35)
+        self.shot_tree.column(3, width=40)
+        self.shot_tree.column(4, width=40)
+        self.shot_tree.column(5, width=40)
+        self.shot_tree.column(6, width=40)
+        self.shot_tree.heading(1, text="No")
+        self.shot_tree.heading(2, text="Rally")
+        self.shot_tree.heading(3, text="Frame")
+        self.shot_tree.heading(4, text="Player")
+        self.shot_tree.heading(5, text="Bce/Hit")
+        self.shot_tree.heading(6, text="Fr/Bc")
+        pw.add(self.shot_tree)
         self.create_right_menu_tree_point()
-        self.point_tree.bind("<Button-3>",self.show_popup_tree_point)
+        self.shot_tree.bind("<Button-3>",self.show_popup_tree_point)
 
     def create_tree(self,pw):
         self.tree = ttk.Treeview(self.master, selectmode="browse",takefocus=1)
@@ -1824,13 +1826,13 @@ class Application(tkinter.Frame):
             self.score.arrayBounceHit[self.score.number].pop(-1)
             self.score.arrayForeBack[self.score.number].pop(-1)
             self.score.arrayDirection[self.score.number].pop(-1)
-            self.set_point_tree()
+            self.set_shot_tree()
             self.disp_track_data_court_all()
 
     def no_bound(self):
         self.score.position_data2array("","","","","","",1,"NoBounce","","",self.pos_seek.get())
         self.score.rally=self.score.rally+1
-        self.set_point_tree()
+        self.set_shot_tree()
 
     def score_image2text_one(self):
         i=self.score.number
@@ -1992,14 +1994,14 @@ class Application(tkinter.Frame):
                 self.score.faultFlug = 0
         self.set_tree()
 
-    def set_point_tree(self):
+    def set_shot_tree(self):
         print("self.score.number:",self.score.number)
         # print("len(self.score.array_ball_position_shot[self.score.number]):",len(self.score.array_ball_position_shot[self.score.number]))
-        for i, t in enumerate(self.point_tree.get_children()):
-            self.point_tree.delete(t)
+        for i, t in enumerate(self.shot_tree.get_children()):
+            self.shot_tree.delete(t)
         for i in range(len(self.score.array_ball_position_shot[self.score.number])):
             print("i",i)
-            self.point_tree.insert("",
+            self.shot_tree.insert("",
                              i,
                              values=(self.score.number,
                                      (i+1),
@@ -2007,7 +2009,6 @@ class Application(tkinter.Frame):
                                      self.score.arrayHitPlayer[self.score.number][i],
                                      self.score.arrayBounceHit[self.score.number][i],
                                      self.score.arrayForeBack[self.score.number][i]))#self.score.arrayDirection[self.score.number][i]
-        # self.point_tree.selection_set(self.point_tree.get_children()[self.num_shot])
 
     def set_tree(self):
 
@@ -2039,7 +2040,7 @@ class Application(tkinter.Frame):
         print(self.score.number)
         self.pos_seek.set(int(self.tree.item(curItem)["values"][1]))#フレーム位置変更
         self.key_activate()
-        self.set_point_tree()#追加
+        self.set_shot_tree()#追加
         self.disp_edit_tree(self.score.number)
         
     def shift_select(self, event):
@@ -2047,58 +2048,46 @@ class Application(tkinter.Frame):
         # tree = event.widget
 
         i=self.num_shot
-        cur_item = self.point_tree.focus()
-        j=int(self.point_tree.item(cur_item)["values"][1])-1
+        cur_item = self.shot_tree.focus()
+        j=int(self.shot_tree.item(cur_item)["values"][1])-1
         self.start_shot=min(i,j)
         self.end_shot=max(i,j)
         for i in range(self.start_shot,self.end_shot):
-            self.point_tree.selection_add(self.point_tree.get_children()[i])
+            self.shot_tree.selection_add(self.shot_tree.get_children()[i])
 
-    def select_point(self, event):
+    def select_shot(self, event):
         """
-        when select point tree
+        when select shot tree
         """
-        curItem = self.point_tree.focus()
-        self.pos_seek.set(int(self.point_tree.item(curItem)["values"][2]))
-        self.num_shot=int(self.point_tree.item(curItem)["values"][1])-1
-        # self.disp_track_data_court_one(self.num_shot)
+        curItem = self.shot_tree.focus()
+        self.pos_seek.set(int(self.shot_tree.item(curItem)["values"][2]))
+        self.num_shot=int(self.shot_tree.item(curItem)["values"][1])-1
+        
         self.start_shot=self.num_shot
         self.end_shot=self.num_shot
         
         #disp 4 corner points
         #search match frame
-        # index=self.track_data.track_frame_array.index(int(self.point_tree.item(curItem)["values"][2]))
         risized_image = self.read_resized_image(self.pos_seek.get())
         resized_image_copy = np.copy(risized_image)
-
 
         kx=self.w/self.vid.width
         ky=self.h/self.vid.height
         i=self.score.number
         j=self.num_shot
-        # print(kx)
-        # print(ky)
-        # print(i,j)
-        # print(self.score.array_x1)
-        print(self.score.array_x1[i])
-        print(self.score.array_x1[i][j]*kx)
-        print(self.score.array_y1[i][j]*ky)
 
         self.score.arrayPointXY[0]=[self.score.array_x1[i][j]*kx,self.score.array_y1[i][j]*ky]
         self.score.arrayPointXY[1]=[self.score.array_x2[i][j]*kx,self.score.array_y2[i][j]*ky]
         self.score.arrayPointXY[2]=[self.score.array_x3[i][j]*kx,self.score.array_y3[i][j]*ky]
         self.score.arrayPointXY[3]=[self.score.array_x4[i][j]*kx,self.score.array_y4[i][j]*ky]
         self.array2invM()
-        self.draw_court_line(self.pts,resized_image_copy,self.inv_M)
+        self.draw_court_line(self.pts,resized_image_copy,self.inv_M)#テニスコートラインを描画
 
         # #xy2leftup
         print(self.score.arrayPlayerAPosition[i][j],self.score.arrayPlayerAPosition[i][j])
         print(self.score.arrayPlayerBPosition[i][j],self.score.arrayPlayerBPosition[i][j])
         self.xa_c,self.ya_c=self.track_data.xy2leftup(self.score.arrayPlayerAPosition[i][j][2],self.score.arrayPlayerAPosition[i][j][3])
         self.xb_c,self.yb_c=self.track_data.xy2leftup(self.score.arrayPlayerBPosition[i][j][2],self.score.arrayPlayerBPosition[i][j][3])
-
-        # print(self.xa_c,self.ya_c)
-        # print(self.xb_c,self.yb_c)
 
         pts=np.array([[[float(self.xa_c),float(self.ya_c)]]])
         dst = cv2.perspectiveTransform(pts,self.inv_M)#self.M
@@ -2128,13 +2117,11 @@ class Application(tkinter.Frame):
         rx2=self.rxb
         ry2=self.ryb
 
-        print("position:",x1,y1,x2,y2)
-
         self.disp_circle_on_position(resized_image_copy,x1,y1,x2,y2,rx1,ry1,rx2,ry2)
 
         self.image_change(resized_image_copy)
 
-        
+        self.disp_track_data_court_one(self.num_shot)
 
 
     def disp_edit_tree(self,i):
