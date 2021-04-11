@@ -12,7 +12,6 @@ import score
 class TrackData():
     def __init__(self):
         super().__init__()
-        print("init")
         self.frame_array=[]
         self.all_track_ball_x=[]#
         self.all_track_ball_y=[]
@@ -39,7 +38,6 @@ class TrackData():
         load ball position csv file,convert to array file
 
         """
-        print("load_data")
         
         with codecs.open(filename, "r", "utf-8",errors="ignore") as csv_file:
             df = pd.read_csv(csv_file, header=None)
@@ -496,7 +494,6 @@ if __name__ == "__main__":
     td.load_ball_data("../data/ball-pos-000000-060000.csv")
     # td.load_ball_data("../data/ball-pos-020000-040000.csv")
     # td.concat_ball_pos()
-
 
     output_filename="../data/track_frame-test.csv"
     td.ball_data2df(output_filename)

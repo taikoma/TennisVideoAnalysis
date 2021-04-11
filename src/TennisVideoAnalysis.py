@@ -2076,52 +2076,53 @@ class Application(tkinter.Frame):
         i=self.score.number
         j=self.num_shot
 
-        self.score.arrayPointXY[0]=[self.score.array_x1[i][j]*kx,self.score.array_y1[i][j]*ky]
-        self.score.arrayPointXY[1]=[self.score.array_x2[i][j]*kx,self.score.array_y2[i][j]*ky]
-        self.score.arrayPointXY[2]=[self.score.array_x3[i][j]*kx,self.score.array_y3[i][j]*ky]
-        self.score.arrayPointXY[3]=[self.score.array_x4[i][j]*kx,self.score.array_y4[i][j]*ky]
-        self.array2invM()
-        self.draw_court_line(self.pts,resized_image_copy,self.inv_M)#テニスコートラインを描画
+        if self.score.array_x1[i][j] or self.score.array_x2[i][j] or self.score.array_x3[i][j] or self.score.array_x4[i][j]:
+            self.score.arrayPointXY[0]=[self.score.array_x1[i][j]*kx,self.score.array_y1[i][j]*ky]
+            self.score.arrayPointXY[1]=[self.score.array_x2[i][j]*kx,self.score.array_y2[i][j]*ky]
+            self.score.arrayPointXY[2]=[self.score.array_x3[i][j]*kx,self.score.array_y3[i][j]*ky]
+            self.score.arrayPointXY[3]=[self.score.array_x4[i][j]*kx,self.score.array_y4[i][j]*ky]
+            self.array2invM()
+            self.draw_court_line(self.pts,resized_image_copy,self.inv_M)#テニスコートラインを描画
 
-        # #xy2leftup
-        print(self.score.arrayPlayerAPosition[i][j],self.score.arrayPlayerAPosition[i][j])
-        print(self.score.arrayPlayerBPosition[i][j],self.score.arrayPlayerBPosition[i][j])
-        self.xa_c,self.ya_c=self.track_data.xy2leftup(self.score.arrayPlayerAPosition[i][j][2],self.score.arrayPlayerAPosition[i][j][3])
-        self.xb_c,self.yb_c=self.track_data.xy2leftup(self.score.arrayPlayerBPosition[i][j][2],self.score.arrayPlayerBPosition[i][j][3])
+            # #xy2leftup
+            print(self.score.arrayPlayerAPosition[i][j],self.score.arrayPlayerAPosition[i][j])
+            print(self.score.arrayPlayerBPosition[i][j],self.score.arrayPlayerBPosition[i][j])
+            self.xa_c,self.ya_c=self.track_data.xy2leftup(self.score.arrayPlayerAPosition[i][j][2],self.score.arrayPlayerAPosition[i][j][3])
+            self.xb_c,self.yb_c=self.track_data.xy2leftup(self.score.arrayPlayerBPosition[i][j][2],self.score.arrayPlayerBPosition[i][j][3])
 
-        pts=np.array([[[float(self.xa_c),float(self.ya_c)]]])
-        dst = cv2.perspectiveTransform(pts,self.inv_M)#self.M
-        hx=dst[0][0][0]
-        hy=dst[0][0][1]
-        xa=hx
-        ya=hy
+            pts=np.array([[[float(self.xa_c),float(self.ya_c)]]])
+            dst = cv2.perspectiveTransform(pts,self.inv_M)#self.M
+            hx=dst[0][0][0]
+            hy=dst[0][0][1]
+            xa=hx
+            ya=hy
 
-        pts=np.array([[[float(self.xb_c),float(self.yb_c)]]])
-        dst = cv2.perspectiveTransform(pts,self.inv_M)#self.M
-        hx=dst[0][0][0]
-        hy=dst[0][0][1]
-        xb=hx
-        yb=hy
+            pts=np.array([[[float(self.xb_c),float(self.yb_c)]]])
+            dst = cv2.perspectiveTransform(pts,self.inv_M)#self.M
+            hx=dst[0][0][0]
+            hy=dst[0][0][1]
+            xb=hx
+            yb=hy
 
-        self.xa=xa
-        self.ya=ya
-        self.xb=xb
-        self.yb=yb
+            self.xa=xa
+            self.ya=ya
+            self.xb=xb
+            self.yb=yb
 
-        x1=self.xa
-        y1=self.ya
-        x2=self.xb
-        y2=self.yb
-        rx1=self.rxa
-        ry1=self.rya
-        rx2=self.rxb
-        ry2=self.ryb
+            x1=self.xa
+            y1=self.ya
+            x2=self.xb
+            y2=self.yb
+            rx1=self.rxa
+            ry1=self.rya
+            rx2=self.rxb
+            ry2=self.ryb
 
-        self.disp_circle_on_position(resized_image_copy,x1,y1,x2,y2,rx1,ry1,rx2,ry2)
+            self.disp_circle_on_position(resized_image_copy,x1,y1,x2,y2,rx1,ry1,rx2,ry2)
 
-        self.image_change(resized_image_copy)
+            self.image_change(resized_image_copy)
 
-        self.disp_track_data_court_one(self.num_shot)
+            self.disp_track_data_court_one(self.num_shot)
 
 
     def disp_edit_tree(self,i):

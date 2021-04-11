@@ -19,8 +19,8 @@ class SceneDivide():
         g_array=[]
         r_array=[]
 
-        # while True:
-        for i in range(0,10000):#1000
+        while True:
+        # for i in range(0,10000):#1000
             ret,frame=cap.read()
             if not ret:
                 break
@@ -129,7 +129,7 @@ if __name__ == "__main__":
     sd.scene_divide(video_filename,csv_filename,ref_frame)
 
     score=score.Score(1)
-    db=database.Database('../data/test-nishikori.db',score)
+    db=database.Database('../data/scene-nishikori.db',score)
     db.save_database()
 
     db.csv2_db_start_end(csv_filename)
