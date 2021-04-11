@@ -83,6 +83,7 @@ class Database():
 
 
     def save_database_score(self,db_name):
+        print(self.dbName)
         r=0
         conn = sqlite3.connect(self.dbName)
         c = conn.cursor()
@@ -310,12 +311,6 @@ class Database():
         df_shot = pd.read_sql("select * from shot", conn)
         point=df_shot['point'].values.tolist()
         frame=df_shot['frame'].values.tolist()
-        # ballx=df_shot['ballx'].values.tolist()
-        # bally=df_shot['bally'].values.tolist()
-        # pax=df_shot['playerAx'].values.tolist()
-        # pay=df_shot['playerAy'].values.tolist()
-        # pbx=df_shot['playerBx'].values.tolist()
-        # pby=df_shot['playerBy'].values.tolist()
         ballx=self.df_float2fillna(df_shot['ballx']).values.tolist()
         bally=self.df_float2fillna(df_shot['bally']).values.tolist()
         pax=self.df_float2fillna(df_shot['playerAx']).values.tolist()
@@ -548,3 +543,70 @@ class Database():
         self.score.array_y4=self.check_size_return_array(self.array_y4,size)
 
         return self.score
+
+    def csv2_db_start_end(self,csv_filename):
+        conn = sqlite3.connect(self.dbName)
+        cursor = conn.cursor() 
+        df_se=pd.read_csv(csv_filename).dropna().astype('int64')
+        arrayFrameStart=df_se['StartFrame'].astype('int64').tolist()
+        arrayFrameEnd=df_se['EndFrame'].astype('int64').tolist()
+        arrayZeros=np.zeros(len(arrayFrameStart),dtype=int)
+        arrayZeroColumns=[[0,0] for i in range(len(arrayFrameStart))]
+        arrayKara=[np.NaN for i in range(len(arrayFrameStart))]
+ 
+        df = pd.DataFrame({'StartFrame': arrayFrameStart, 'EndFrame': arrayFrameEnd, 'Set': arrayKara, 'Game': arrayKara,
+                           'Score': arrayKara, 'ScoreResult': arrayKara, 'FirstSecond': arrayZeros, 'Server': arrayKara,
+                           'PointWinner': arrayKara, 'PointWinA': arrayKara, 'PointWinB': arrayKara,
+                           'PointPattern': arrayKara, 'Fault': arrayKara,
+                           'ContactServeX': arrayZeros, 'ContactServeY': arrayZeros,
+                           'Court1X': arrayZeros, 'Court1Y': arrayZeros,
+                           'Court2X': arrayZeros, 'Court2Y': arrayZeros,
+                           'Court3X': arrayZeros, 'Court3Y': arrayZeros,
+                           'Court4X': arrayZeros, 'Court4Y': arrayZeros})
+
+        df_basic = pd.DataFrame({'playerA': self.playerA,
+                                 'playerB': self.playerB,
+                                 'number': self.number,
+                                 'totalGame': self.totalGame,
+                                 'faultFlug': self.faultFlug},
+                                index=[0])
+        point=[]
+        frame=[]
+        bx=[]
+        by=[]
+        pax=[]
+        pay=[]
+        pbx=[]
+        pby=[]
+        h=[]
+        bh=[]
+        fb=[]
+        d=[]
+        for i in range(len(self.array_ball_position_shot)):
+            for j in range(len(self.array_ball_position_shot[i])):
+                point.append(self.array_ball_position_shot[i][j][0])
+                frame.append(self.array_ball_position_shot[i][j][1])
+                bx.append(self.array_ball_position_shot[i][j][2])
+                by.append(self.array_ball_position_shot[i][j][3])
+                pax.append(self.arrayPlayerAPosition[i][j][2])
+                pay.append(self.arrayPlayerAPosition[i][j][3])
+                pbx.append(self.arrayPlayerBPosition[i][j][2])
+                pby.append(self.arrayPlayerBPosition[i][j][3])
+                h.append(self.arrayHitPlayer[i][j])
+                bh.append(self.arrayBounceHit[i][j])
+                fb.append(self.arrayForeBack[i][j])#arrayDirection
+                d.append(self.arrayDirection[i][j])
+                # print(self.arrayHitPlayer[i][j])
+        df_shot=pd.DataFrame({'point':point,'frame':frame,'ballx':bx,'bally':by,
+                            'playerAx':pax,'playerAy':pay,'playerBx':pbx,'playerBy':pby,
+                            'hitplayer':h,'bouncehit':bh,'foreback':fb,'direction':d
+        })
+
+        df_basic.to_sql("match", conn, if_exists="replace")
+        df.to_sql("score", conn, if_exists="replace")
+        df_shot.to_sql("shot",conn,if_exists="replace")
+
+        conn.commit()
+        conn.close()
+
+    

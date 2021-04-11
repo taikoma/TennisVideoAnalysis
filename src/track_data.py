@@ -35,6 +35,10 @@ class TrackData():
         self.track_y4=[]
 
     def load_ball_data(self,filename):
+        """
+        load ball position csv file,convert to array file
+
+        """
         print("load_data")
         
         with codecs.open(filename, "r", "utf-8",errors="ignore") as csv_file:
@@ -46,32 +50,134 @@ class TrackData():
         self.frame_array = df["Frame"].astype(np.int64).values.tolist()
         self.all_track_ball_x = df["X"].astype(np.int64).values.tolist()
         self.all_track_ball_y = df["Y"].astype(np.int64).values.tolist()
+        return df
 
-    def detect_front_hit_frame(self,f,x,y,NET_LINE,THRESH):
+    def divide_frame(self,f):
+        print("test")
+
+    def detect_front_hit_frame(self,f,x,y,NET_LINE,THRESH):# 1 f h
+        """
+        移動量の変化が所定以下が連続した場合、連続の１番目を打点タイミングとして検出
+        Parameters:
+
+        Returns:
+
+        """
+
+        front_hit_array=[]
         y_front_index=np.array(y>NET_LINE)
         y_diff=np.diff(y)
         y_diff_index=np.array(abs(y_diff)<THRESH)
+        index=y_front_index[:-1] & y_diff_index
+        y_front =y[:-1][index]
+        f_front=f[:-1][index]
+        f_front_diff=np.diff(f_front)
+        f_front_diff_index=np.array(abs(f_front_diff)>30)
+        f_front[:-1][f_front_diff_index]
 
-        index =y_front_index[:-1] & y_diff_index
-        temp=index.astype(np.int)
-        i_renzoku=[]
-        print(temp)
-        for i in range(len(temp)-3):
-            if((temp[i]*temp[i+1]*temp[i+2]>0)and (temp[i+3]==0)):
-                i_renzoku.append(1)
-            else:
-                i_renzoku.append(0)
-        i_renzoku=np.array(i_renzoku)
-        f_shift=f[3:]
-        front_hit_array=f_shift[:-1][i_renzoku>0]
-        print(front_hit_array)
+        group_index=np.where(f_front_diff_index)
+
+        front_hit_frame=[]
+        end=0
+        for i in range(len(group_index[0])-1):
+            start=group_index[0][i]
+            end=group_index[0][i+1]+1
+            if start>0:
+                index=np.argmax(y_front[:-1][0:start+1])
+                front_hit_frame.append(f_front[:-1][index])
+        
+            index=np.argmax(y_front[:-1][start+1:end])+start+1
+            front_hit_frame.append(f_front[:-1][index])
+
+        if end<len(y_front[:-1]):
+            index=np.argmax(y_front[:-1][end:len(y_front[:-1])])+end
+            front_hit_frame.append(f_front[:-1][index])
+
+        front_hit_array=front_hit_frame
 
         x_front_hit_array=[]
         y_front_hit_array=[]
         for i in range(len(front_hit_array)):
             x_front_hit_array.append(x[f==front_hit_array[i]][0])
             y_front_hit_array.append(y[f==front_hit_array[i]][0])
-        return x_front_hit_array,y_front_hit_array
+        return front_hit_array,x_front_hit_array,y_front_hit_array
+
+    def detect_back_hit_frame(self,f,x,y,NET_LINE,THRESH):## 3 b h 
+        y_back_index=np.array(y<=NET_LINE)
+        y_diff=np.diff(y)
+        y_diff_index=np.array(abs(y_diff)<THRESH)
+        index=y_back_index[:-1] & y_diff_index
+        y_back =y[:-1][index]
+        f_back=f[:-1][index]
+        f_back_diff=np.diff(f_back)
+        f_back_diff_index=np.array(abs(f_back_diff)>30)
+        group_index=np.where(f_back_diff_index)
+
+        back_hit_array=[]
+        end=0
+        for i in range(len(group_index[0])-1):
+            start=group_index[0][i]
+            end=group_index[0][i+1]+1
+            if start>0:
+                index=np.argmin(y_back[:-1][0:start+1])
+                back_hit_array.append(f_back[:-1][index])
+
+            index=np.argmin(y_back[:-1][start+1:end+1])+start+1
+            back_hit_array.append(f_back[:-1][index])
+
+        if end<len(y_back[:-1]):
+            index=np.argmin(y_back[:-1][end:len(y_back[:-1])])+end
+            back_hit_array.append(f_back[:-1][index])
+
+        x_back_hit_array=[]
+        y_back_hit_array=[]
+        for i in range(len(back_hit_array)):
+            x_back_hit_array.append(x[f==back_hit_array[i]][0])
+            y_back_hit_array.append(y[f==back_hit_array[i]][0])
+        return back_hit_array,x_back_hit_array,y_back_hit_array
+
+    def detect_front_bounce_frame(self,f,x,y,NET_LINE,THRESH,front_hit_array):# 2 f b
+        """
+        移動量の変化が大から小となるフレームを検出し、ボール着地点とする
+        グラフの山の頂点を検出
+        """
+        front_bounce_array=np.array([]).astype(np.int)
+        for i in range(len(front_hit_array)):#
+            start=front_hit_array[i]-10
+            end=front_hit_array[i]+10
+            front_bounce_array=np.append(front_bounce_array,f[(f>=start) & (f<=end)])
+        front_bounce_array=front_bounce_array.tolist()
+
+        x_front_bounce_array=[]
+        y_front_bounce_array=[]
+        for i in range(len(front_bounce_array)):
+            x_front_bounce_array.append(x[f==front_bounce_array[i]][0])
+            y_front_bounce_array.append(y[f==front_bounce_array[i]][0])
+
+        return front_bounce_array,x_front_bounce_array,y_front_bounce_array
+    
+
+    def detect_back_bounce_frame(self,f,x,y,NET_LINE,THRESH,back_hit_array):## 4 b b
+        """
+        
+        """
+        back_bounce_array=np.array([]).astype(np.int)
+        for i in range(len(back_hit_array)):#
+            start=back_hit_array[i]-10
+            end=back_hit_array[i]+10
+            back_bounce_array=np.append(back_bounce_array,f[(f>=start) & (f<=end)])
+        back_bounce_array=back_bounce_array.tolist()
+
+        x_back_bounce_array=[]
+        y_back_bounce_array=[]
+        for i in range(len(back_bounce_array)):
+            x_back_bounce_array.append(x[f==back_bounce_array[i]][0])
+            y_back_bounce_array.append(y[f==back_bounce_array[i]][0])
+
+        return back_bounce_array,x_back_bounce_array,y_back_bounce_array
+
+        
+
 
     def ball_data2df(self,output_filename):
 
@@ -81,94 +187,41 @@ class TrackData():
 
         #パラメータ
         NET_LINE=340
-        THRESH=10
+        THRESH=20#10から20に変更
 
-        y_rear_index=np.array(y<=NET_LINE)
+        y_back_index=np.array(y<=NET_LINE)
+
+        
 
         #手前側コートの打点タイミング
-        x_front_hit_array,y_front_hit_array = self.detect_front_hit_frame(f,x,y,NET_LINE,THRESH)
+        front_hit_array,x_front_hit_array,y_front_hit_array = self.detect_front_hit_frame(f,x,y,NET_LINE,THRESH)
+        #奥側コートの打点タイミング
+        back_hit_array,x_back_hit_array,y_back_hit_array = self.detect_back_hit_frame(f,x,y,NET_LINE,THRESH)
 
-        #手前側コートのボール着地タイミング
-        #84 161 244
-        #ひとつ前がプラス変化が大きい　その次に変化が小さい
-        y_diff=np.diff(y)
-        y_diff_up_index=np.array(y_diff>20)
-        y_diff_small_index=np.array(abs(y_diff)<THRESH)
-        index=y_diff_up_index[:-1] & y_diff_small_index[1:]
-        temp=index.astype(np.int)
-        index=temp>0
-        f_shift=f[:-1]
+        #手前側コートの着地タイミング
+        front_bounce_array,x_front_bounce_array,y_front_bounce_array = self.detect_front_bounce_frame(f,x,y,NET_LINE,THRESH,np.array(front_hit_array))
 
-        front_bounce_array=f_shift[1:][index]
-        print(front_bounce_array)
+        #奥側コートの着地タイミング
+        back_bounce_array,x_back_bounce_array,y_back_bounce_array = self.detect_back_bounce_frame(f,x,y,NET_LINE,THRESH,np.array(back_hit_array))
 
-        x_front_bounce_array=[]
-        y_front_bounce_array=[]
-        for i in range(len(front_bounce_array)):
-            x_front_bounce_array.append(x[f==front_bounce_array[i]][0])
-            y_front_bounce_array.append(y[f==front_bounce_array[i]][0])
-
-
-        #奥側コートのボール着地タイミング
-
-        index =y_rear_index[:-1] & y_diff_index
-        temp=index.astype(np.int)
-
-        i_renzoku=[]
-        for i in range(len(temp)-3):
-            if((temp[i]*temp[i+1]*temp[i+2]>0)and (temp[i+3]==0)):
-                i_renzoku.append(1)
-            else:
-                i_renzoku.append(0)
-        i_renzoku=np.array(i_renzoku)
-        f_shift=f[3:]
-
-        back_bounce_array=f_shift[:-1][i_renzoku>0]
-        print(back_bounce_array)
-
-        x_back_bounce_array=[]
-        y_back_bounce_array=[]
-        for i in range(len(back_bounce_array)):
-            x_back_bounce_array.append(x[f==back_bounce_array[i]][0])
-            y_back_bounce_array.append(y[f==back_bounce_array[i]][0])
-
-
-        #奥側側コートの打点着地タイミング
-        #ボール着地タイミングからフレームが30以内の最小値
-        range_start=back_bounce_array
-        range_end=back_bounce_array+30
-        index_min_array=[]
-        for i in range(len(range_start)):
-            index_range=np.where((f>=range_start[i]) & (f<=range_end[i]))
-            index_min=np.argmin(np.array(y[index_range]))
-            index_min_array.append(f[f>=range_start[i]][index_min])
-        back_hit_array=index_min_array
-        print(back_hit_array)
-
-        x_back_hit_array=[]
-        y_back_hit_array=[]
-        for i in range(len(back_hit_array)):
-            x_back_hit_array.append(x[f==back_hit_array[i]][0])
-            y_back_hit_array.append(y[f==back_hit_array[i]][0])
-            
-            
-
+        
         labels=["Frame","HitBounce"]
 
         label_front_hit=["Front_Hit"]*len(front_hit_array)
         df1=pd.DataFrame({"Frame":front_hit_array,"HitBounce":label_front_hit,"X_Ball":x_front_hit_array,"Y_Ball":y_front_hit_array})
 
-        label_front_bounce=["Front_Bounce"]*len(front_bounce_array)
-        df2=pd.DataFrame({"Frame":front_bounce_array,"HitBounce":label_front_bounce,"X_Ball":x_front_bounce_array,"Y_Ball":y_front_bounce_array})
+        # label_front_bounce=["Front_Bounce"]*len(front_bounce_array)
+        # df2=pd.DataFrame({"Frame":front_bounce_array,"HitBounce":label_front_bounce,"X_Ball":x_front_bounce_array,"Y_Ball":y_front_bounce_array})
 
         label_back_hit=["Back_Hit"]*len(back_hit_array)
-        df3=pd.DataFrame({"Frame":back_hit_array,"HitBounce":label_back_hit,"X_Ball":x_back_bounce_array,"Y_Ball":y_back_bounce_array})
+        df3=pd.DataFrame({"Frame":back_hit_array,"HitBounce":label_back_hit,"X_Ball":x_back_hit_array,"Y_Ball":y_back_hit_array})
 
-        label_back_bounce=["Back_Bounce"]*len(back_bounce_array)
-        df4=pd.DataFrame({"Frame":back_bounce_array,"HitBounce":label_back_bounce,"X_Ball":x_back_hit_array,"Y_Ball":y_back_hit_array})
+        # label_back_bounce=["Back_Bounce"]*len(back_bounce_array)
+        # df4=pd.DataFrame({"Frame":back_bounce_array,"HitBounce":label_back_bounce,"X_Ball":x_back_bounce_array,"Y_Ball":y_back_bounce_array})
 
 
-        df=pd.concat([df1,df2,df3,df4])
+        # df=pd.concat([df1,df2,df3,df4])
+        df=pd.concat([df1,df3])
         df.sort_values('Frame', inplace=True)
         df=df.reset_index()
         df.to_csv(output_filename)
@@ -317,12 +370,9 @@ class TrackData():
         p4_y_array=[]
 
         for i in range(len(frame_array)):#len(frame_array)
-        # for i in range(1):#len(frame_array)
-            print(frame_array[i])
             video.set(cv2.CAP_PROP_POS_FRAMES, frame_array[i])
             ok, img = video.read()
             points=predict.predictPoints(img)
-            print(points)
 
             if len(points)>3:
                 pts = np.array([points[0],points[1],points[2],points[3]],dtype=int)
@@ -424,18 +474,32 @@ class TrackData():
         score.divide_track_data(frame_start,track_fame,bx,by,xa,ya,xb,yb,bounce_hit,x1,y1,x2,y2,x3,y3,x4,y4)
 
     def load_database(self):
+        """
+
+        """
         track_filename="./data/track_frame2.csv"
         score=score.Score(0)
         db = database.Database(track_filename, score)
         db.load_database()
         score = db.db2score()
 
+    def concat_ball_pos(self):
+        df1=td.load_ball_data("../data/ball-pos-000000-020000.csv")
+        df2=td.load_ball_data("../data/ball-pos-020000-040000.csv")
+        df3=td.load_ball_data("../data/ball-pos-040000-060000.csv")
+        df=pd.concat([df1,df2,df3])
+        df.to_csv("../data/ball-pos-000000-060000.csv", header=False, index=False)
+
 if __name__ == "__main__":
-        td=TrackData()
-        td.load_database()
-    # td.load_ball_data("../data/ball-pos-000000-020000.csv")
-    # output_filename="../data/track_frame-test.csv"
-    # td.ball_data2df(output_filename)
-    # track_filename="./data/track_frame2.csv"
-    # video_filename='./video/nishikori-medvedev.avi'
+    td=TrackData()
+    # td.load_database()
+    td.load_ball_data("../data/ball-pos-000000-060000.csv")
+    # td.load_ball_data("../data/ball-pos-020000-040000.csv")
+    # td.concat_ball_pos()
+
+
+    output_filename="../data/track_frame-test.csv"
+    td.ball_data2df(output_filename)
+    track_filename="../data/track_frame2.csv"
+    video_filename='../video/20210330-nishikori-titipas.avi'
     # td.predict_court_player(track_filename,video_filename)

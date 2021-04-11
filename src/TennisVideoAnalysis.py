@@ -1002,14 +1002,14 @@ class Application(tkinter.Frame):
             xmax=self.ds.x2
             ymax=self.ds.y2
             cv2.rectangle(img_copy,(xmin,ymin),(xmax,ymax),(0,0,255),thickness=2)
-            # if self.pos_seek.get() in self.track_data.frame_array:
-            #     index=self.track_data.frame_array.index(self.pos_seek.get())
-            #     x=self.track_data.all_track_ball_x[index]
-            #     y=self.track_data.all_track_ball_y[index]
-            #     print(x,y)
-            #     x,y=self.resize_xy_origin2disp(x,y)
-            #     print(x,y)
-            #     cv2.circle(img_copy,(x,y),2,(0,255,255),1)
+            if self.pos_seek.get() in self.track_data.frame_array:
+                index=self.track_data.frame_array.index(self.pos_seek.get())
+                x=self.track_data.all_track_ball_x[index]
+                y=self.track_data.all_track_ball_y[index]
+                print(x,y)
+                x,y=self.resize_xy_origin2disp(x,y)
+                print(x,y)
+                cv2.circle(img_copy,(x,y),2,(0,255,255),1)
             self.image_change(img_copy)
 
     def resize_xy_origin2disp(self,x,y):
@@ -2220,15 +2220,13 @@ if __name__ == "__main__":
         "../data/add_track.db"
         app.fld=filename
         app.load_data()
+
+    filename="../data/ball-pos-000000-020000.csv"
+    app.load_track_ball_data(filename)
+
+    filename="../data/track-data2.csv"
+    app.load_track_data(filename)
     
-    # filename="../data/ball-pos.csv"
-    # filename="../data/ball-pos-000000-020000.csv"
-    # app.load_track_ball_data(filename)
-
-    # filename="../data/track-data.csv"
-    # filename="../data/track-data2.csv"
-    # app.load_track_data(filename)
-
     app.bind("<Right>", app.button_forward1)#右矢印をクリックしたらフレーム+1
     app.bind("<Control-Right>", app.button_forward10)#ctrf+右矢印をクリックしたらフレーム+10
     app.bind("<Shift-Right>", app.button_forward100)#shift+右矢印をクリックしたらフレーム+100

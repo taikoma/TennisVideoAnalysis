@@ -111,8 +111,8 @@ class Score():
         self.array_y3=self.init_array()
         self.array_x4=self.init_array()
         self.array_y4=self.init_array()
-        print("score self.arrayHitPlayer",self.arrayHitPlayer)
-        print("score self.array_x1",self.array_x1)
+        # print("score self.arrayHitPlayer",self.arrayHitPlayer)
+        # print("score self.array_x1",self.array_x1)
 
     def init_array(self):
         array=[]
@@ -147,7 +147,7 @@ class Score():
         self.playerName = [self.playerA, self.playerB]
 
     def calcScore(self):  # 最初のポイントからすべて計算する
-        print("calcScore")
+        # print("calcScore")
         p = []
         p.append(0)
         p.append(0)
@@ -164,7 +164,7 @@ class Score():
         nextSet = "0-0"
         self.totalGame = 0
 
-        print("len(self.pointWin[0])",len(self.pointWin[0]))
+        # print("len(self.pointWin[0])",len(self.pointWin[0]))
 
         for i in range(len(self.pointWin[0])):  # ポイント間も含め全ポイントを計算する
 
@@ -676,7 +676,7 @@ class Score():
         for i in range(len(start_frame)-1):
             for j in range(len(track_frame)):
                 if start_frame[i]<=track_frame[j] and track_frame[j]<start_frame[i+1]:
-                    print(i,track_frame[j],bx[j],by[j])
+                    # print(i,track_frame[j],bx[j],by[j])
                     self.array_ball_position_shot[i].append([i,track_frame[j],bx[j],by[j]])
                     self.arrayPlayerAPosition[i].append([i,track_frame[j],xa[j],ya[j]])
                     self.arrayPlayerBPosition[i].append([i,track_frame[j],xb[j],yb[j]])

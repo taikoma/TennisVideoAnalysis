@@ -11,7 +11,7 @@ import src.track_data as track_data
 
 class TestTrackData(unittest.TestCase):
     def setUp(self):
-        print("setup")
+        # print("setup")
         self.track_data=track_data.TrackData()
         self.score=score.Score(0)
 
@@ -57,22 +57,7 @@ class TestTrackData(unittest.TestCase):
         self.track_data.load_track_data(filename)
         self.assertEqual(1.46,self.track_data.track_ball_x[0])
 
-    def test_detect_front_hit_frame(self):
-        NET_LINE=340
-        THRESH=10
-        f=np.array([0,10,11,12,13,14,15,20,21,30])
-        x=np.array([0,1,2,3,4,5,6,7,8,9])
-        y=np.array([300,400,500,595,596,594,590,500,400,300])
-        x_array,y_array=self.track_data.detect_front_hit_frame(f,x,y,NET_LINE,THRESH)
-        self.assertEqual([6],x_array)
-        self.assertEqual([590],y_array)
-
-        f=np.array([])
-        x=np.array([])
-        y=np.array([])
-        x_array,y_array=self.track_data.detect_front_hit_frame(f,x,y,NET_LINE,THRESH)
-        self.assertEqual([],x_array)
-        self.assertEqual([],y_array)
+    
 
     def test_load_track_to_score(self):
         start_track=[0,15,450,1000]
@@ -132,3 +117,53 @@ class TestTrackData(unittest.TestCase):
         
         self.track_data.load_track_to_score(self.score)#track_data->score
         self.assertEqual([[],[1,2,3,4],[5],[]],self.score.array_x1)
+
+    def test_detect_front_hit_frame(self):
+        NET_LINE=340
+        THRESH=30
+        frame=np.array([10,11,12,113,114,115,216,217,218,219])
+        x=np.array([0,1,2,3,4,5,6,7,8,9])
+        y=np.array([540,550,540,610,620,610,740,750,740,730])
+        front_hit_array,x_front_hit_array,y_front_hit_array=self.track_data.detect_front_hit_frame(frame,x,y,NET_LINE,THRESH)
+        self.assertEqual([11,114,217],front_hit_array)
+        self.assertEqual([1,4,7],x_front_hit_array)
+        self.assertEqual([550,620,750],y_front_hit_array)
+
+    def test_detect_back_hit_frame(self):
+        NET_LINE=340
+        THRESH=30
+        frame=np.array([10,11,12,113,114,115,216,217,218,219])
+        x=np.array([0,1,2,3,4,5,6,7,8,9])
+        y=np.array([60,50,70,130,120,110,260,250,270,270])
+        back_hit_array,x_back_hit_array,y_back_hit_array=self.track_data.detect_back_hit_frame(frame,x,y,NET_LINE,THRESH)
+        self.assertEqual([11,114,217],back_hit_array)
+        self.assertEqual([1,4,7],x_back_hit_array)
+        self.assertEqual([50,120,250],y_back_hit_array)
+
+    def test_detect_front_bounce_frame(self):
+        NET_LINE=340
+        THRESH=30
+        frame=np.array([10,11,12,50,113,114,115,216,217,218,219])
+        x=np.array([0,1,2,3,4,5,6,7,8,9,10])
+        y=np.array([540,550,540,570,610,620,610,740,750,740,730])
+        front_hit_array=[11,114,217]
+        front_bounce_array,x_front_bounce_array,y_front_bounce_array=self.track_data.detect_front_bounce_frame(frame,x,y,NET_LINE,THRESH,front_hit_array)
+        print(front_bounce_array)
+        self.assertEqual([10,11,12,113,114,115,216,217,218,219],front_bounce_array)
+        self.assertEqual([0,1,2,4,5,6,7,8,9,10],x_front_bounce_array)
+        self.assertEqual([540, 550, 540, 610, 620, 610, 740, 750, 740, 730],y_front_bounce_array)
+
+    def test_detect_back_bounce_frame(self):
+        NET_LINE=340
+        THRESH=30
+        frame=np.array([10,11,12,113,114,115,216,217,218,219])
+        x=np.array([0,1,2,3,4,5,6,7,8,9])
+        y=np.array([60,50,70,130,120,110,260,250,270,270])
+        back_hit_array=[11,114,217]
+        back_bounce_array,x_back_bounce_array,y_back_bounce_array=self.track_data.detect_back_bounce_frame(frame,x,y,NET_LINE,THRESH,back_hit_array)
+        print(back_bounce_array)
+        self.assertEqual([10,11,12,113,114,115,216,217,218,219],back_bounce_array)
+        self.assertEqual([0,1,2,3,4,5,6,7,8,9],x_back_bounce_array)
+        self.assertEqual([60,50,70,130,120,110,260,250,270,270],y_back_bounce_array)
+
+    
