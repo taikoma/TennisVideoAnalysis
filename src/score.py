@@ -672,10 +672,36 @@ class Score():
         for i in reversed(range(start_shot,end_shot+1)):#1,2
             self.delete_position_data(i)
 
-    def delete_after_end(self):
+    def delete_after_end(self,end):
         num=self.number
-        end=self.score.array_frame_end[num]
+        print(len(self.array_ball_position_shot[num]))
+        print(self.array_ball_position_shot[num])
+        array=[]
+        for i in range(len(self.array_ball_position_shot[num])):
+            print(self.array_ball_position_shot[num][i])
+            if len(self.array_ball_position_shot[num][i])>0:
+                if end < self.array_ball_position_shot[num][i][1]:
+                    array.append(i)
+                    
+        for i in sorted(array, reverse=True):
+            self.array_ball_position_shot[num].pop(i)
+            self.arrayPlayerAPosition[num].pop(i)
+            self.arrayPlayerBPosition[num].pop(i)
+            self.arrayHitPlayer[num].pop(i)
+            self.arrayBounceHit[num].pop(i)
+            self.arrayForeBack[num].pop(i)
+            self.arrayDirection[num].pop(i)
+
+            self.array_x1[num].pop(i)
+            self.array_y1[num].pop(i)
+            self.array_x2[num].pop(i)
+            self.array_y2[num].pop(i)
+            self.array_x3[num].pop(i)
+            self.array_y3[num].pop(i)
+            self.array_x4[num].pop(i)
+            self.array_y4[num].pop(i)
         
+
 
     def divide_track_data(self,start_frame,track_frame,bx,by,xa,ya,xb,yb,hit_bounce,x1,y1,x2,y2,x3,y3,x4,y4):#
         for i in range(len(start_frame)-1):

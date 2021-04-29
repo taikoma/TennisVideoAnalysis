@@ -422,8 +422,10 @@ class Application(tkinter.Frame):
             tkinter.messagebox.showinfo("Error", "データが選択されていません")
 
     def delete_tree_point_after_end(self):
-        print("")
-        end_frame=self.score.array_frame_end
+        num=self.score.number
+        end=self.score.array_frame_end[num]
+        self.score.delete_after_end(end)
+        self.set_shot_tree()
 
         
 
