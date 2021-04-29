@@ -17,4 +17,5 @@ analysis/.ipynb_checkpoints/*
 # /src/detect_score.py
 /src/predict/*
 /memo/*
+*.png
 

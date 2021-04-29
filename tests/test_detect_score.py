@@ -7,16 +7,39 @@ import src.predict.detect_score as detect_score
 
 class TestDetectScore(unittest.TestCase):
     def setUp(self):#設定
-        print("setup")
         self.ds=detect_score.DetectScore()
+
+    def test_fix_text(self):
+        #bugfix
+        text="3 6 10 6 3 4 15"#10を1 0 に分解したい
+        text=self.ds.fix_text(text)
+        self.assertEqual("3 6 1 0 6 3 4 15",text)
+
+    def test_fix_in_ad(self):
+        print("text_fix_in_ad")
+        text_array=['3','6','Ad']
+        text_array=self.ds.fix_in_ad(text_array)
+        self.assertEqual(['3', '40','6','Ad'],text_array)
+
+        text_array=['3','Ad','6']
+        text_array=self.ds.fix_in_ad(text_array)
+        self.assertEqual(['3','Ad','6', '40'],text_array)
+
+        text_array=['3', '6', '1', '6', '3', '4', 'Ad']
+        text_array=self.ds.fix_in_ad(text_array)
+        self.assertEqual(['3', '6', '1', '40','6', '3', '4', 'Ad'],text_array)
+
+        text_array=['3', '6', '1', 'Ad','6', '3', '4']
+        text_array=self.ds.fix_in_ad(text_array)
+        self.assertEqual(['3', '6', '1', 'Ad','6', '3', '4', '40'],text_array)
 
     def test_text2score(self):
         text="A 40"
-        set_num = self.ds.get_set_text(text)
+        set_num = self.ds.get_set_text_num(text)
         self.assertEqual(2,set_num)
 
         text="4 1 15\n6 1 15"
-        set_num = self.ds.get_set_text(text)
+        set_num = self.ds.get_set_text_num(text)
         self.assertEqual(6,set_num)
 
 
@@ -89,8 +112,12 @@ class TestDetectScore(unittest.TestCase):
         self.assertEqual("15",score_a)
         self.assertEqual("2",game_b)
         self.assertEqual("30",score_b)
+
+
+
+        
         
 
-if __name__ == "__main__":
-    unittest.main()
+# if __name__ == "__main__":
+#     unittest.main()
         

@@ -1003,6 +1003,7 @@ class Application(tkinter.Frame):
             ymax=self.ds.y2
             cv2.rectangle(img_copy,(xmin,ymin),(xmax,ymax),(0,0,255),thickness=2)
             if self.pos_seek.get() in self.track_data.frame_array:
+                print("ball!")
                 index=self.track_data.frame_array.index(self.pos_seek.get())
                 x=self.track_data.all_track_ball_x[index]
                 y=self.track_data.all_track_ball_y[index]

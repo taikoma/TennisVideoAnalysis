@@ -18,10 +18,14 @@ class SceneDivide():
         b_array=[]
         g_array=[]
         r_array=[]
-
-        while True:
-        # for i in range(0,10000):#1000
+        count=int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+        print("count:",count)
+        # while True:
+        for i in range(0,count):#1000
+            print(i)
+            cap.set(cv2.CAP_PROP_POS_FRAMES, i)
             ret,frame=cap.read()
+
             if not ret:
                 break
                 

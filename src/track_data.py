@@ -499,4 +499,4 @@ if __name__ == "__main__":
     td.ball_data2df(output_filename)
     track_filename="../data/track_frame2.csv"
     video_filename='../video/20210330-nishikori-titipas.avi'
-    # td.predict_court_player(track_filename,video_filename)
+    td.predict_court_player(track_filename,video_filename)
