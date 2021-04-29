@@ -421,6 +421,12 @@ class Application(tkinter.Frame):
         else:
             tkinter.messagebox.showinfo("Error", "データが選択されていません")
 
+    def delete_tree_point_after_end(self):
+        print("")
+        end_frame=self.score.array_frame_end
+
+        
+
 
     def create_image(self,pw):
         gimg = np.zeros((self.h,self.w,  3), dtype=np.uint8)
@@ -1564,6 +1570,10 @@ class Application(tkinter.Frame):
 
         self.menu_top_tree_point.add_command(
             label="データ削除", underline=5, command=self.delete_tree_point
+        )
+
+        self.menu_top_tree_point.add_command(
+            label="Endフレーム以降のデータ削除", underline=5, command=self.delete_tree_point_after_end
         )
 
         self.menu_top_tree_point.add_command(

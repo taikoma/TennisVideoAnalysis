@@ -672,6 +672,11 @@ class Score():
         for i in reversed(range(start_shot,end_shot+1)):#1,2
             self.delete_position_data(i)
 
+    def delete_after_end(self):
+        num=self.number
+        end=self.score.array_frame_end[num]
+        
+
     def divide_track_data(self,start_frame,track_frame,bx,by,xa,ya,xb,yb,hit_bounce,x1,y1,x2,y2,x3,y3,x4,y4):#
         for i in range(len(start_frame)-1):
             for j in range(len(track_frame)):
@@ -690,12 +695,19 @@ class Score():
                     self.array_y4[i].append(y4[j])
                     
                     if "Hit" in hit_bounce[j]:
-                        self.arrayBounceHit[i].append("Hit")#TODO
+                        self.arrayBounceHit[i].append("Hit")
                     elif "Bounce" in hit_bounce[j]:
-                        self.arrayBounceHit[i].append("Bounce")#TODO
+                        self.arrayBounceHit[i].append("Bounce")
                     else:
-                        self.arrayBounceHit[i].append("")#TODO
-                    self.arrayHitPlayer[i].append("TEST")#TODO
+                        self.arrayBounceHit[i].append("")
+                    
+                    if "Back" in hit_bounce[j]:
+                        self.arrayHitPlayer[i].append("Up")
+                    elif "Front" in hit_bounce[j]:
+                        self.arrayHitPlayer[i].append("Down")
+                    else:
+                        self.arrayHitPlayer[i].append("")
+
                     self.arrayForeBack[i].append("TEST")#TODO
                     self.arrayDirection[i].append("TEST")#TODO
 
