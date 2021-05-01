@@ -166,4 +166,15 @@ class TestTrackData(unittest.TestCase):
         self.assertEqual([0,1,2,3,4,5,6,7,8,9],x_back_bounce_array)
         self.assertEqual([60,50,70,130,120,110,260,250,270,270],y_back_bounce_array)
 
+    def test_delete_overlap_ball_pos_df(self):
+        frame=np.array([10,11,11,11,114,115,216,217,218,219])
+        x=np.array([0,1,2,3,4,5,6,7,8,9])
+        y=np.array([60,50,70,130,120,110,260,250,270,270])
+        df=pd.DataFrame({"Frame":frame,
+                            "X":x,
+                            "Y":y,})
+        df=self.track_data.delete_overlap_ball_pos_df(df)
+        self.assertEqual([10,11,114,115,216,217,218,219],df["Frame"].astype(np.int64).values.tolist())
+
+
     

@@ -13,18 +13,18 @@ class TrackData():
     def __init__(self):
         super().__init__()
         self.frame_array=[]
-        self.all_track_ball_x=[]#
+        self.all_track_ball_x=[]
         self.all_track_ball_y=[]
 
-        self.track_frame_array=[]
-        self.track_ball_x=[]
-        self.track_ball_y=[]
-        self.track_player_a_x=[]
-        self.track_player_a_y=[]
-        self.track_player_b_x=[]
-        self.track_player_b_y=[]
+        self.track_frame_array=[]#Frame
+        self.track_ball_x=[]#X_Ball_onC
+        self.track_ball_y=[]#Y_Ball_onC
+        self.track_player_a_x=[]#X_A_onC
+        self.track_player_a_y=[]#Y_A_onC
+        self.track_player_b_x=[]#X_B_onC
+        self.track_player_b_y=[]#Y_B_onC
         self.track_hit_bounce=[]
-        self.track_x1=[]
+        self.track_x1=[]#リサイズ前画像の座標X1
         self.track_y1=[]
         self.track_x2=[]
         self.track_y2=[]
@@ -488,15 +488,33 @@ class TrackData():
         df=pd.concat([df1,df2,df3])
         df.to_csv("../data/ball-pos-000000-060000.csv", header=False, index=False)
 
+    def delete_overlap_ball_pos_df(self,df):
+        df=df[~df["Frame"].duplicated(keep='last')]
+        return df
+
+    def delete_overlap_ball_pos(self):
+        file_name="../data/ball-pos-000000-060000.csv"
+        df=td.load_ball_data(file_name)
+        df=self.delete_overlap_ball_pos_df(df)
+        df.to_csv(file_name)
+
+    def delete_overlap_ball_track(self):
+        file_name="../data/track-data2.csv"
+        df=pd.read_csv(file_name)
+        df=self.delete_overlap_ball_pos_df(df)
+        print(df)
+        df.to_csv(file_name)
+        print(df)
+
 if __name__ == "__main__":
     td=TrackData()
-    # td.load_database()
-    td.load_ball_data("../data/ball-pos-000000-060000.csv")
-    # td.load_ball_data("../data/ball-pos-020000-040000.csv")
-    # td.concat_ball_pos()
+    # td.load_ball_data("../data/ball-pos-000000-060000.csv")
 
-    output_filename="../data/track_frame-test.csv"
-    td.ball_data2df(output_filename)
-    track_filename="../data/track_frame2.csv"
-    video_filename='../video/20210330-nishikori-titipas.avi'
-    td.predict_court_player(track_filename,video_filename)
+    # output_filename="../data/track_frame-test.csv"
+    # td.ball_data2df(output_filename)
+    # track_filename="../data/track_frame2.csv"
+    # video_filename='../video/20210330-nishikori-titipas.avi'
+    # td.predict_court_player(track_filename,video_filename)
+
+    # td.delete_overlap_ball_pos()
+    td.delete_overlap_ball_track()

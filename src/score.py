@@ -24,7 +24,7 @@ class Score():
         self.firstSecondString = ["", "1st", "2nd"]
 
         self.pointXYNum = 0
-        self.arrayPointXY = []  # コートのXY座標 [[x1,y1],[x2,y2],[x3,y3],[x4,y4]]
+        self.arrayPointXY = []  #コート4点のXY座標 [[x1,y1],[x2,y2],[x3,y3],[x4,y4]]　表示画面サイズ
         self.arrayPointXY.append([0, 0])
         self.arrayPointXY.append([0, 0])
         self.arrayPointXY.append([0, 0])
@@ -103,7 +103,7 @@ class Score():
         self.arrayPlayerAPosition = self.init_array()
         self.arrayPlayerBPosition = self.init_array()
 
-        self.array_x1=self.init_array()
+        self.array_x1=self.init_array()#ビデオサイズでのコート4点のXY座標
         self.array_y1=self.init_array()
         self.array_x2=self.init_array()
         self.array_y2=self.init_array()
@@ -111,8 +111,6 @@ class Score():
         self.array_y3=self.init_array()
         self.array_x4=self.init_array()
         self.array_y4=self.init_array()
-        # print("score self.arrayHitPlayer",self.arrayHitPlayer)
-        # print("score self.array_x1",self.array_x1)
 
     def init_array(self):
         array=[]
@@ -579,6 +577,35 @@ class Score():
                 
         return point_winner_array,first_second_array,point_pattern
 
+    def position_data2array_insert(self,xball,yball,xa,ya,xb,yb,servereturn,hitBounce,foreback,crossstreat,x1,y1,x2,y2,x3,y3,x4,y4,pos_seek):
+        num=self.number
+        j=0
+        for i in range(len(self.array_ball_position_shot[num])):
+            print("pos_seek",pos_seek)
+            print("array_ball_position_shot",self.array_ball_position_shot[num][i][1])
+            if pos_seek > self.array_ball_position_shot[num][i][1]:
+                j=i+1
+        
+        self.array_ball_position_shot[num].insert(j,[num,pos_seek,xball,yball])
+        self.arrayPlayerAPosition[num].insert(j,[num,pos_seek,xa,ya])
+        self.arrayPlayerBPosition[num].insert(j,[num,pos_seek,xb,yb])
+        self.arrayHitPlayer[num].insert(j,self.playerName[(self.firstServer + servereturn + self.totalGame) % 2])
+        self.arrayBounceHit[num].insert(j,hitBounce)
+        self.arrayForeBack[num].insert(j,foreback)
+        self.arrayDirection[num].insert(j,crossstreat)
+        self.array_x1[num].insert(j,x1)
+        self.array_y1[num].insert(j,y1)
+        self.array_x2[num].insert(j,x2)
+        self.array_y2[num].insert(j,y2)
+        self.array_x3[num].insert(j,x3)
+        self.array_y3[num].insert(j,y3)
+        self.array_x4[num].insert(j,x4)
+        self.array_y4[num].insert(j,y4)
+
+        for j in range(len(self.array_ball_position_shot[num])):
+            self.array_ball_position_shot[num][j][0]=j+1
+
+
     def position_data2array(self,xball,yball,xa,ya,xb,yb,servereturn,hitBounce,foreback,crossstreat,x1,y1,x2,y2,x3,y3,x4,y4,pos_seek):
         """
         position_data2array array[num].append([*,*]) num is self.number
@@ -667,22 +694,58 @@ class Score():
 
         for j in range(len(self.array_ball_position_shot[num])):
             self.array_ball_position_shot[num][j][0]=j+1
+            self.arrayPlayerAPosition[num][j][0]=j+1
+            self.arrayPlayerBPosition[num][j][0]=j+1
 
-    def delete_tree_point_shift(self,start_shot,end_shot):
+    def delete_tree_shot_shift(self,start_shot,end_shot):
         for i in reversed(range(start_shot,end_shot+1)):#1,2
             self.delete_position_data(i)
 
-    def delete_after_end(self,end):
-        num=self.number
-        print(len(self.array_ball_position_shot[num]))
-        print(self.array_ball_position_shot[num])
+    def delete_tree_point(self):
+        i=self.number
+        print(i)
+        #delete point
+        self.array_frame_start.pop(i)
+        self.array_frame_end.pop(i)
+        self.arraySet.pop(i)
+        self.arrayGame.pop(i)
+        self.arrayScore.pop(i)
+        self.arrayScoreResult.pop(i)
+        self.arrayFirstSecond.pop(i)
+        self.arrayServer.pop(i)
+        self.arrayPointWinner.pop(i)
+        self.arrayPointPattern.pop(i)
+
+
+        #delete shot all
+        self.array_ball_position_shot.pop(i)
+        self.arrayPlayerAPosition.pop(i)
+        self.arrayPlayerBPosition.pop(i)
+        self.arrayHitPlayer.pop(i)
+        self.arrayBounceHit.pop(i)
+        self.arrayForeBack.pop(i)
+        self.arrayDirection.pop(i)
+
+        self.array_x1.pop(i)
+        self.array_y1.pop(i)
+        self.array_x2.pop(i)
+        self.array_y2.pop(i)
+        self.array_x3.pop(i)
+        self.array_y3.pop(i)
+        self.array_x4.pop(i)
+        self.array_y4.pop(i)
+
+    def delete_after_end(self,num,end):
+        # num=self.number
+        print("len(self.array_ball_position_shot[num])",len(self.array_ball_position_shot[num]))
+        print("self.array_ball_position_shot[num]",self.array_ball_position_shot[num])
         array=[]
         for i in range(len(self.array_ball_position_shot[num])):
             print(self.array_ball_position_shot[num][i])
             if len(self.array_ball_position_shot[num][i])>0:
                 if end < self.array_ball_position_shot[num][i][1]:
                     array.append(i)
-                    
+
         for i in sorted(array, reverse=True):
             self.array_ball_position_shot[num].pop(i)
             self.arrayPlayerAPosition[num].pop(i)
@@ -700,6 +763,8 @@ class Score():
             self.array_y3[num].pop(i)
             self.array_x4[num].pop(i)
             self.array_y4[num].pop(i)
+
+            # self.array_ball_position_shot
         
 
 
@@ -737,6 +802,13 @@ class Score():
                     self.arrayForeBack[i].append("TEST")#TODO
                     self.arrayDirection[i].append("TEST")#TODO
 
+    def convert_bally2playery(self):
+        for i in range(len(self.array_ball_position_shot)):
+            for j in range(len(self.array_ball_position_shot[i])):
+                if self.arrayHitPlayer[i][j]=="Up":
+                    self.array_ball_position_shot[i][j][3]=self.arrayPlayerAPosition[i][j][3]
+                elif self.arrayHitPlayer[i][j]=="Down":
+                    self.array_ball_position_shot[i][j][3]=self.arrayPlayerBPosition[i][j][3]
 
         
                 
