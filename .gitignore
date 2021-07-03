@@ -18,4 +18,5 @@ analysis/.ipynb_checkpoints/*
 /src/predict/*
 /memo/*
 *.png
-
+/dev/*
+/temp/*

@@ -33,6 +33,19 @@ class TestDetectScore(unittest.TestCase):
         text_array=self.ds.fix_in_ad(text_array)
         self.assertEqual(['3', '6', '1', 'Ad','6', '3', '4', '40'],text_array)
 
+    def test_fix_zero_zero(self):
+        text_array=['3','6']
+        text_array=self.ds.fix_zero_zero(text_array)
+        self.assertEqual(['3','0', '6','0'],text_array)
+
+        text_array=['3', '6','6', '3']
+        text_array=self.ds.fix_zero_zero(text_array)
+        self.assertEqual(['3','6','0', '6','3','0'],text_array)
+
+        text_array=['3', '6', '1','6', '3', '4']
+        text_array=self.ds.fix_zero_zero(text_array)
+        self.assertEqual(['3', '6', '1','0','6', '3', '4','0'],text_array)
+
     def test_text2score(self):
         text="A 40"
         set_num = self.ds.get_set_text_num(text)
@@ -112,6 +125,20 @@ class TestDetectScore(unittest.TestCase):
         self.assertEqual("15",score_a)
         self.assertEqual("2",game_b)
         self.assertEqual("30",score_b)
+
+        text="3 6 1\n6 3 4 Ad"
+        game_a,game_b,score_a,score_b=self.ds.text2score(text)
+        self.assertEqual("1",game_a)
+        self.assertEqual("4",game_b)
+        self.assertEqual("40",score_a)
+        self.assertEqual("Ad",score_b)
+
+        text="3 6 1\n6 3 4"
+        game_a,game_b,score_a,score_b=self.ds.text2score(text)
+        self.assertEqual("1",game_a)
+        self.assertEqual("4",game_b)
+        self.assertEqual("0",score_a)
+        self.assertEqual("0",score_b)
 
 
 

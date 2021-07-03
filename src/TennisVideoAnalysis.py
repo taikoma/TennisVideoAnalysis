@@ -31,7 +31,7 @@ class Application(tkinter.Frame):
 
     """
     #GUIウィンドウの設定と画像描画
-    def __init__(self,score,mode_predict_court,mode_predict_player,mode_detect_score,  master=None):
+    def __init__(self,score,mode_predict_court,mode_predict_player,mode_detect_score, master=None):
         super().__init__(master)
         #Instantiate other classes
         self.score = score
@@ -70,6 +70,10 @@ class Application(tkinter.Frame):
         self.mode_predictPlayer=mode_predict_player
         self.mode_detect_score=mode_detect_score
 
+        self.sx1=0
+        self.sy1=0
+        self.sx2=0
+        self.sy2=0
 
         if(self.mode_predict):
             from predict import predict
@@ -102,9 +106,6 @@ class Application(tkinter.Frame):
         self.rya=20
         self.rxb=40
         self.ryb=20
-
-        self.sx1=0
-        self.sy1=0
         
         self.num_shot=0
 
@@ -417,7 +418,6 @@ class Application(tkinter.Frame):
         self.score.delete_tree_point()
         self.set_tree()
         self.active_select()
-        # self.set_shot_tree()
 
     def delete_tree_shot(self):
         curItem = self.shot_tree.focus()
@@ -521,6 +521,7 @@ class Application(tkinter.Frame):
         self.score.arrayPointXY[2][1] = points[1][1]
         self.score.arrayPointXY[3][0] = points[2][0]
         self.score.arrayPointXY[3][1] = points[2][1]
+        print('predict time:total:%s predict:%s transform:%s',end_transform-start_predict,end_predict-start_predict,end_transform-end_predict)
         logging.info('predict time:total:%s predict:%s transform:%s',end_transform-start_predict,end_predict-start_predict,end_transform-end_predict)
 
 
@@ -550,7 +551,11 @@ class Application(tkinter.Frame):
         rx2:ellipse radius x player B
         ry2:ellipse radius y player B
         """
+        start_player_tracking=time.time()
         x1,y1,x2,y2,rx1,ry1,rx2,ry2=self.playerDetect.detect_player(img)
+        end_player_tracking=time.time()
+        print('player predict time:total:%s',end_player_tracking-start_player_tracking)
+
         return x1,y1,x2,y2,rx1,ry1,rx2,ry2
 
     def detect_ball(self,event):
@@ -926,19 +931,10 @@ class Application(tkinter.Frame):
         elif(self.mode_predict):#予測モード
             resized_image = self.read_resized_image(self.pos_seek.get())
             resized_image_copy = np.copy(resized_image)
-            self.predictTransformMatrix(resized_image)#テニスコート4点予測し変換行列を作成
             self.xball,self.yball=self.detect_ball(event)#ボールを検出
+            self.predictTransformMatrix(resized_image)#テニスコート4点予測し変換行列を作成
             self.xball_c,self.yball_c=self.track_data.transform_position(self.xball,self.yball,self.M)#clicked position to court position
             r=self.score.rally
-
-            # if r%4==0:#server bounce
-            #     self.calc_bounce_shot(resized_image_copy,0)
-            # elif r%4==1:
-            #     self.calc_hit_shot(resized_image,resized_image_copy,1)
-            # if r%4==2:#server bounce
-            #     self.calc_bounce_shot(resized_image_copy,1)
-            # elif r%4==3:
-            #     self.calc_hit_shot(resized_image,resized_image_copy,0)
 
             self.calc_hit_shot(resized_image,resized_image_copy,0)
 
@@ -952,10 +948,9 @@ class Application(tkinter.Frame):
                 if msg == 1:  # true
                     self.score.arrayContactServe[self.score.number] = [0, 0]
             else:
-                if(score.mode == 0):
-                    # print("mode", self.score.mode)
+                if(self.score.mode == 0):
                     resized_image = self.read_resized_image(self.pos_seek.get())
-                    pts, dilation = calcCourtPoints(resized_image)
+                    pts, dilation = self.calcCourtPoints(resized_image)
                     resized_image_copy = np.copy(resized_image)
                     cv2.polylines(resized_image_copy, [pts], True, (0, 255, 0), 2)
                     h, w = resized_image_copy.shape[0], resized_image_copy.shape[1]
@@ -971,23 +966,23 @@ class Application(tkinter.Frame):
                 elif(self.score.mode == 1):#
                     resized_image = self.read_resized_image(self.pos_seek.get())
                     resized_image_copy = np.copy(resized_image)
-                    cv2.circle(resized_image_copy, (event.x - 2, event.y - 2),
-                            2, (0, 255, 0), -1)
+
                     self.score.arrayPointXY[self.score.pointXYNum][0] = event.x - 2
                     self.score.arrayPointXY[self.score.pointXYNum][1] = event.y - 2
 
+                    for i in range(len(self.score.arrayPointXY)):
+                        x=self.score.arrayPointXY[i][0]
+                        y=self.score.arrayPointXY[i][1]
+                        cv2.circle(resized_image_copy, (x, y),
+                            2, (0, 255, 0), -1)
     
                     self.score.arrayCourt[self.score.pointXYNum][self.score.number][0] = event.x - 2
                     self.score.arrayCourt[self.score.pointXYNum][self.score.number][1] = event.y - 2
-                    self.score.pointXYNum = self.score.pointXYNum + 1
+                    self.score.pointXYNum = self.score.pointXYNum + 1                
+                    self.image_change(resized_image_copy)
 
-                    if(self.score.pointXYNum < 4):
-                        image = cv2.cvtColor(resized_image_copy, cv2.COLOR_BGR2RGB)
-                        im = Image.fromarray(image)
-                        imgtk = ImageTk.PhotoImage(image=im)
-                        self.panel.configure(image=imgtk)
-                        self.panel.image = imgtk
-                    else:
+                    if(self.score.pointXYNum > 3):#クリックすると1からはじまる
+                        # else:#4点目(右下)をクリック
                         self.pts = np.array([self.score.arrayPointXY[0],
                                         self.score.arrayPointXY[1],
                                         self.score.arrayPointXY[2],
@@ -1005,17 +1000,16 @@ class Application(tkinter.Frame):
                         src_pts = np.float32([p1,p2,p3,p4]).reshape(-1,1,2)
                         dst_pts = np.float32([c1,c2,c3,c4]).reshape(-1,1,2)
 
-                        M,mask=cv2.findHomography(src_pts, dst_pts, cv2.RANSAC,5.0)
+                        self.M,mask=cv2.findHomography(src_pts, dst_pts, cv2.RANSAC,5.0)
                         pts_sub=np.array([[centerLineLeft,centerLineRignt]],dtype='float32')
-                        self.inv_M=np.linalg.inv(M)
-                        self.image_show()
+                        self.inv_M=np.linalg.inv(self.M)
+                        # self.image_show()
 
                         self.score.pointXYNum = 0
                         self.score.mode = 2
-                elif(self.score.mode == 2):#
+                elif(self.score.mode == 2):#着地点をクリック　コート座標をクリックしたあと
                     # print("mode", self.score.mode)
                     resized_image = self.read_resized_image(self.pos_seek.get())
-
                     resized_image_copy = np.copy(resized_image)
                     self.draw_court_line(self.pts,resized_image_copy,self.inv_M)
                     h, w = resized_image_copy.shape[0], resized_image_copy.shape[1]
@@ -1029,13 +1023,46 @@ class Application(tkinter.Frame):
                     imgtk = ImageTk.PhotoImage(image=im)
                     self.panel.configure(image=imgtk)
                     self.panel.image = imgtk
-                    self.score.mode = 1
+                    self.score.mode = 3
 
                     self.score.arrayContactServe[self.score.number] = [
                         event.x - 2, event.y - 2]
 
-                    self.draw_contact_all()
-                    self.set_tree()
+                    self.xball_c,self.yball_c=self.track_data.transform_position(event.x - 2,event.y - 2,self.M)#clicked position to court position センター基準
+                    # self.score.array_ball_position_shot[self.score.number][i][2]=self.xball_c
+                    # self.score.array_ball_position_shot[self.score.number][i][3]=self.xball_c
+                    # print(self.xball_c,self.yball_c)
+
+
+
+
+                    xball_c=self.score.array_ball_position_shot[self.score.number][i][2]
+        yball_c=self.score.array_ball_position_shot[self.score.number][i][3]
+        xa=self.score.arrayPlayerAPosition[self.score.number][i][2]
+        ya=self.score.arrayPlayerAPosition[self.score.number][i][3]
+        xb=self.score.arrayPlayerBPosition[self.score.number][i][2]
+        yb=self.score.arrayPlayerBPosition[self.score.number][i][3]
+
+                elif(self.score.mode == 3):#着地点をクリック　ボールをクリックしたあと選手を選択
+                    resized_image = self.read_resized_image(self.pos_seek.get())
+                    resized_image_copy = np.copy(resized_image)
+                    self.draw_court_line(self.pts,resized_image_copy,self.inv_M)
+                    h, w = resized_image_copy.shape[0], resized_image_copy.shape[1]
+                    
+                    cv2.line(resized_image_copy, (event.x - 2, 0),
+                            (event.x - 2, h - 1), (255, 0, 0))
+                    cv2.line(resized_image_copy, (0, event.y - 2),
+                            (w - 1, event.y - 2), (255, 0, 0))
+                    image = cv2.cvtColor(resized_image_copy, cv2.COLOR_BGR2RGB)
+                    im = Image.fromarray(image)
+                    imgtk = ImageTk.PhotoImage(image=im)
+                    self.panel.configure(image=imgtk)
+                    self.panel.image = imgtk
+
+                    self.xball_c,self.yball_c=self.track_data.transform_position(event.x - 2,event.y - 2,self.M)#clicked position to court position センター基準
+                    print(self.xball_c,self.yball_c)
+
+
 
     def read_resized_image(self, frameIndex):
         """return the resized frameindex image"""
@@ -1065,19 +1092,13 @@ class Application(tkinter.Frame):
         if(self.video):
             gimg = self.read_resized_image(self.pos_seek.get())
             img_copy = np.copy(gimg)
-            xmin=self.ds.x1
-            ymin=self.ds.y1
-            xmax=self.ds.x2
-            ymax=self.ds.y2
-            cv2.rectangle(img_copy,(xmin,ymin),(xmax,ymax),(0,0,255),thickness=2)
+
+            cv2.rectangle(img_copy,(self.sx1,self.sy1),(self.sx2,self.sy2),(0,0,255),thickness=2)
             if self.pos_seek.get() in self.track_data.frame_array:
-                print("ball!")
                 index=self.track_data.frame_array.index(self.pos_seek.get())
                 x=self.track_data.all_track_ball_x[index]
                 y=self.track_data.all_track_ball_y[index]
-                print(x,y)
                 x,y=self.resize_xy_origin2disp(x,y)
-                print(x,y)
                 cv2.circle(img_copy,(x,y),2,(0,255,255),1)
             self.image_change(img_copy)
 
@@ -1329,6 +1350,8 @@ class Application(tkinter.Frame):
                 initialdir=dir, filetypes=[
                     ('Db Files', ('.db'))])
         if(self.fld):
+            settings=setting.Setting()
+            settings.save_data(self.score.playerA,self.score.playerB,self.score.firstServer,self.vid.videoFileName,self.sx1,self.sy1,self.sx2,self.sy2)
             db = database.Database(self.fld, self.score)
             db.save_database()
 
@@ -1338,6 +1361,8 @@ class Application(tkinter.Frame):
             initialdir=dir, filetypes=[
                 ('Db Files', ('.db'))])
         if(self.fld):
+            settings=setting.Setting()
+            settings.save_data(self.score.playerA,self.score.playerB,self.score.firstServer,self.vid.videoFileName,self.sx1,self.sy1,self.sx2,self.sy2)
             db = database.Database(self.fld, self.score)
             db.save_database()
 
@@ -1353,7 +1378,7 @@ class Application(tkinter.Frame):
             self.label_firstServer["text"]="1stServer:"+self.score.playerB
 
         settings=setting.Setting()
-        settings.save_data(self.score.playerA,self.score.playerB,self.score.firstServer,self.vid.videoFileName)
+        settings.save_data(self.score.playerA,self.score.playerB,self.score.firstServer,self.vid.videoFileName,self.sx1,self.sy1,self.sx2,self.sy2)
 
         self.sub_win.destroy()
         self.updata_button()
@@ -1649,6 +1674,11 @@ class Application(tkinter.Frame):
             label="Auto Score 1 Point", underline=5, command=self.score_image2text_one
         )
 
+        self.menu_top_tree.add_command(
+            label="Auto Score All", underline=5, command=self.score_image2text_all
+        )
+        
+
 
     def create_right_menu_tree_point(self):
         self.menu_top_tree_point = Menu(self, tearoff=False)
@@ -1911,6 +1941,9 @@ class Application(tkinter.Frame):
     def button_backward100(self, event):
         self.pos_seek.set(self.pos_seek.get() - 100)
 
+    def button_delete_tree_point(self,event):
+        self.delete_tree_point()
+
     def delete_last_shot(self):
         print("delete_last_shot")
         if(self.score.rally>0):
@@ -1933,8 +1966,8 @@ class Application(tkinter.Frame):
 
     def score_image2text_one(self):
         i=self.score.number
-        self.score_image_one(i)
-        self.score_text_one(i)
+        self.score_image_one(i)#image
+        self.score_text_one(i)#image->score
         self.set_tree()
 
     def score_image_one(self,i):
@@ -1955,12 +1988,37 @@ class Application(tkinter.Frame):
         self.score.arrayGame[i]=str(game_a)+"-"+str(game_b)
         self.score.arrayScore[i]=str(score_a)+"-"+str(score_b)
 
+    def score_image2text_all(self):
+        self.score_image_all()#image
+        start_list=self.score.array_frame_start[0:10]
+        for i in range(len(start_list)):
+            self.score_image_one(i)
+
+
+        # game_a_array,game_b_array,score_a_array,score_b_array=self.ds.image2scores()#image->score
+
+        #ここにしたをかく
+        #game_a,game_b,score_a,score_b=self.ds.image2onescore(i)
+        # self.score.arrayGame[i]=str(game_a)+"-"+str(game_b)
+        # self.score.arrayScore[i]=str(score_a)+"-"+str(score_b)
+
+
+        self.set_tree()
 
     def score_image_all(self,event):
         """save trim bounding box image at all start_frame to png file"""
         # start_list=[0,800,1031,1672,2564,3346,2350,3862,4180,6028,6738,7091,7969,7981,8564,9080,9796,
         #             10172,11097,11498,11900]
-        start_list=[0,800,1031,1672,2564]
+        # start_list=[0,800,1031,1672,2564]
+        start_list=self.score.array_frame_start[0:10]
+        self.ds.frame2images(start_list,self.vid.videoFileName)
+
+    def score_image_all(self):
+        """save trim bounding box image at all start_frame to png file"""
+        # start_list=[0,800,1031,1672,2564,3346,2350,3862,4180,6028,6738,7091,7969,7981,8564,9080,9796,
+        #             10172,11097,11498,11900]
+        # start_list=[0,800,1031,1672,2564]
+        start_list=self.score.array_frame_start[0:10]
         self.ds.frame2images(start_list,self.vid.videoFileName)
         
     def score_text(self,event):
@@ -2130,6 +2188,24 @@ class Application(tkinter.Frame):
                                     #  self.score.arrayContactServe[i][1]))
         self.tree.selection_set(self.tree.get_children()[self.score.number])
 
+    def button_select_up(self,event):
+        self.score.number -= 1
+        curItem = self.tree.get_children()[score.number]
+        self.tree.selection_set(curItem)
+        self.pos_seek.set(int(self.tree.item(curItem)["values"][1]))
+        self.key_activate()
+        self.set_shot_tree()#追加
+        self.disp_edit_tree(self.score.number)
+
+    def button_select_down(self,event):
+        self.score.number += 1
+        curItem = self.tree.get_children()[score.number]
+        self.tree.selection_set(curItem)
+        self.pos_seek.set(int(self.tree.item(curItem)["values"][1]))
+        self.key_activate()
+        self.set_shot_tree()#追加
+        self.disp_edit_tree(self.score.number)
+
     def select(self, event):
         print("tree_select")
         curItem = self.tree.focus()
@@ -2146,8 +2222,6 @@ class Application(tkinter.Frame):
         self.key_activate()
         self.set_shot_tree()#追加
         self.disp_edit_tree(self.score.number)
-
-        
 
     def shift_select(self, event):
         print("shift")
@@ -2215,11 +2289,6 @@ class Application(tkinter.Frame):
 
             self.disp_position_on_image_court(resized_image_copy)
 
-            # self.disp_circle_on_position(resized_image_copy,self.xa,self.ya,self.xb,self.yb,self.rxa,self.rya,self.rxb,self.ryb)
-
-            # self.image_change(resized_image_copy)
-
-            # self.disp_track_data_court_one(self.num_shot)
 
 
     def disp_edit_tree(self,i):
@@ -2275,17 +2344,18 @@ class Application(tkinter.Frame):
 
 
 if __name__ == "__main__":
+    args=sys.argv
+    print(args)
 
-    # logging.basicConfig(filename='log/logger.log',level=logging.DEBUG)
-    # logging.critical('critical')
-    # logging.error('error')
-    # logging.warning('warning')
-    # logging.info('info')
-    # logging.debug('debug')
-
-    # logging.info('error{}'.format('outputting error'))
-    # logging.info('warning %s %s' % ('was','outputted'))
-    # logging.info('info %s %s','test','test')
+    if len(args)>1:
+        if args[1]=="predict":
+            mode_predict_court=True
+            mode_predict_player=True
+            mode_detect_score=True
+    else:
+        mode_predict_court=False
+        mode_predict_player=False
+        mode_detect_score=False
 
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
     settings=setting.Setting()#settings.json
@@ -2295,35 +2365,47 @@ if __name__ == "__main__":
     
     print(score.playerA, score.playerB)
     
-    root = tkinter.Tk()#root
+    root = tkinter.Tk()
     root.title("Tennis Video Analytics")
 
-    mode_predict_court=True
-    mode_predict_player=True
-    mode_detect_score=True
+    x1=settings.sx1
+    y1=settings.sy1
+    x2=settings.sx2
+    y2=settings.sy2
+
     app = Application(score,mode_predict_court,mode_predict_player,mode_detect_score, master=root)
     app.create_widgets(640, 360)
-    
+
+   
     print("videoFile:",settings.videoFile)
     if(settings.videoFile!=""):
         videoFile = settings.videoFile
         vid = video.Video(videoFile)
         app.load_video(vid)
+        if mode_detect_score:
+            if app.ds:
+                app.sx1=int(x1*app.w/app.vid.width)
+                app.sy1=int(y1*app.h/app.vid.height)
+                app.sx2=int(x2*app.w/app.vid.width)
+                app.sy2=int(y2*app.h/app.vid.height)
+                app.ds.set_xy(app.sx1,app.sy1,app.sx2,app.sy2)
+
         app.image_show()
         app.sc.configure(to=app.frame_count)
 
     if(settings.dataFile!=""):
         print(settings.dataFile)
         filename=settings.dataFile
-        "../data/add_track.db"
+        # "../data/add_track.db"
         app.fld=filename
         app.load_data()
 
-    filename="../data/ball-pos-000000-020000.csv"
-    app.load_track_ball_data(filename)
+    if mode_detect_score:
+        filename="../data/ball-pos-000000-020000.csv"
+        app.load_track_ball_data(filename)
 
-    filename="../data/track-data2.csv"
-    app.load_track_data(filename)
+        filename="../data/track-data2.csv"
+        app.load_track_data(filename)
     
     app.delete_tree_shot_after_end_all()
 
@@ -2335,6 +2417,9 @@ if __name__ == "__main__":
     app.bind("<Shift-Left>", app.button_backward100)
     app.bind("p",app.play)
     app.bind("s",app.stop)
+    app.bind("<Delete>",app.button_delete_tree_point)
+    app.bind("<Up>",app.button_select_up)
+    app.bind("<Down>",app.button_select_down)
     app.focus_set()
     app.pack()
     app.mainloop()

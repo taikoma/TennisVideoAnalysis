@@ -3,7 +3,6 @@ import codecs
 import pandas as pd
 import numpy as np
 import cv2
-
 import score
 
 # from predict import predict as predict
@@ -368,9 +367,13 @@ class TrackData():
         p4_y_array=[]
 
         for i in range(len(frame_array)):#len(frame_array)
+            print(str(i)+"/"+str(len(frame_array)))
             video.set(cv2.CAP_PROP_POS_FRAMES, frame_array[i])
             ok, img = video.read()
-            points=predict.predictPoints(img)
+            if ok:
+                points=predict.predictPoints(img)
+            else:
+                points=[]
 
             if len(points)>3:
                 pts = np.array([points[0],points[1],points[2],points[3]],dtype=int)
@@ -485,36 +488,58 @@ class TrackData():
         df1=td.load_ball_data("../data/ball-pos-000000-020000.csv")
         df2=td.load_ball_data("../data/ball-pos-020000-040000.csv")
         df3=td.load_ball_data("../data/ball-pos-040000-060000.csv")
-        df=pd.concat([df1,df2,df3])
-        df.to_csv("../data/ball-pos-000000-060000.csv", header=False, index=False)
+        df4=td.load_ball_data("../data/ball-pos-040000-060000.csv")
+        df5=td.load_ball_data("../data/ball-pos-060000-080000.csv")
+        df6=td.load_ball_data("../data/ball-pos-080000-100000.csv")
+        df7=td.load_ball_data("../data/ball-pos-100000-120000.csv")
+        df8=td.load_ball_data("../data/ball-pos-120000-140000.csv")
+        df9=td.load_ball_data("../data/ball-pos-140000-145000.csv")
+        df10=td.load_ball_data("../data/ball-pos-145000-147000.csv")
+        df11=td.load_ball_data("../data/ball-pos-147000-150000.csv")
+        df12=td.load_ball_data("../data/ball-pos-150000-170000.csv")
+        df13=td.load_ball_data("../data/ball-pos-170000-180000.csv")
+        df14=td.load_ball_data("../data/ball-pos-180000-190000.csv")
+        df15=td.load_ball_data("../data/ball-pos-190000-200000.csv")
+        df16=td.load_ball_data("../data/ball-pos-200000-220000.csv")
+        df=pd.concat([df1,df2,df3,df4,df5,df6,df7,df8,df9,df10,df11,df12,df13,df14,df15,df16])
+        df.to_csv("../data/ball-pos-000000-220000.csv", header=False, index=False)
 
     def delete_overlap_ball_pos_df(self,df):
         df=df[~df["Frame"].duplicated(keep='last')]
         return df
 
     def delete_overlap_ball_pos(self):
-        file_name="../data/ball-pos-000000-060000.csv"
+        file_name="../data/ball-pos-000000-220000.csv"
         df=td.load_ball_data(file_name)
         df=self.delete_overlap_ball_pos_df(df)
         df.to_csv(file_name)
 
-    def delete_overlap_ball_track(self):
-        file_name="../data/track-data2.csv"
+    def delete_overlap_ball_track(self,file_name):
+        # file_name="../data/track-data2.csv"
+        # file_name="../data/track_frame-test.csv"
         df=pd.read_csv(file_name)
         df=self.delete_overlap_ball_pos_df(df)
         print(df)
+
+        # df=df[~df["Frame"].duplicated(keep='last')]
+
         df.to_csv(file_name)
         print(df)
 
 if __name__ == "__main__":
     td=TrackData()
-    # td.load_ball_data("../data/ball-pos-000000-060000.csv")
+    td.concat_ball_pos()
+    td.load_ball_data("../data/ball-pos-000000-220000.csv")
+    td.delete_overlap_ball_pos()
+    output_filename="../data/track_frame-test.csv"
+    td.ball_data2df(output_filename)
 
-    # output_filename="../data/track_frame-test.csv"
-    # td.ball_data2df(output_filename)
-    # track_filename="../data/track_frame2.csv"
-    # video_filename='../video/20210330-nishikori-titipas.avi'
-    # td.predict_court_player(track_filename,video_filename)
+    td.delete_overlap_ball_track(output_filename)
+    track_filename=output_filename
+    video_filename="D:/20210330-nishikori-titipas.avi"
 
-    # td.delete_overlap_ball_pos()
-    td.delete_overlap_ball_track()
+    td.predict_court_player(track_filename,video_filename)
+
+    
+
+

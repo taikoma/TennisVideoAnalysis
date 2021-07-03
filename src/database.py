@@ -545,6 +545,11 @@ class Database():
         return self.score
 
     def csv2_db_start_end(self,csv_filename):
+        """
+        convert start_end.csv to db file
+        other data is zeros
+
+        """
         conn = sqlite3.connect(self.dbName)
         cursor = conn.cursor() 
         df_se=pd.read_csv(csv_filename).dropna().astype('int64')
