@@ -1037,11 +1037,11 @@ class Application(tkinter.Frame):
 
 
                     xball_c=self.score.array_ball_position_shot[self.score.number][i][2]
-        yball_c=self.score.array_ball_position_shot[self.score.number][i][3]
-        xa=self.score.arrayPlayerAPosition[self.score.number][i][2]
-        ya=self.score.arrayPlayerAPosition[self.score.number][i][3]
-        xb=self.score.arrayPlayerBPosition[self.score.number][i][2]
-        yb=self.score.arrayPlayerBPosition[self.score.number][i][3]
+                    yball_c=self.score.array_ball_position_shot[self.score.number][i][3]
+                    xa=self.score.arrayPlayerAPosition[self.score.number][i][2]
+                    ya=self.score.arrayPlayerAPosition[self.score.number][i][3]
+                    xb=self.score.arrayPlayerBPosition[self.score.number][i][2]
+                    yb=self.score.arrayPlayerBPosition[self.score.number][i][3]
 
                 elif(self.score.mode == 3):#着地点をクリック　ボールをクリックしたあと選手を選択
                     resized_image = self.read_resized_image(self.pos_seek.get())

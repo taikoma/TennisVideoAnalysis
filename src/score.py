@@ -99,7 +99,7 @@ class Score():
         self.arrayBounceHit=self.init_array()
         self.arrayForeBack=self.init_array()
         self.arrayDirection=self.init_array()
-        self.array_ball_position_shot = self.init_array()
+        self.array_ball_position_shot = self.init_array()#[num,pos_seek,xball,yball]
         self.arrayPlayerAPosition = self.init_array()
         self.arrayPlayerBPosition = self.init_array()
 
