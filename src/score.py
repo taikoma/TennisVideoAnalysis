@@ -79,7 +79,7 @@ class Score:
         self.faultFlug = 0
         self.number = 0
         self.totalGame = 0
-        self.mode = 1
+        self.mode = 1#なんのモード？
         self.winner = 0
         self.rally = 0
 

@@ -74,6 +74,9 @@ class Application(tkinter.Frame):
         self.mode_click_select_score_range = False
         self.click_select_score_range_active = False
 
+        self.mouse_hover = 4
+        self.move_active = False
+
         self.fld = "data.db"
 
         self.mode_predict = mode_predict_court
@@ -657,6 +660,7 @@ class Application(tkinter.Frame):
         self.panel.bind("<Button-1>", self.mouse_clicked)  # マウスクリック左
         self.panel.bind("<Button-3>", self.showPopup)  # マウスクリック右
         self.panel.bind("<Motion>", self.mouse_motion)
+        # self.panel.bind("<B1-Motion>", self.mouse_b1_motion)
         # self.pw_left_up.add(self.panel, padx=10, pady=10)
         pw.add(self.panel, padx=10, pady=10)
 
@@ -1037,22 +1041,94 @@ class Application(tkinter.Frame):
         self.track_data.track_y4[index] = self.score.arrayPointXY[3][1] * ky
 
     def mouse_motion(self, event):
-        
-        if self.click_select_score_range_active:
-            gimg = self.read_resized_image(self.pos_seek.get())
-            img_copy = np.copy(gimg)
-            h, w = img_copy.shape[0], img_copy.shape[1]
-            x = event.x
-            y = event.y
-            xmin = min(x, self.sx1)
-            ymin = min(y, self.sy1)
-            xmax = max(x, self.sx1)
-            ymax = max(y, self.sy1)
-            cv2.rectangle(
-                img_copy, (xmin, ymin), (xmax, ymax), (0, 0, 255), thickness=2
-            )
+        """
+        画面内でマウスの移動検知
+        """
+        if self.video:
+            if self.click_select_score_range_active:  # スコア領域の作成
+                gimg = self.read_resized_image(self.pos_seek.get())
+                img_copy = np.copy(gimg)
+                # h, w = img_copy.shape[0], img_copy.shape[1]
+                x = event.x
+                y = event.y
+                xmin = min(x, self.sx1)
+                ymin = min(y, self.sy1)
+                xmax = max(x, self.sx1)
+                ymax = max(y, self.sy1)
+                cv2.rectangle(
+                    img_copy, (xmin, ymin), (xmax, ymax), (0, 0, 255), thickness=2
+                )
+                self.image_change(img_copy)
+            # else:  # コート点を修正
+            elif not self.move_active:
+                if (  # p1近辺のとき
+                    self.is_in_point(
+                        event.x,
+                        event.y,
+                        self.array_court_xy[0][0],
+                        self.array_court_xy[0][1],
+                    )
+                    and self.mouse_hover == 4
+                ):
+                    self.en_large(0)
+                elif (  # p2近辺のとき
+                    self.is_in_point(
+                        event.x,
+                        event.y,
+                        self.array_court_xy[1][0],
+                        self.array_court_xy[1][1],
+                    )
+                    and self.mouse_hover == 4
+                ):
+                    self.en_large(1)
+                elif (  # p3近辺のとき
+                    self.is_in_point(
+                        event.x,
+                        event.y,
+                        self.array_court_xy[2][0],
+                        self.array_court_xy[2][1],
+                    )
+                    and self.mouse_hover == 4
+                ):
+                    self.en_large(2)
+                elif (  # p4近辺のとき
+                    self.is_in_point(
+                        event.x,
+                        event.y,
+                        self.array_court_xy[3][0],
+                        self.array_court_xy[3][1],
+                    )
+                    and self.mouse_hover == 4
+                ):
+                    self.en_large(3)
+                elif (
+                    (self.is_in_point(event.x,event.y,self.array_court_xy[0][0],self.array_court_xy[0][1]) == False)
+                    and (self.is_in_point(event.x,event.y,self.array_court_xy[1][0],self.array_court_xy[1][1]) == False)
+                    and (self.is_in_point(event.x,event.y,self.array_court_xy[2][0],self.array_court_xy[2][1]) == False)
+                    and (self.is_in_point(event.x,event.y,self.array_court_xy[3][0],self.array_court_xy[3][1]) == False)
+                    and self.mouse_hover < 4
+                ):
+                    gimg = self.read_resized_image(self.pos_seek.get())
+                    img_copy = np.copy(gimg)
+                    img_copy = self.plot_point_on_image(img_copy, self.array_court_xy)
+                    self.image_change(img_copy)
+                    self.mouse_hover = 4
 
-            self.image_change(img_copy)
+    def en_large(self, num):
+        gimg = self.read_resized_image(self.pos_seek.get())
+        img_copy = np.copy(gimg)
+        img_copy = self.plot_point_on_image(img_copy, self.array_court_xy, num)
+        self.image_change(img_copy)
+        self.mouse_hover = num
+
+    def is_in_point(self, mx, my, px, py):
+        """マウス位置がサーブポイント近辺かどうかを検知"""
+        tf = False
+        r = 20
+        if (px - r) < mx and mx < px + r:
+            if (py - r) < my and my < py + r:
+                tf = True
+        return tf
 
     def reselect_player_after(self, resized_image_copy):
         """"""
@@ -1332,193 +1408,234 @@ class Application(tkinter.Frame):
             self.score.rally = self.score.rally + 1
             self.set_shot_tree()
 
-        else:  # 予測モード以外　手動でコート4隅をクリックする
-            if (self.score.arrayContactServe[self.score.number][0] > 0) and (
-                self.score.arrayContactServe[self.score.number][1] > 0
-            ):
-                msg = tkinter.messagebox.askyesno("serve", "サーブ座標データを上書きしますか？")
-                if msg == 1:  # true
-                    self.score.arrayContactServe[self.score.number] = [0, 0]
+        elif self.mouse_hover < 4:
+            num = self.mouse_hover
+            gimg = self.read_resized_image(self.pos_seek.get())
+            img_copy = np.copy(gimg)
+            if not self.move_active:
+                img_copy = self.plot_point_on_image(
+                    img_copy, self.array_court_xy, num, True
+                )
+                self.image_change(img_copy)
+                self.move_active = True
             else:
-                if self.score.mode == 0:
-                    resized_image = self.read_resized_image(self.pos_seek.get())
-                    pts, dilation = self.calcCourtPoints(resized_image)
-                    resized_image_copy = np.copy(resized_image)
-                    cv2.polylines(resized_image_copy, [pts], True, (0, 255, 0), 2)
-                    h, w = resized_image_copy.shape[0], resized_image_copy.shape[1]
-                    cv2.line(
-                        resized_image_copy,
-                        (event.x - 2, 0),
-                        (event.x - 2, h - 1),
-                        (255, 0, 0),
-                    )
-                    cv2.line(
-                        resized_image_copy,
-                        (0, event.y - 2),
-                        (w - 1, event.y - 2),
-                        (255, 0, 0),
-                    )
-                    image = cv2.cvtColor(resized_image_copy, cv2.COLOR_BGR2RGB)
-                    im = Image.fromarray(image)
-                    imgtk = ImageTk.PhotoImage(image=im)
-                    self.panel.configure(image=imgtk)
-                    self.panel.image = imgtk
-                elif self.score.mode == 1:  #
-                    self.score.arrayCourt[self.score.pointXYNum][self.score.number][
-                        0
-                    ] = (event.x - 2)
-                    self.score.arrayCourt[self.score.pointXYNum][self.score.number][
-                        1
-                    ] = (event.y - 2)
+                self.array_court_xy[num][0] = event.x
+                self.array_court_xy[num][1] = event.y
+                img_copy = self.plot_point_on_image(
+                    img_copy, self.array_court_xy
+                )
+                self.image_change(img_copy)
+                self.move_active = False
 
-                    self.score.arrayPointXY[self.score.pointXYNum][0] = event.x - 2
-                    self.score.arrayPointXY[self.score.pointXYNum][1] = event.y - 2
-                    self.score.pointXYNum = self.score.pointXYNum + 1
-                    resized_image_copy = self.plot_point_on_image(
-                        self.score.arrayPointXY
-                    )
-                    self.image_change(resized_image_copy)
+        # self.score.arrayContactServe[self.score.number] = [
+        #             event.x,
+        #             event.y,
+        #         ]
 
-                    if self.score.pointXYNum > 3:  # クリックすると1からはじまる
-                        # else:#4点目(右下)をクリック
-                        self.pts = np.array(
-                            [
-                                self.score.arrayPointXY[0],
-                                self.score.arrayPointXY[1],
-                                self.score.arrayPointXY[2],
-                                self.score.arrayPointXY[3],
-                            ],
-                            dtype=int,
-                        )
 
-                        p1 = np.array(self.score.arrayPointXY[0])
-                        p2 = np.array(self.score.arrayPointXY[1])
-                        p3 = np.array(self.score.arrayPointXY[2])
-                        p4 = np.array(self.score.arrayPointXY[3])
+        # else:  # 予測モード以外　手動でコート4隅をクリックする
+        # if (self.score.arrayContactServe[self.score.number][0] > 0) and (
+        #     self.score.arrayContactServe[self.score.number][1] > 0
+        # ):
+        #     msg = tkinter.messagebox.askyesno("serve", "サーブ座標データを上書きしますか？")
+        #     if msg == 1:  # true
+        #         self.score.arrayContactServe[self.score.number] = [0, 0]
+        # else:
+        #     if self.score.mode == 0:
+        #         resized_image = self.read_resized_image(self.pos_seek.get())
+        #         pts, dilation = self.calcCourtPoints(resized_image)
+        #         resized_image_copy = np.copy(resized_image)
+        #         cv2.polylines(resized_image_copy, [pts], True, (0, 255, 0), 2)
+        #         h, w = resized_image_copy.shape[0], resized_image_copy.shape[1]
+        #         cv2.line(
+        #             resized_image_copy,
+        #             (event.x - 2, 0),
+        #             (event.x - 2, h - 1),
+        #             (255, 0, 0),
+        #         )
+        #         cv2.line(
+        #             resized_image_copy,
+        #             (0, event.y - 2),
+        #             (w - 1, event.y - 2),
+        #             (255, 0, 0),
+        #         )
+        #         image = cv2.cvtColor(resized_image_copy, cv2.COLOR_BGR2RGB)
+        #         im = Image.fromarray(image)
+        #         imgtk = ImageTk.PhotoImage(image=im)
+        #         self.panel.configure(image=imgtk)
+        #         self.panel.image = imgtk
+        #     elif self.score.mode == 1:  #
+        #         self.score.arrayCourt[self.score.pointXYNum][self.score.number][
+        #             0
+        #         ] = (event.x - 2)
+        #         self.score.arrayCourt[self.score.pointXYNum][self.score.number][
+        #             1
+        #         ] = (event.y - 2)
 
-                        centerLineLeft = np.array(
-                            (
-                                np.array(self.score.arrayPointXY[1])
-                                + np.array(self.score.arrayPointXY[2])
-                            )
-                            / 2,
-                            dtype=int,
-                        )
-                        centerLineRignt = np.array(
-                            (
-                                np.array(self.score.arrayPointXY[0])
-                                + np.array(self.score.arrayPointXY[3])
-                            )
-                            / 2,
-                            dtype=int,
-                        )
-                        c1, c2, c3, c4 = (
-                            [10.97, 0],
-                            [0, 0],
-                            [0, 23.78],
-                            [10.97, 23.78],
-                        )  # ダブルスコートの4隅
-                        src_pts = np.float32([p1, p2, p3, p4]).reshape(-1, 1, 2)
-                        dst_pts = np.float32([c1, c2, c3, c4]).reshape(-1, 1, 2)
+        #         self.score.arrayPointXY[self.score.pointXYNum][0] = event.x - 2
+        #         self.score.arrayPointXY[self.score.pointXYNum][1] = event.y - 2
+        #         self.score.pointXYNum = self.score.pointXYNum + 1
+        #         resized_image_copy = self.plot_point_on_image(
+        #             self.score.arrayPointXY
+        #         )
+        #         self.image_change(resized_image_copy)
 
-                        self.M, mask = cv2.findHomography(
-                            src_pts, dst_pts, cv2.RANSAC, 5.0
-                        )
-                        pts_sub = np.array(
-                            [[centerLineLeft, centerLineRignt]], dtype="float32"
-                        )
-                        self.inv_M = np.linalg.inv(self.M)
-                        # self.image_show()
+        #         if self.score.pointXYNum > 3:  # クリックすると1からはじまる
+        #             # else:#4点目(右下)をクリック
+        #             self.pts = np.array(
+        #                 [
+        #                     self.score.arrayPointXY[0],
+        #                     self.score.arrayPointXY[1],
+        #                     self.score.arrayPointXY[2],
+        #                     self.score.arrayPointXY[3],
+        #                 ],
+        #                 dtype=int,
+        #             )
 
-                        self.score.pointXYNum = 0
-                        self.score.mode = 2
-                elif self.score.mode == 2:  # 着地点をクリック　コート座標をクリックしたあと
-                    # print("mode", self.score.mode)
-                    resized_image = self.read_resized_image(self.pos_seek.get())
-                    resized_image_copy = np.copy(resized_image)
-                    self.draw_court_line(self.pts, resized_image_copy, self.inv_M)
-                    h, w = resized_image_copy.shape[0], resized_image_copy.shape[1]
+        #             p1 = np.array(self.score.arrayPointXY[0])
+        #             p2 = np.array(self.score.arrayPointXY[1])
+        #             p3 = np.array(self.score.arrayPointXY[2])
+        #             p4 = np.array(self.score.arrayPointXY[3])
 
-                    cv2.line(
-                        resized_image_copy,
-                        (event.x - 2, 0),
-                        (event.x - 2, h - 1),
-                        (255, 0, 0),
-                    )
-                    cv2.line(
-                        resized_image_copy,
-                        (0, event.y - 2),
-                        (w - 1, event.y - 2),
-                        (255, 0, 0),
-                    )
-                    image = cv2.cvtColor(resized_image_copy, cv2.COLOR_BGR2RGB)
-                    im = Image.fromarray(image)
-                    imgtk = ImageTk.PhotoImage(image=im)
-                    self.panel.configure(image=imgtk)
-                    self.panel.image = imgtk
-                    self.score.mode = 3
+        #             centerLineLeft = np.array(
+        #                 (
+        #                     np.array(self.score.arrayPointXY[1])
+        #                     + np.array(self.score.arrayPointXY[2])
+        #                 )
+        #                 / 2,
+        #                 dtype=int,
+        #             )
+        #             centerLineRignt = np.array(
+        #                 (
+        #                     np.array(self.score.arrayPointXY[0])
+        #                     + np.array(self.score.arrayPointXY[3])
+        #                 )
+        #                 / 2,
+        #                 dtype=int,
+        #             )
+        #             c1, c2, c3, c4 = (
+        #                 [10.97, 0],
+        #                 [0, 0],
+        #                 [0, 23.78],
+        #                 [10.97, 23.78],
+        #             )  # ダブルスコートの4隅
+        #             src_pts = np.float32([p1, p2, p3, p4]).reshape(-1, 1, 2)
+        #             dst_pts = np.float32([c1, c2, c3, c4]).reshape(-1, 1, 2)
 
-                    self.score.arrayContactServe[self.score.number] = [
-                        event.x - 2,
-                        event.y - 2,
-                    ]
+        #             self.M, mask = cv2.findHomography(
+        #                 src_pts, dst_pts, cv2.RANSAC, 5.0
+        #             )
+        #             pts_sub = np.array(
+        #                 [[centerLineLeft, centerLineRignt]], dtype="float32"
+        #             )
+        #             self.inv_M = np.linalg.inv(self.M)
+        #             # self.image_show()
 
-                    self.xball_c, self.yball_c = self.track_data.transform_position(
-                        event.x - 2, event.y - 2, self.M
-                    )  # clicked position to court position センター基準
-                    # self.score.array_ball_position_shot[self.score.number][i][2]=self.xball_c
-                    # self.score.array_ball_position_shot[self.score.number][i][3]=self.xball_c
-                    # print(self.xball_c,self.yball_c)
+        #             self.score.pointXYNum = 0
+        #             self.score.mode = 2
+        #     elif self.score.mode == 2:  # 着地点をクリック　コート座標をクリックしたあと
+        #         # print("mode", self.score.mode)
+        #         resized_image = self.read_resized_image(self.pos_seek.get())
+        #         resized_image_copy = np.copy(resized_image)
+        #         self.draw_court_line(self.pts, resized_image_copy, self.inv_M)
+        #         h, w = resized_image_copy.shape[0], resized_image_copy.shape[1]
 
-                    xball_c = self.score.array_ball_position_shot[self.score.number][i][
-                        2
-                    ]
-                    yball_c = self.score.array_ball_position_shot[self.score.number][i][
-                        3
-                    ]
-                    xa = self.score.arrayPlayerAPosition[self.score.number][i][2]
-                    ya = self.score.arrayPlayerAPosition[self.score.number][i][3]
-                    xb = self.score.arrayPlayerBPosition[self.score.number][i][2]
-                    yb = self.score.arrayPlayerBPosition[self.score.number][i][3]
+        #         cv2.line(
+        #             resized_image_copy,
+        #             (event.x - 2, 0),
+        #             (event.x - 2, h - 1),
+        #             (255, 0, 0),
+        #         )
+        #         cv2.line(
+        #             resized_image_copy,
+        #             (0, event.y - 2),
+        #             (w - 1, event.y - 2),
+        #             (255, 0, 0),
+        #         )
+        #         image = cv2.cvtColor(resized_image_copy, cv2.COLOR_BGR2RGB)
+        #         im = Image.fromarray(image)
+        #         imgtk = ImageTk.PhotoImage(image=im)
+        #         self.panel.configure(image=imgtk)
+        #         self.panel.image = imgtk
+        #         self.score.mode = 3
 
-                elif self.score.mode == 3:  # 着地点をクリック　ボールをクリックしたあと選手を選択
-                    resized_image = self.read_resized_image(self.pos_seek.get())
-                    resized_image_copy = np.copy(resized_image)
-                    self.draw_court_line(self.pts, resized_image_copy, self.inv_M)
-                    h, w = resized_image_copy.shape[0], resized_image_copy.shape[1]
+        #         self.score.arrayContactServe[self.score.number] = [
+        #             event.x - 2,
+        #             event.y - 2,
+        #         ]
 
-                    cv2.line(
-                        resized_image_copy,
-                        (event.x - 2, 0),
-                        (event.x - 2, h - 1),
-                        (255, 0, 0),
-                    )
-                    cv2.line(
-                        resized_image_copy,
-                        (0, event.y - 2),
-                        (w - 1, event.y - 2),
-                        (255, 0, 0),
-                    )
-                    image = cv2.cvtColor(resized_image_copy, cv2.COLOR_BGR2RGB)
-                    im = Image.fromarray(image)
-                    imgtk = ImageTk.PhotoImage(image=im)
-                    self.panel.configure(image=imgtk)
-                    self.panel.image = imgtk
+        #         self.xball_c, self.yball_c = self.track_data.transform_position(
+        #             event.x - 2, event.y - 2, self.M
+        #         )  # clicked position to court position センター基準
+        #         # self.score.array_ball_position_shot[self.score.number][i][2]=self.xball_c
+        #         # self.score.array_ball_position_shot[self.score.number][i][3]=self.xball_c
+        #         # print(self.xball_c,self.yball_c)
 
-                    self.xball_c, self.yball_c = self.track_data.transform_position(
-                        event.x - 2, event.y - 2, self.M
-                    )  # clicked position to court position センター基準
-                    print(self.xball_c, self.yball_c)
+        #         xball_c = self.score.array_ball_position_shot[self.score.number][i][
+        #             2
+        #         ]
+        #         yball_c = self.score.array_ball_position_shot[self.score.number][i][
+        #             3
+        #         ]
+        #         xa = self.score.arrayPlayerAPosition[self.score.number][i][2]
+        #         ya = self.score.arrayPlayerAPosition[self.score.number][i][3]
+        #         xb = self.score.arrayPlayerBPosition[self.score.number][i][2]
+        #         yb = self.score.arrayPlayerBPosition[self.score.number][i][3]
 
-    def plot_point_on_image(self, img, array_xy):
+        #     elif self.score.mode == 3:  # 着地点をクリック　ボールをクリックしたあと選手を選択
+        #         resized_image = self.read_resized_image(self.pos_seek.get())
+        #         resized_image_copy = np.copy(resized_image)
+        #         self.draw_court_line(self.pts, resized_image_copy, self.inv_M)
+        #         h, w = resized_image_copy.shape[0], resized_image_copy.shape[1]
+
+        #         cv2.line(
+        #             resized_image_copy,
+        #             (event.x - 2, 0),
+        #             (event.x - 2, h - 1),
+        #             (255, 0, 0),
+        #         )
+        #         cv2.line(
+        #             resized_image_copy,
+        #             (0, event.y - 2),
+        #             (w - 1, event.y - 2),
+        #             (255, 0, 0),
+        #         )
+        #         image = cv2.cvtColor(resized_image_copy, cv2.COLOR_BGR2RGB)
+        #         im = Image.fromarray(image)
+        #         imgtk = ImageTk.PhotoImage(image=im)
+        #         self.panel.configure(image=imgtk)
+        #         self.panel.image = imgtk
+
+        #         self.xball_c, self.yball_c = self.track_data.transform_position(
+        #             event.x - 2, event.y - 2, self.M
+        #         )  # clicked position to court position センター基準
+        #         print(self.xball_c, self.yball_c)
+
+    # def mouse_b1_motion(self, event):
+    #     print("move")
+    #     if self.move_active:
+    #         num = self.mouse_hover
+    #         gimg = self.read_resized_image(self.pos_seek.get())
+    #         img_copy = np.copy(gimg)
+    #         self.array_court_xy[num][0] = event.x
+    #         self.array_court_xy[num][1] = event.y
+    #         self.plot_point_on_image(img_copy, self.array_court_xy, num)
+
+    def plot_point_on_image(self, img, array_xy, num_large=4, red=False):
         """
         画像のxy位置に点を表示する　４点コート用
         array_xy [[x1,y1],[x2,y2],,,]
         """
-        for i in range(len(self.score.arrayPointXY)):
+        for i in range(len(array_xy)):
             x = array_xy[i][0]
             y = array_xy[i][1]
-            cv2.circle(img, (x, y), 2, (0, 255, 0), -1)
+            if i == num_large:
+                if red:
+                    cv2.circle(img, (x, y), 5, (0, 0, 255), -1)
+                else:
+                    cv2.circle(img, (x, y), 5, (0, 255, 0), -1)
+            else:
+                cv2.circle(img, (x, y), 3, (0, 255, 0), -1)
         return img
 
     def read_resized_image(self, frameIndex):
