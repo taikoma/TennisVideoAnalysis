@@ -42,6 +42,9 @@ class Application(tkinter.Frame):
     ):
         super().__init__(master)
         # Instantiate other classes
+        self.w = 640  # 表示画面サイズ640, 360
+        self.h = 360  # 表示画面サイズ
+
         self.score = score
         self.view = view
         self.master = master
@@ -68,7 +71,7 @@ class Application(tkinter.Frame):
         self.clickCourtRightDown = False
         self.clickCourtLeftDown = False
 
-        self.click_select_score_range = False
+        self.mode_click_select_score_range = False
         self.click_select_score_range_active = False
 
         self.fld = "data.db"
@@ -77,10 +80,16 @@ class Application(tkinter.Frame):
         self.mode_predictPlayer = mode_predict_player
         self.mode_detect_score = mode_detect_score
 
-        self.sx1 = 0
-        self.sy1 = 0
-        self.sx2 = 0
-        self.sy2 = 0
+        self.sx1 = 0  # スコア選択領域の座標
+        self.sy1 = 0  # スコア選択領域の座標
+        self.sx2 = 0  # スコア選択領域の座標
+        self.sy2 = 0  # スコア選択領域の座標
+
+        p1 = [int(self.w * 2 / 3), int(self.h / 4)]
+        p2 = [int(self.w / 3), int(self.h / 4)]
+        p3 = [int(self.w / 6), int(self.h * 3 / 4)]
+        p4 = [int(self.w * 5 / 6), int(self.h * 3 / 4)]
+        self.array_court_xy = [p1, p2, p3, p4]
 
         if self.mode_predict:
             from predict import predict
@@ -139,14 +148,11 @@ class Application(tkinter.Frame):
         self.vid.set_end_frame(self.vid.end_frame)
         if self.vid.fps > 0:
             self.delay = int(1000 / self.vid.fps / 2)
-            print("self.delay", self.delay)
         self.set_tree()
 
-    def create_widgets(self, w, h):  # ウィジェット作成
+    def create_widgets(self):  # ウィジェット作成
         self.create_menu_bar()
 
-        self.w = w
-        self.h = h
         print("wh:", self.w, self.h)
         self.pw = tkinter.PanedWindow(self, orient="horizontal")  # 全画面
         self.pw.pack(expand=True)
@@ -609,10 +615,10 @@ class Application(tkinter.Frame):
         self.clickCourtLeftDown = True
 
     def select_score_range(self):
-        self.click_select_score_range = True
+        self.mode_click_select_score_range = True
 
     def select_ball_position(self):
-        self.click_select_score_range = False
+        self.mode_click_select_score_range = False
 
     def delete_tree_point(self):
         self.score.delete_tree_point()
@@ -786,9 +792,9 @@ class Application(tkinter.Frame):
         by = event.y
         return bx, by
 
-    def image_change(self, img_copy):
+    def image_change(self, img):
         "image_change"
-        image_change = cv2.cvtColor(img_copy, cv2.COLOR_BGR2RGB)
+        image_change = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         im = Image.fromarray(image_change)
         self.imgtk = ImageTk.PhotoImage(image=im)
         self.panel.configure(image=self.imgtk)
@@ -1031,6 +1037,7 @@ class Application(tkinter.Frame):
         self.track_data.track_y4[index] = self.score.arrayPointXY[3][1] * ky
 
     def mouse_motion(self, event):
+        
         if self.click_select_score_range_active:
             gimg = self.read_resized_image(self.pos_seek.get())
             img_copy = np.copy(gimg)
@@ -1169,7 +1176,7 @@ class Application(tkinter.Frame):
 
     def mouse_clicked(self, event):
         """画像範囲内をマウスクリックしたときの処理"""
-        if self.click_select_score_range:  # スコア範囲選択
+        if self.mode_click_select_score_range:  # スコア範囲選択
             if self.click_select_score_range_active != True:
                 self.sx1 = event.x
                 self.sy1 = event.y
@@ -1357,24 +1364,19 @@ class Application(tkinter.Frame):
                     self.panel.configure(image=imgtk)
                     self.panel.image = imgtk
                 elif self.score.mode == 1:  #
-                    resized_image = self.read_resized_image(self.pos_seek.get())
-                    resized_image_copy = np.copy(resized_image)
-
-                    self.score.arrayPointXY[self.score.pointXYNum][0] = event.x - 2
-                    self.score.arrayPointXY[self.score.pointXYNum][1] = event.y - 2
-
-                    for i in range(len(self.score.arrayPointXY)):
-                        x = self.score.arrayPointXY[i][0]
-                        y = self.score.arrayPointXY[i][1]
-                        cv2.circle(resized_image_copy, (x, y), 2, (0, 255, 0), -1)
-
                     self.score.arrayCourt[self.score.pointXYNum][self.score.number][
                         0
                     ] = (event.x - 2)
                     self.score.arrayCourt[self.score.pointXYNum][self.score.number][
                         1
                     ] = (event.y - 2)
+
+                    self.score.arrayPointXY[self.score.pointXYNum][0] = event.x - 2
+                    self.score.arrayPointXY[self.score.pointXYNum][1] = event.y - 2
                     self.score.pointXYNum = self.score.pointXYNum + 1
+                    resized_image_copy = self.plot_point_on_image(
+                        self.score.arrayPointXY
+                    )
                     self.image_change(resized_image_copy)
 
                     if self.score.pointXYNum > 3:  # クリックすると1からはじまる
@@ -1508,6 +1510,17 @@ class Application(tkinter.Frame):
                     )  # clicked position to court position センター基準
                     print(self.xball_c, self.yball_c)
 
+    def plot_point_on_image(self, img, array_xy):
+        """
+        画像のxy位置に点を表示する　４点コート用
+        array_xy [[x1,y1],[x2,y2],,,]
+        """
+        for i in range(len(self.score.arrayPointXY)):
+            x = array_xy[i][0]
+            y = array_xy[i][1]
+            cv2.circle(img, (x, y), 2, (0, 255, 0), -1)
+        return img
+
     def read_resized_image(self, frameIndex):
         """return the resized frameindex image"""
         self.video.set(cv2.CAP_PROP_POS_FRAMES, int(frameIndex))
@@ -1531,12 +1544,15 @@ class Application(tkinter.Frame):
             x - r, y - r, x + r, y + r, tag="oval", fill=color, width=0
         )
 
-    def image_show(self):  # 画像描画
-        print("image_show")
+    def image_show(self):
+        """
+        現在のシーク位置の画像を表示する
+
+        """
         if self.video:
             gimg = self.read_resized_image(self.pos_seek.get())
             img_copy = np.copy(gimg)
-
+            # スコア選択領域を表示する
             cv2.rectangle(
                 img_copy,
                 (self.sx1, self.sy1),
@@ -1544,12 +1560,18 @@ class Application(tkinter.Frame):
                 (0, 0, 255),
                 thickness=2,
             )
-            if self.pos_seek.get() in self.track_data.frame_array:
+            if (
+                self.pos_seek.get() in self.track_data.frame_array
+            ):  # トラッキングボールデータが存在すればボール位置を表示する
                 index = self.track_data.frame_array.index(self.pos_seek.get())
                 x = self.track_data.all_track_ball_x[index]
                 y = self.track_data.all_track_ball_y[index]
                 x, y = self.resize_xy_origin2disp(x, y)
                 cv2.circle(img_copy, (x, y), 2, (0, 255, 255), 1)
+            img_copy = self.plot_point_on_image(
+                img_copy, self.array_court_xy
+            )  # コート座標を表示する
+
             self.image_change(img_copy)
 
     def resize_xy_origin2disp(self, x, y):
@@ -2987,7 +3009,7 @@ if __name__ == "__main__":
     app = Application(
         score, mode_predict_court, mode_predict_player, mode_detect_score, master=root
     )
-    app.create_widgets(640, 360)
+    app.create_widgets()  # 640, 360
 
     print("videoFile:", settings.videoFile)
     if settings.videoFile != "":
