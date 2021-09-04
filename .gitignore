@@ -1,3 +1,4 @@
+/tests/test_detect_score.py
 /contactBalls.csv
 /test.py
 /test2.py
@@ -18,4 +19,4 @@ analysis/.ipynb_checkpoints/*
 *.png
 /dev/*
 /temp/*
-/tests/test_detect_score.py
+
