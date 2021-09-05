@@ -2165,32 +2165,38 @@ class Application(tkinter.Frame):
         self.menu_bar.add_cascade(label="Stats", menu=self.stats_menu)
 
     def create_button_seek(self, pw):
-
-        Button_backward100 = tkinter.Button(text=u"100←", width=10)
+        self.img_pre100 = tkinter.PhotoImage(file="../design/pre100.png")
+        Button_backward100 =  tkinter.Button(width=90, image=self.img_pre100)
         Button_backward100.bind("<Button-1>", self.button_backward100)
         pw.add(Button_backward100)
 
-        Button_backward10 = tkinter.Button(text=u"10←", width=10)
+        self.img_pre10 = tkinter.PhotoImage(file="../design/pre10.png")
+        Button_backward10 = tkinter.Button(text="", width=90, image=self.img_pre10)
         Button_backward10.bind("<Button-1>", self.button_backward10)
         pw.add(Button_backward10)
 
-        Button_backward1 = tkinter.Button(text=u"1←", width=10)
+        self.img_pre1 = tkinter.PhotoImage(file="../design/pre1.png")
+        Button_backward1 = tkinter.Button(text="", width=85, image=self.img_pre1)
         Button_backward1.bind("<Button-1>", self.button_backward1)
         pw.add(Button_backward1)
 
-        Button_play_scene = tkinter.Button(text=u"Play\nScene", width=8)
+        self.img_play_stop = tkinter.PhotoImage(file="../design/playstop.png")
+        Button_play_scene = tkinter.Button(text=u"", width=85, image=self.img_play_stop)
         Button_play_scene.bind("<Button-1>", self.play_scene)
         pw.add(Button_play_scene)
 
-        Button_forward1 = tkinter.Button(text=u"→1", width=10)
+        self.img_forward1 = tkinter.PhotoImage(file="../design/forward1.png")
+        Button_forward1 = tkinter.Button(text=u"", width=85, image=self.img_forward1)
         Button_forward1.bind("<Button-1>", self.button_forward1)
         pw.add(Button_forward1)
 
-        Button_forward10 = tkinter.Button(text=u"→10", width=10)
+        self.img_forward10 = tkinter.PhotoImage(file="../design/forward10.png")
+        Button_forward10 = tkinter.Button(text=u"", width=85, image=self.img_forward10)
         Button_forward10.bind("<Button-1>", self.button_forward10)
         pw.add(Button_forward10)
 
-        Button_forward100 = tkinter.Button(text=u"→100", width=10)
+        self.img_forward100 = tkinter.PhotoImage(file="../design/forward100.png")
+        Button_forward100 = tkinter.Button(text="", width=85, image=self.img_forward100)
         Button_forward100.bind("<Button-1>", self.button_forward100)
         pw.add(Button_forward100)
 
