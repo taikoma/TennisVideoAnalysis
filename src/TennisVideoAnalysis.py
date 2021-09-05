@@ -1102,10 +1102,42 @@ class Application(tkinter.Frame):
                 ):
                     self.en_large(3)
                 elif (
-                    (self.is_in_point(event.x,event.y,self.array_court_xy[0][0],self.array_court_xy[0][1]) == False)
-                    and (self.is_in_point(event.x,event.y,self.array_court_xy[1][0],self.array_court_xy[1][1]) == False)
-                    and (self.is_in_point(event.x,event.y,self.array_court_xy[2][0],self.array_court_xy[2][1]) == False)
-                    and (self.is_in_point(event.x,event.y,self.array_court_xy[3][0],self.array_court_xy[3][1]) == False)
+                    (
+                        self.is_in_point(
+                            event.x,
+                            event.y,
+                            self.array_court_xy[0][0],
+                            self.array_court_xy[0][1],
+                        )
+                        == False
+                    )
+                    and (
+                        self.is_in_point(
+                            event.x,
+                            event.y,
+                            self.array_court_xy[1][0],
+                            self.array_court_xy[1][1],
+                        )
+                        == False
+                    )
+                    and (
+                        self.is_in_point(
+                            event.x,
+                            event.y,
+                            self.array_court_xy[2][0],
+                            self.array_court_xy[2][1],
+                        )
+                        == False
+                    )
+                    and (
+                        self.is_in_point(
+                            event.x,
+                            event.y,
+                            self.array_court_xy[3][0],
+                            self.array_court_xy[3][1],
+                        )
+                        == False
+                    )
                     and self.mouse_hover < 4
                 ):
                     gimg = self.read_resized_image(self.pos_seek.get())
@@ -1421,9 +1453,7 @@ class Application(tkinter.Frame):
             else:
                 self.array_court_xy[num][0] = event.x
                 self.array_court_xy[num][1] = event.y
-                img_copy = self.plot_point_on_image(
-                    img_copy, self.array_court_xy
-                )
+                img_copy = self.plot_point_on_image(img_copy, self.array_court_xy)
                 self.image_change(img_copy)
                 self.move_active = False
 
@@ -1431,7 +1461,6 @@ class Application(tkinter.Frame):
         #             event.x,
         #             event.y,
         #         ]
-
 
         # else:  # 予測モード以外　手動でコート4隅をクリックする
         # if (self.score.arrayContactServe[self.score.number][0] > 0) and (
@@ -2302,9 +2331,17 @@ class Application(tkinter.Frame):
         # self.tree.heading(12, text="FrBc")
         # self.tree.heading(13, text="X")
         # self.tree.heading(14, text="Y")
-        pw.add(self.tree)
 
-        self.create_right_menu_tree()
+        vscrollbar = ttk.Scrollbar(
+            self.master, orient=tkinter.VERTICAL, command=self.tree.yview
+        )
+        #vscrollbar.pack(side=tkinter.RIGHT, fill="y")
+        
+        self.tree.configure(yscroll=vscrollbar.set)
+
+        pw.add(self.tree)
+        pw.add(vscrollbar)
+        self.create_right_menu_tree()  # 右クリックのメニュー
         self.tree.bind("<Button-3>", self.show_popup_tree)
 
     def create_right_menu(self):
