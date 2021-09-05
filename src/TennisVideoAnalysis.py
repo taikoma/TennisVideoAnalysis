@@ -271,7 +271,12 @@ class Application(tkinter.Frame):
         self.pw_right_down_down = tkinter.PanedWindow(
             self.pw_right, orient="horizontal"
         )
+        self.pw_right_down_down.pack(fill=tkinter.BOTH)
+        #side=tkinter.RIGHT, fill="y")
+
         self.pw_right_down.add(self.pw_right_down_down)
+        
+
 
         self.pw_left_down_left = tkinter.PanedWindow(
             self.pw_left_down, orient="vertical"
@@ -303,6 +308,7 @@ class Application(tkinter.Frame):
         self.pw_left_down_left.add(self.pw1_4)
         self.create_button_pointpattern(self.pw1_4)
 
+        # self.pw_right_down_down.pack(fill=tkinter.BOTH)
         self.create_tree(self.pw_right_down_down)  # タグ一覧を右に描画
         self.set_tree()
         self.tree.bind("<ButtonRelease-1>", self.select)  # Double-1
@@ -2335,12 +2341,18 @@ class Application(tkinter.Frame):
         vscrollbar = ttk.Scrollbar(
             self.master, orient=tkinter.VERTICAL, command=self.tree.yview
         )
-        #vscrollbar.pack(side=tkinter.RIGHT, fill="y")
+        pw1 = tkinter.PanedWindow(
+            pw, orient="horizontal")
+        pw1.add(self.tree)
         
         self.tree.configure(yscroll=vscrollbar.set)
 
-        pw.add(self.tree)
-        pw.add(vscrollbar)
+        pw2 = tkinter.PanedWindow(
+            pw, orient="horizontal")
+        pw2.add(vscrollbar)
+        pw.add(pw2)
+        pw.add(pw1)
+
         self.create_right_menu_tree()  # 右クリックのメニュー
         self.tree.bind("<Button-3>", self.show_popup_tree)
 
