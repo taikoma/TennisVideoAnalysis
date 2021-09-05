@@ -210,14 +210,14 @@ class Application(tkinter.Frame):
         self.pw_right_down_up = tkinter.PanedWindow(self.pw_right, orient="horizontal")
         self.pw_right_down.add(self.pw_right_down_up)
 
-        self.entry_edit_start = tkinter.Entry(self, width=10)
-        self.entry_edit_end = tkinter.Entry(self, width=10)
-        self.entry_edit_set_a = tkinter.Entry(self, width=10)
-        self.entry_edit_set_b = tkinter.Entry(self, width=10)
-        self.entry_edit_game_a = tkinter.Entry(self, width=10)
-        self.entry_edit_game_b = tkinter.Entry(self, width=10)
-        self.entry_edit_score_a = tkinter.Entry(self, width=10)
-        self.entry_edit_score_b = tkinter.Entry(self, width=10)
+        self.entry_edit_start = ttk.Entry(self, width=10)
+        self.entry_edit_end = ttk.Entry(self, width=10)
+        self.entry_edit_set_a = ttk.Entry(self, width=10)
+        self.entry_edit_set_b = ttk.Entry(self, width=10)
+        self.entry_edit_game_a = ttk.Entry(self, width=10)
+        self.entry_edit_game_b = ttk.Entry(self, width=10)
+        self.entry_edit_score_a = ttk.Entry(self, width=10)
+        self.entry_edit_score_b = ttk.Entry(self, width=10)
 
         self.pw_right_down_up.add(self.entry_edit_start)
         self.pw_right_down_up.add(self.entry_edit_end)
@@ -232,7 +232,7 @@ class Application(tkinter.Frame):
         self.variable_serve = tkinter.StringVar(self)
         self.variable_serve.set(option_serve_list[0])
         self.variable_serve.trace("w", self.option_serve)
-        self.opt_serve = tkinter.OptionMenu(
+        self.opt_serve = ttk.OptionMenu(
             self, self.variable_serve, *option_serve_list
         )
         self.pw_right_down_up.add(self.opt_serve)
@@ -241,7 +241,7 @@ class Application(tkinter.Frame):
         self.variable_which_server = tkinter.StringVar(self)
         self.variable_which_server.set(option_which_server_list[0])
         self.variable_which_server.trace("w", self.option_which_server)
-        self.opt_server = tkinter.OptionMenu(
+        self.opt_server = ttk.OptionMenu(
             self, self.variable_which_server, *option_which_server_list
         )
         self.pw_right_down_up.add(self.opt_server)
@@ -250,7 +250,7 @@ class Application(tkinter.Frame):
         self.variable_winner = tkinter.StringVar(self)
         self.variable_winner.set(option_winner_list[0])
         self.variable_winner.trace("w", self.option_winner)
-        self.opt_winner = tkinter.OptionMenu(
+        self.opt_winner = ttk.OptionMenu(
             self, self.variable_winner, *option_winner_list
         )
         self.pw_right_down_up.add(self.opt_winner)
@@ -259,12 +259,12 @@ class Application(tkinter.Frame):
         self.variable_pattern = tkinter.StringVar(self)
         self.variable_pattern.set(option_pattern_list[0])
         self.variable_pattern.trace("w", self.option_pattern)
-        self.opt_pattern = tkinter.OptionMenu(
+        self.opt_pattern = ttk.OptionMenu(
             self, self.variable_pattern, *option_pattern_list
         )
         self.pw_right_down_up.add(self.opt_pattern)
 
-        button_update = tkinter.Button(text=u"Update", width=10)
+        button_update = ttk.Button(text=u"Update", width=10)
         button_update.bind("<Button-1>", self.button_update_tree)
         self.pw_right_down_up.add(button_update)
 
@@ -283,12 +283,15 @@ class Application(tkinter.Frame):
         )  # 左画面の下側 左
         self.pw_left_down.add(self.pw_left_down_left)
 
-        self.pw_left_down_right = tkinter.PanedWindow(
-            self.pw_left_down, orient="vertical"
-        )  # 左画面の下側 右
-        self.pw_left_down.add(self.pw_left_down_right)
+        # self.pw_left_down_right = tkinter.PanedWindow(
+        #     self.pw_left_down, orient="vertical"
+        # )  # 左画面の下側 右
+        # self.pw_left_down.add(self.pw_left_down_right)
 
         self.pw1_1 = tkinter.PanedWindow(self.pw_left, orient="horizontal")  # コマ送り
+
+        self.pw1_1.pack(expand = True, fill = tkinter.BOTH)
+
         self.pw_left_down_left.add(self.pw1_1)
         self.create_button_seek(self.pw1_1)
 
@@ -565,7 +568,7 @@ class Application(tkinter.Frame):
     def create_seekbar(self, pw):
         self.pos_seek = tkinter.IntVar()
         self.pos_seek.trace("w", self.pos_seek_changed)
-        self.sc = tkinter.Scale(
+        self.sc = ttk.Scale(
             variable=self.pos_seek,
             orient="horizontal",
             length=self.w,
@@ -2130,11 +2133,11 @@ class Application(tkinter.Frame):
         )
         radio4.grid(row=4, column=1, padx=5, pady=5)
 
-        button_save = tkinter.Button(self.sub_win, text=u"Save", width=10)
+        button_save = ttk.Button(self.sub_win, text=u"Save", width=10)
         button_save.bind("<Button-1>", self.button_edit_save)
         button_save.grid(row=5, column=0, padx=5, pady=5)
 
-        button_cancel = tkinter.Button(self.sub_win, text=u"Cancel", width=10)
+        button_cancel = ttk.Button(self.sub_win, text=u"Cancel", width=10)
         button_cancel.bind("<Button-1>", self.button_edit_cancel)
         button_cancel.grid(row=5, column=1, padx=5, pady=5)
 
@@ -2166,61 +2169,61 @@ class Application(tkinter.Frame):
 
     def create_button_seek(self, pw):
         self.img_pre100 = tkinter.PhotoImage(file="../design/pre100.png")
-        Button_backward100 =  tkinter.Button(width=90, image=self.img_pre100)
+        Button_backward100 =  ttk.Button(width=90, image=self.img_pre100)
         Button_backward100.bind("<Button-1>", self.button_backward100)
         pw.add(Button_backward100)
 
         self.img_pre10 = tkinter.PhotoImage(file="../design/pre10.png")
-        Button_backward10 = tkinter.Button(text="", width=90, image=self.img_pre10)
+        Button_backward10 = ttk.Button(text="", width=90, image=self.img_pre10)
         Button_backward10.bind("<Button-1>", self.button_backward10)
         pw.add(Button_backward10)
 
         self.img_pre1 = tkinter.PhotoImage(file="../design/pre1.png")
-        Button_backward1 = tkinter.Button(text="", width=85, image=self.img_pre1)
+        Button_backward1 = ttk.Button(text="", width=85, image=self.img_pre1)
         Button_backward1.bind("<Button-1>", self.button_backward1)
         pw.add(Button_backward1)
 
         self.img_play_stop = tkinter.PhotoImage(file="../design/playstop.png")
-        Button_play_scene = tkinter.Button(text=u"", width=85, image=self.img_play_stop)
+        Button_play_scene = ttk.Button(text=u"", width=85, image=self.img_play_stop)
         Button_play_scene.bind("<Button-1>", self.play_scene)
         pw.add(Button_play_scene)
 
         self.img_forward1 = tkinter.PhotoImage(file="../design/forward1.png")
-        Button_forward1 = tkinter.Button(text=u"", width=85, image=self.img_forward1)
+        Button_forward1 = ttk.Button(text=u"", width=85, image=self.img_forward1)
         Button_forward1.bind("<Button-1>", self.button_forward1)
         pw.add(Button_forward1)
 
         self.img_forward10 = tkinter.PhotoImage(file="../design/forward10.png")
-        Button_forward10 = tkinter.Button(text=u"", width=85, image=self.img_forward10)
+        Button_forward10 = ttk.Button(text=u"", width=85, image=self.img_forward10)
         Button_forward10.bind("<Button-1>", self.button_forward10)
         pw.add(Button_forward10)
 
         self.img_forward100 = tkinter.PhotoImage(file="../design/forward100.png")
-        Button_forward100 = tkinter.Button(text="", width=85, image=self.img_forward100)
+        Button_forward100 = ttk.Button(text="", width=85, image=self.img_forward100)
         Button_forward100.bind("<Button-1>", self.button_forward100)
         pw.add(Button_forward100)
 
     def create_button_play(self, pw):
 
-        Button_score_image = tkinter.Button(text=u"ScoreImage", width=8)
+        Button_score_image = ttk.Button(text=u"ScoreImage", width=8)
         Button_score_image.bind("<Button-1>", self.score_image_all)
         pw.add(Button_score_image)
 
-        Button_score_text = tkinter.Button(text=u"ScoreText", width=8)
+        Button_score_text = ttk.Button(text=u"ScoreText", width=8)
         Button_score_text.bind("<Button-1>", self.score_text)
         pw.add(Button_score_text)
 
-        Button_score_text = tkinter.Button(text=u"CalcScore", width=8)
+        Button_score_text = ttk.Button(text=u"CalcScore", width=8)
         Button_score_text.bind("<Button-1>", self.calc_score)
         pw.add(Button_score_text)
 
     def create_button_server(self):
         if self.score.firstServer == 0:
-            self.label_firstServer = tkinter.Label(
+            self.label_firstServer = ttk.Label(
                 text="1stServer:" + self.score.playerA
             )
         else:
-            self.label_firstServer = tkinter.Label(
+            self.label_firstServer = ttk.Label(
                 text="1stServer:" + self.score.playerB
             )
 
@@ -2250,10 +2253,10 @@ class Application(tkinter.Frame):
         label1 = tkinter.Label(text=u"のポイント")
         self.pw1_3.add(label1)
 
-        self.Button_fault = tkinter.Button(text=u"フォルト", width=10)
+        self.Button_fault = ttk.Button(text=u"フォルト", width=10)
         self.Button_fault.bind("<Button-1>", self.buttonFault_clicked)
         self.pw1_3.add(self.Button_fault)
-        Button_end = tkinter.Button(text=u"終了フレーム", width=10)
+        Button_end = ttk.Button(text=u"終了フレーム", width=10)
         Button_end.bind("<Button-1>", self.button_end)
         self.pw1_3.add(Button_end)
 
@@ -2265,25 +2268,26 @@ class Application(tkinter.Frame):
         self.pw1_4_3 = tkinter.PanedWindow(self.pw1_4, orient="vertical")
         self.pw1_4.add(self.pw1_4_3)
 
-        self.Button1 = tkinter.Button(text=u"サービスエース(1)", width=20)
+        self.Button1 = ttk.Button(text=u"サービスエース(1)", width=20)
+        # self.Button1 = ttk.Button(self.pw1_4_1, text=u"サービスエース(1)", width=20)
         self.Button1.bind("<Button-1>", self.button1_clicked)
         self.pw1_4_1.add(self.Button1)
-        self.Button4 = tkinter.Button(text=u"リターンエラー(4)", width=20)
+        self.Button4 = ttk.Button(text=u"リターンエラー(4)", width=20)
         self.Button4.bind("<Button-1>", self.button4_clicked)
         self.pw1_4_1.add(self.Button4)
 
-        self.Button2 = tkinter.Button(text=u"ストロークウィナー(2)", width=20)
+        self.Button2 = ttk.Button(text=u"ストロークウィナー(2)", width=20)
         self.Button2.bind("<Button-1>", self.button2_clicked)
         self.pw1_4_2.add(self.Button2)
-        self.Button5 = tkinter.Button(text=u"ストロークエラー(5)", width=20)
+        self.Button5 = ttk.Button(text=u"ストロークエラー(5)", width=20)
         self.Button5.bind("<Button-1>", self.button5_clicked)
         self.pw1_4_2.add(self.Button5)
 
-        self.Button3 = tkinter.Button(text=u"ボレーウィナー(3)", width=20)
+        self.Button3 = ttk.Button(text=u"ボレーウィナー(3)", width=20)
         self.Button3.bind("<Button-1>", self.button3_clicked)
         self.pw1_4_3.add(self.Button3)
 
-        self.Button6 = tkinter.Button(text=u"ボレーエラー(6)", width=20)
+        self.Button6 = ttk.Button(text=u"ボレーエラー(6)", width=20)
         self.Button6.bind("<Button-1>", self.button6_clicked)
         self.pw1_4_3.add(self.Button6)
 
@@ -2307,7 +2311,24 @@ class Application(tkinter.Frame):
         self.shot_tree.heading(4, text="Player")
         self.shot_tree.heading(5, text="Bce/Hit")
         self.shot_tree.heading(6, text="Fr/Bc")
-        pw.add(self.shot_tree)
+
+        vscrollbar = ttk.Scrollbar(
+            self.master, orient=tkinter.VERTICAL, command=self.shot_tree.yview
+        )
+        pw1 = tkinter.PanedWindow(
+            pw, orient="horizontal")
+        pw1.add(self.shot_tree)
+        
+        self.shot_tree.configure(yscroll=vscrollbar.set)
+
+        pw2 = tkinter.PanedWindow(
+            pw, orient="horizontal")
+        pw2.add(vscrollbar)
+        pw.add(pw2)
+        pw.add(pw1)
+
+
+        # pw.add(self.shot_tree)
         self.create_right_menu_tree_point()
         self.shot_tree.bind("<Button-3>", self.show_popup_tree_point)
 
