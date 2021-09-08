@@ -232,9 +232,7 @@ class Application(tkinter.Frame):
         self.variable_serve = tkinter.StringVar(self)
         self.variable_serve.set(option_serve_list[0])
         self.variable_serve.trace("w", self.option_serve)
-        self.opt_serve = ttk.OptionMenu(
-            self, self.variable_serve, *option_serve_list
-        )
+        self.opt_serve = ttk.OptionMenu(self, self.variable_serve, *option_serve_list)
         self.pw_right_down_up.add(self.opt_serve)
 
         option_which_server_list = [self.score.playerName[0], self.score.playerName[1]]
@@ -272,11 +270,9 @@ class Application(tkinter.Frame):
             self.pw_right, orient="horizontal"
         )
         self.pw_right_down_down.pack(fill=tkinter.BOTH)
-        #side=tkinter.RIGHT, fill="y")
+        # side=tkinter.RIGHT, fill="y")
 
         self.pw_right_down.add(self.pw_right_down_down)
-        
-
 
         self.pw_left_down_left = tkinter.PanedWindow(
             self.pw_left_down, orient="vertical"
@@ -290,7 +286,7 @@ class Application(tkinter.Frame):
 
         self.pw1_1 = tkinter.PanedWindow(self.pw_left, orient="horizontal")  # コマ送り
 
-        self.pw1_1.pack(expand = True, fill = tkinter.BOTH)
+        self.pw1_1.pack(expand=True, fill=tkinter.BOTH)
 
         self.pw_left_down_left.add(self.pw1_1)
         self.create_button_seek(self.pw1_1)
@@ -2168,19 +2164,36 @@ class Application(tkinter.Frame):
         self.menu_bar.add_cascade(label="Stats", menu=self.stats_menu)
 
     def create_button_seek(self, pw):
+        # pw.pack(fill = tkinter.BOTH)
         self.img_pre100 = tkinter.PhotoImage(file="../design/pre100.png")
-        Button_backward100 =  ttk.Button(width=90, image=self.img_pre100)
-        Button_backward100.bind("<Button-1>", self.button_backward100)
+        Button_backward100 = ttk.Button(
+            padding=[27, 0, 27, 0],
+            image=self.img_pre100,
+            command=self.button_backward100,
+        )
+        # Button_backward100.bind("<Button-1>", self.button_backward100)
+        # Button_backward100.grid(row=0, column=0)
+        # Button_backward100.grid(row=0, column=0, padx=5, pady=5)
         pw.add(Button_backward100)
 
         self.img_pre10 = tkinter.PhotoImage(file="../design/pre10.png")
-        Button_backward10 = ttk.Button(text="", width=90, image=self.img_pre10)
-        Button_backward10.bind("<Button-1>", self.button_backward10)
+        Button_backward10 = ttk.Button(
+            padding=[33, 0, 33, 0],
+            image=self.img_pre10,
+            command=self.button_backward10,
+        )
+        # Button_backward10 = ttk.Button(text="", width=90, image=self.img_pre10)
+        # Button_backward10.bind("<Button-1>", self.button_backward10)
         pw.add(Button_backward10)
 
         self.img_pre1 = tkinter.PhotoImage(file="../design/pre1.png")
-        Button_backward1 = ttk.Button(text="", width=85, image=self.img_pre1)
-        Button_backward1.bind("<Button-1>", self.button_backward1)
+        Button_backward1 = ttk.Button(
+            padding=[39, 0, 39, 0],
+            image=self.img_pre1,
+            command=self.button_backward1,
+        )
+        # Button_backward1 = ttk.Button(text="", width=85, image=self.img_pre1)
+        # Button_backward1.bind("<Button-1>", self.button_backward1)
         pw.add(Button_backward1)
 
         self.img_play_stop = tkinter.PhotoImage(file="../design/playstop.png")
@@ -2189,23 +2202,38 @@ class Application(tkinter.Frame):
         pw.add(Button_play_scene)
 
         self.img_forward1 = tkinter.PhotoImage(file="../design/forward1.png")
-        Button_forward1 = ttk.Button(text=u"", width=85, image=self.img_forward1)
-        Button_forward1.bind("<Button-1>", self.button_forward1)
+        Button_forward1 = ttk.Button(
+            padding=[39, 0, 39, 0],
+            image=self.img_forward1,
+            command=self.button_forward1
+        )
+        # Button_forward1 = ttk.Button(text=u"", width=85, image=self.img_forward1)
+        # Button_forward1.bind("<Button-1>", self.button_forward1)
         pw.add(Button_forward1)
 
         self.img_forward10 = tkinter.PhotoImage(file="../design/forward10.png")
-        Button_forward10 = ttk.Button(text=u"", width=85, image=self.img_forward10)
-        Button_forward10.bind("<Button-1>", self.button_forward10)
+        Button_forward10 = ttk.Button(
+            padding=[33, 0, 33, 0],
+            image=self.img_forward10,
+            command=self.button_forward10,
+        )
+        # Button_forward10 = ttk.Button(text=u"", width=85, image=self.img_forward10)
+        # Button_forward10.bind("<Button-1>", self.button_forward10)
         pw.add(Button_forward10)
 
         self.img_forward100 = tkinter.PhotoImage(file="../design/forward100.png")
-        Button_forward100 = ttk.Button(text="", width=85, image=self.img_forward100)
-        Button_forward100.bind("<Button-1>", self.button_forward100)
+        Button_forward100 = ttk.Button(
+            padding=[27, 0, 27, 0],
+            image=self.img_forward100,
+            command=self.button_forward100,
+        )
+        # Button_forward100 = ttk.Button(text="", width=85, image=self.img_forward100)
+        # Button_forward100.bind("<Button-1>", self.button_forward100)
         pw.add(Button_forward100)
 
     def create_button_play(self, pw):
 
-        Button_score_image = ttk.Button(text=u"ScoreImage", width=8)
+        Button_score_image = ttk.Button(text=u"ScoreImage", width=50)
         Button_score_image.bind("<Button-1>", self.score_image_all)
         pw.add(Button_score_image)
 
@@ -2219,13 +2247,9 @@ class Application(tkinter.Frame):
 
     def create_button_server(self):
         if self.score.firstServer == 0:
-            self.label_firstServer = ttk.Label(
-                text="1stServer:" + self.score.playerA
-            )
+            self.label_firstServer = ttk.Label(text="1stServer:" + self.score.playerA)
         else:
-            self.label_firstServer = ttk.Label(
-                text="1stServer:" + self.score.playerB
-            )
+            self.label_firstServer = ttk.Label(text="1stServer:" + self.score.playerB)
 
         self.pw1_3.add(self.label_firstServer)
 
@@ -2315,18 +2339,15 @@ class Application(tkinter.Frame):
         vscrollbar = ttk.Scrollbar(
             self.master, orient=tkinter.VERTICAL, command=self.shot_tree.yview
         )
-        pw1 = tkinter.PanedWindow(
-            pw, orient="horizontal")
+        pw1 = tkinter.PanedWindow(pw, orient="horizontal")
         pw1.add(self.shot_tree)
-        
+
         self.shot_tree.configure(yscroll=vscrollbar.set)
 
-        pw2 = tkinter.PanedWindow(
-            pw, orient="horizontal")
+        pw2 = tkinter.PanedWindow(pw, orient="horizontal")
         pw2.add(vscrollbar)
         pw.add(pw2)
         pw.add(pw1)
-
 
         # pw.add(self.shot_tree)
         self.create_right_menu_tree_point()
@@ -2368,14 +2389,12 @@ class Application(tkinter.Frame):
         vscrollbar = ttk.Scrollbar(
             self.master, orient=tkinter.VERTICAL, command=self.tree.yview
         )
-        pw1 = tkinter.PanedWindow(
-            pw, orient="horizontal")
+        pw1 = tkinter.PanedWindow(pw, orient="horizontal")
         pw1.add(self.tree)
-        
+
         self.tree.configure(yscroll=vscrollbar.set)
 
-        pw2 = tkinter.PanedWindow(
-            pw, orient="horizontal")
+        pw2 = tkinter.PanedWindow(pw, orient="horizontal")
         pw2.add(vscrollbar)
         pw.add(pw2)
         pw.add(pw1)
@@ -2708,7 +2727,8 @@ class Application(tkinter.Frame):
     def button_forward100(self, event):
         self.pos_seek.set(self.pos_seek.get() + 100)
 
-    def button_backward100(self, event):
+    # def button_backward100(self, event):
+    def button_backward100(self):
         self.pos_seek.set(self.pos_seek.get() - 100)
 
     def button_delete_tree_point(self, event):
