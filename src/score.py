@@ -31,12 +31,12 @@ class Score:
         self.arrayPointXY.append([0, 0])
         self.arrayPointXY.append([0, 0])
 
-        self.arrayCourt = [[], [], [], []]  # [[], [], [], []]
+        self.arrayCourt = [[], [], [], []]  # 
         self.arrayCourt[0].append([0, 0])
         self.arrayCourt[1].append([0, 0])
         self.arrayCourt[2].append([0, 0])
         self.arrayCourt[3].append([0, 0])
-        self.arrayContactServe = []
+        self.arrayContactServe = []#[[0, 0],[1, 1],[2, 2],[3, 3]]
         self.arrayContactServe.append([0, 0])
 
         self.array_frame_start = []
@@ -56,7 +56,7 @@ class Score:
         self.arrayPointWinner = []  # ウィナーの名前
         self.arrayPointWinner.append("")
 
-        self.pointWin = []
+        self.pointWin = []#0 1:won 
         # self.pointWin = []
         self.pointA = []
         self.pointB = []
@@ -774,6 +774,7 @@ class Score:
             self.delete_position_data(i)
 
     def delete_tree_point(self):
+        print("delete_tree_point")
         i = self.number
         print(i)
         # delete point
@@ -786,7 +787,18 @@ class Score:
         self.arrayFirstSecond.pop(i)
         self.arrayServer.pop(i)
         self.arrayPointWinner.pop(i)
+        self.pointWin[0].pop(i)
+        self.pointWin[1].pop(i)
         self.arrayPointPattern.pop(i)
+        self.arrayFault.pop(i)
+
+        self.arrayContactServe.pop(i)
+
+        self.arrayCourt[0].pop(i)
+        self.arrayCourt[1].pop(i)
+        self.arrayCourt[2].pop(i)
+        self.arrayCourt[3].pop(i)
+
 
         # delete shot all
         self.array_ball_position_shot.pop(i)

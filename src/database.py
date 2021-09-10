@@ -39,7 +39,7 @@ class Database:
         self.arrayPointPattern = score.arrayPointPattern
 
         self.arrayContactServe = score.arrayContactServe
-        self.arrayCourt = score.arrayCourt
+        self.arrayCourt = score.arrayCourt  # [[0, 0], [0, 0], [0, 0], [0, 0]]
 
         self.playerA = score.playerA
         self.playerB = score.playerB
@@ -103,7 +103,6 @@ class Database:
         print(self.dbName)
         r = 0
         conn = sqlite3.connect(self.dbName)
-        c = conn.cursor()
         try:
             df = pd.DataFrame(
                 {
@@ -147,7 +146,6 @@ class Database:
     def save_database_shot(self, db_name):
         r = 0
         conn = sqlite3.connect(self.dbName)
-        c = conn.cursor()
 
         point = []
         frame = []
@@ -172,7 +170,7 @@ class Database:
         try:
             for i in range(len(self.array_ball_position_shot)):
                 for j in range(len(self.array_ball_position_shot[i])):
-                    print(i, j)
+                    # print(i, j)
                     point.append(self.array_ball_position_shot[i][j][0])
                     frame.append(self.array_ball_position_shot[i][j][1])
                     bx.append(self.array_ball_position_shot[i][j][2])
@@ -299,53 +297,70 @@ class Database:
     def load_database_score(self, db_name):
         r = 0
         conn = sqlite3.connect(self.dbName)
-        c = conn.cursor()
+        try:
+            df = pd.read_sql("select * from score", conn)
+        except pd.io.sql.DatabaseError as e:
+            print(e)
+            return 0
+        else:
+            df = df.fillna("")
 
-        df = pd.read_sql("select * from score", conn)
+            self.arrayFrameStart.extend(df["StartFrame"].values.tolist())
+            self.arrayFrameEnd.extend(df["EndFrame"].values.tolist())
+            self.arraySet.extend(df["Set"].values.tolist())
+            self.arrayGame.extend(df["Game"].values.tolist())
+            self.arrayScore.extend(df["Score"].values.tolist())
+            self.arrayScoreResult.extend(df["ScoreResult"].values.tolist())
+            self.arrayFirstSecond.extend(df["FirstSecond"].values.tolist())
+            self.arrayServer.extend(df["Server"].values.tolist())
+            self.arrayPointWinner.extend(df["PointWinner"].values.tolist())
+            self.arrayPointPattern.extend(df["PointPattern"].values.tolist())
+            self.arrayFault.extend(df["Fault"].values.tolist())
 
-        df = df.fillna("")
+            self.pointWin[0].extend(df["PointWinA"].values.tolist())
+            self.pointWin[1].extend(df["PointWinB"].values.tolist())
 
-        self.arrayFrameStart.extend(df["StartFrame"].values.tolist())
-        self.arrayFrameEnd.extend(df["EndFrame"].values.tolist())
-        self.arraySet.extend(df["Set"].values.tolist())
-        self.arrayGame.extend(df["Game"].values.tolist())
-        self.arrayScore.extend(df["Score"].values.tolist())
-        self.arrayScoreResult.extend(df["ScoreResult"].values.tolist())
-        self.arrayFirstSecond.extend(df["FirstSecond"].values.tolist())
-        self.arrayServer.extend(df["Server"].values.tolist())
-        self.arrayPointWinner.extend(df["PointWinner"].values.tolist())
-        self.arrayPointPattern.extend(df["PointPattern"].values.tolist())
-        self.arrayFault.extend(df["Fault"].values.tolist())
-
-        self.pointWin[0].extend(df["PointWinA"].values.tolist())
-        self.pointWin[1].extend(df["PointWinB"].values.tolist())
-
-        for i in range(len(df["ContactServeX"].values.tolist())):
-            self.arrayContactServe.append(
-                [
-                    df["ContactServeX"].values.tolist()[i],
-                    df["ContactServeY"].values.tolist()[i],
-                ]
-            )
-        self.arrayCourt.append([])
-        self.arrayCourt.append([])
-        self.arrayCourt.append([])
-        self.arrayCourt.append([])
-        for i in range(len(df["Court1X"].values.tolist())):
-            self.arrayCourt[0].insert(
-                i, [df["Court1X"].values.tolist()[i], df["Court1Y"].values.tolist()[i]]
-            )
-            self.arrayCourt[1].insert(
-                i, [df["Court2X"].values.tolist()[i], df["Court2Y"].values.tolist()[i]]
-            )
-            self.arrayCourt[2].insert(
-                i, [df["Court3X"].values.tolist()[i], df["Court3Y"].values.tolist()[i]]
-            )
-            self.arrayCourt[3].insert(
-                i, [df["Court4X"].values.tolist()[i], df["Court4Y"].values.tolist()[i]]
-            )
-        self.number = len(df) - 1
-        # print("df",df)
+            for i in range(len(df["ContactServeX"].values.tolist())):
+                self.arrayContactServe.append(
+                    [
+                        df["ContactServeX"].values.tolist()[i],
+                        df["ContactServeY"].values.tolist()[i],
+                    ]
+                )
+            self.arrayCourt.append([])
+            self.arrayCourt.append([])
+            self.arrayCourt.append([])
+            self.arrayCourt.append([])
+            for i in range(len(df["Court1X"].values.tolist())):
+                self.arrayCourt[0].insert(
+                    i,
+                    [
+                        df["Court1X"].values.tolist()[i],
+                        df["Court1Y"].values.tolist()[i],
+                    ],
+                )
+                self.arrayCourt[1].insert(
+                    i,
+                    [
+                        df["Court2X"].values.tolist()[i],
+                        df["Court2Y"].values.tolist()[i],
+                    ],
+                )
+                self.arrayCourt[2].insert(
+                    i,
+                    [
+                        df["Court3X"].values.tolist()[i],
+                        df["Court3Y"].values.tolist()[i],
+                    ],
+                )
+                self.arrayCourt[3].insert(
+                    i,
+                    [
+                        df["Court4X"].values.tolist()[i],
+                        df["Court4Y"].values.tolist()[i],
+                    ],
+                )
+            self.number = len(df) - 1
         r = len(df)
         conn.close()
         return r

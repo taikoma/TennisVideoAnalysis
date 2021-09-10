@@ -279,11 +279,6 @@ class Application(tkinter.Frame):
         )  # 左画面の下側 左
         self.pw_left_down.add(self.pw_left_down_left)
 
-        # self.pw_left_down_right = tkinter.PanedWindow(
-        #     self.pw_left_down, orient="vertical"
-        # )  # 左画面の下側 右
-        # self.pw_left_down.add(self.pw_left_down_right)
-
         self.pw1_1 = tkinter.PanedWindow(self.pw_left, orient="horizontal")  # コマ送り
 
         self.pw1_1.pack(expand=True, fill=tkinter.BOTH)
@@ -307,7 +302,6 @@ class Application(tkinter.Frame):
         self.pw_left_down_left.add(self.pw1_4)
         self.create_button_pointpattern(self.pw1_4)
 
-        # self.pw_right_down_down.pack(fill=tkinter.BOTH)
         self.create_tree(self.pw_right_down_down)  # タグ一覧を右に描画
         self.set_tree()
         self.tree.bind("<ButtonRelease-1>", self.select)  # Double-1
@@ -315,6 +309,8 @@ class Application(tkinter.Frame):
         self.tree.selection_set(self.tree.get_children()[0])
 
         self.change_state()
+
+        
 
     def create_court(self, canvas, s, pw):
         out = 5 * s
@@ -1273,19 +1269,19 @@ class Application(tkinter.Frame):
         self.score.arrayFirstSecond[
             self.score.number
         ] = self.score.firstSecondString.index(self.variable_serve.get())
-        self.set_tree()
+        # self.set_tree()
 
     def option_which_server(self, *args):
         self.score.arrayServer[self.score.number] = self.variable_which_server.get()
-        self.set_tree()
+        # self.set_tree()
 
     def option_winner(self, *args):
         self.score.arrayPointWinner[self.score.number] = self.variable_winner.get()
-        self.set_tree()
+        # self.set_tree()
 
     def option_pattern(self, *args):
         self.score.arrayPointPattern[self.score.number] = self.variable_pattern.get()
-        self.set_tree()
+        # self.set_tree()
 
     def mouse_clicked(self, event):
         """画像範囲内をマウスクリックしたときの処理"""
@@ -1896,6 +1892,7 @@ class Application(tkinter.Frame):
                 self.mode_play = False
 
     def count_frame(self):
+        # print("count_frame:"+self.frame_no)
         self.frame_no = int(self.video.get(cv2.CAP_PROP_POS_FRAMES))
         self.pos_seek.set(self.frame_no)
 
