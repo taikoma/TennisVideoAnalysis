@@ -257,11 +257,21 @@ class TestScore(unittest.TestCase):
         self.assertEqual("", l)
         self.assertEqual("", r)
 
-    def test_get_winner(self):
+    def test_get_winner(self):#(pre_count_a, count_a, pre_count_b, count_b)
         winner = self.score.get_winner(0, 0, 0, 0)
-        self.assertEqual(2, winner)
+        self.assertEqual(2, winner)#fault
         winner = self.score.get_winner(0, 1, 0, 0)
-        self.assertEqual(0, winner)
+        self.assertEqual(0, winner)#a won
+        winner = self.score.get_winner(0, 0, 0, 1)
+        self.assertEqual(1, winner)#b won
+        winner = self.score.get_winner(3,0 ,1 ,0 )#
+        self.assertEqual(0, winner)#b won
+        winner = self.score.get_winner(4,0 ,3 ,0 )#
+        self.assertEqual(0, winner)#b won
+        winner = self.score.get_winner(1,0 ,3 ,0 )#15-40 0-0
+        self.assertEqual(1, winner)#b won
+        winner = self.score.get_winner(3,0 ,4 ,0 )#40-Ad 0-0
+        self.assertEqual(1, winner)#b won
 
     def test_get_winner_list(self):
         array_score = [
@@ -273,11 +283,11 @@ class TestScore(unittest.TestCase):
             "15-40",
             "30-40",
             "40-40",
-            "40-A",
+            "40-Ad",
             "40-40",
         ]
         winner_array = self.score.get_winner_list(array_score)
-        self.assertEqual([1, 2, 0, 1, 1, 0, 0, 1, 0, 3], winner_array)
+        self.assertEqual([1, 2, 0, 1, 1, 0, 0, 1, 0, 3], winner_array)#[1, 2, 0, 1, 1, 0, 0, 3, 3, 3]
 
         array_score = [
             "0-0",
@@ -289,7 +299,7 @@ class TestScore(unittest.TestCase):
             "15-40",
             "30-40",
             "40-40",
-            "40-A",
+            "40-Ad",
             "40-40",
         ]
         winner_array = self.score.get_winner_list(array_score)
@@ -329,6 +339,22 @@ class TestScore(unittest.TestCase):
         ]
         winner_array = self.score.get_winner_list(array_score)
         self.assertEqual([1, 2, 3, 3, 2, 0, 1, 1, 0, 0, 1, 0, 3], winner_array)
+
+        array_score = [
+            "40-30",
+            "0-0",
+            "0-15",
+        ]
+        winner_array = self.score.get_winner_list(array_score)
+        self.assertEqual([0, 1, 3], winner_array)
+
+        array_score = [
+            "40-Ad",
+            "0-0",
+            "0-15",
+        ]
+        winner_array = self.score.get_winner_list(array_score)
+        self.assertEqual([1, 1, 3], winner_array)
 
     def test_score2count(self):
         score = "0"

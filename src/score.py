@@ -440,7 +440,7 @@ class Score:
             count = 2
         elif score == "40":
             count = 3
-        elif score == "A":
+        elif score == "Ad" or score == "A":
             count = 4
         else:
             count = -1
@@ -448,11 +448,13 @@ class Score:
 
     def get_winner(self, pre_count_a, count_a, pre_count_b, count_b):  # １つ前のデータと比較
         """
-        convert string score to count
+        return winner by comparing count and pre_count
 
         Parameters
         ----------
+        pre_count_b:int
         count_a:int
+        pre_count_a:int
         count_b:int
 
         Returns
@@ -460,17 +462,28 @@ class Score:
         winner:int
         """
         winner = 3  # not point
-        # if count_a == -1 or count_b == -1:
-        if pre_count_a == count_a and pre_count_b == count_b:  # fault
-            winner = 2
-        elif pre_count_a == 4 and count_a == 3:
-            winner = 1
-        elif pre_count_b == 4 and count_b == 3:
-            winner = 0
-        elif pre_count_a < count_a and pre_count_b == count_b:
-            winner = 0
-        elif pre_count_a == count_a and pre_count_b < count_b:
-            winner = 1
+        if count_a == 0 and count_b == 0:
+            if pre_count_a == count_a and pre_count_b == count_b:  # fault
+                winner = 2
+            elif pre_count_a == 4:
+                winner = 0
+            elif pre_count_b == 4:
+                winner = 1
+            elif pre_count_a == 3:
+                winner = 0
+            elif pre_count_b == 3:
+                winner = 1
+        else:
+            if pre_count_a == count_a and pre_count_b == count_b:  # fault
+                winner = 2
+            elif pre_count_a == 4 and count_a == 3:#A->40
+                winner = 1
+            elif pre_count_b == 4 and count_b == 3:#A->40
+                winner = 0
+            elif pre_count_a < count_a and pre_count_b == count_b:
+                winner = 0
+            elif pre_count_a == count_a and pre_count_b < count_b:
+                winner = 1
 
         return winner
 

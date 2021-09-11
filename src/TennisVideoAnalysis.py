@@ -2680,13 +2680,13 @@ class Application(tkinter.Frame):
     def button6_clicked(self, event):  # VlE
         self.setPattern(5)
 
-    def button_forward10(self, event):
+    def button_forward10(self):
         self.pos_seek.set(self.pos_seek.get() + 10)
 
-    def button_backward10(self, event):
+    def button_backward10(self):
         self.pos_seek.set(self.pos_seek.get() - 10)
 
-    def button_forward1(self, event):
+    def button_forward1(self):
         self.pos_seek.set(self.pos_seek.get() + 1)
         self.focus_set()
 
@@ -2718,10 +2718,10 @@ class Application(tkinter.Frame):
                 self.mode_play = True
                 self.update()
 
-    def button_backward1(self, event):
+    def button_backward1(self):
         self.pos_seek.set(self.pos_seek.get() - 1)
 
-    def button_forward100(self, event):
+    def button_forward100(self):
         self.pos_seek.set(self.pos_seek.get() + 100)
 
     # def button_backward100(self, event):
@@ -2777,7 +2777,8 @@ class Application(tkinter.Frame):
 
     def score_image2text_all(self):
         self.score_image_all()  # image
-        start_list = self.score.array_frame_start[0:10]
+        # start_list = self.score.array_frame_start[0:10]
+        start_list = self.score.array_frame_start
         for i in range(len(start_list)):
             self.score_image_one(i)
 
@@ -2795,7 +2796,8 @@ class Application(tkinter.Frame):
         # start_list=[0,800,1031,1672,2564,3346,2350,3862,4180,6028,6738,7091,7969,7981,8564,9080,9796,
         #             10172,11097,11498,11900]
         # start_list=[0,800,1031,1672,2564]
-        start_list = self.score.array_frame_start[0:10]
+        # start_list = self.score.array_frame_start[0:10]
+        start_list = self.score.array_frame_start
         self.ds.frame2images(start_list, self.vid.videoFileName)
 
     def score_image_all(self):
@@ -2829,8 +2831,9 @@ class Application(tkinter.Frame):
         self.set_tree()
 
     def calc_score(self, event):
-        winner_list = self.score.get_winner_list(self.score.arrayScore)
+        winner_list = self.score.get_winner_list(self.score.arrayScore)#[0,1,2,0,1]
         print(winner_list)
+        print(self.score.playerName)
         (
             point_winner_array,
             first_second_array,
