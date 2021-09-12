@@ -403,10 +403,14 @@ class TestScore(unittest.TestCase):
             "40-Ad",
             "40-40",
         ]
-        game_list = self.score.get_game_list(array_score)
+        game_list, set_list = self.score.get_game_list(array_score)
         self.assertEqual(
             ["0-0", "0-0", "0-0", "0-0", "0-0", "0-0", "0-0", "0-0", "0-0", "0-0"],
             game_list,
+        )
+        self.assertEqual(
+            ["0-0", "0-0", "0-0", "0-0", "0-0", "0-0", "0-0", "0-0", "0-0", "0-0"],
+            set_list,
         )
 
         array_score = [
@@ -414,8 +418,9 @@ class TestScore(unittest.TestCase):
             "0-0",
             "0-15",
         ]
-        game_list = self.score.get_game_list(array_score)
+        game_list, set_list = self.score.get_game_list(array_score)
         self.assertEqual(["0-0", "0-1", "0-1"], game_list)
+        self.assertEqual(["0-0", "0-0", "0-0"], set_list)
 
         array_score = [
             "40-Ad",
@@ -429,7 +434,7 @@ class TestScore(unittest.TestCase):
             "40-0",
             "0-0",
         ]
-        game_list = self.score.get_game_list(array_score)
+        game_list, set_list = self.score.get_game_list(array_score)
         self.assertEqual(
             [
                 "0-0",
@@ -445,6 +450,39 @@ class TestScore(unittest.TestCase):
             ],
             game_list,
         )
+
+    def test_get_game_reset(self):
+        #b set won
+        game_a, game_b, set_a, set_b = 7, 5, 0, 0
+        self.assertEqual(
+            (0, 0, 1, 0), self.score.get_game_reset(game_a, game_b, set_a, set_b)
+        )
+        game_a, game_b, set_a, set_b = 7, 6, 0, 0
+        self.assertEqual(
+            (0, 0, 1, 0), self.score.get_game_reset(game_a, game_b, set_a, set_b)
+        )
+        game_a, game_b, set_a, set_b = 5, 2, 0, 0
+        self.assertEqual(
+            (5, 2, 0, 0), self.score.get_game_reset(game_a, game_b, set_a, set_b)
+        )
+        game_a, game_b, set_a, set_b = 6, 2, 0, 0
+        self.assertEqual(
+            (0, 0, 1, 0), self.score.get_game_reset(game_a, game_b, set_a, set_b)
+        )
+        #b set won
+        game_a, game_b, set_a, set_b = 5, 7, 0, 0
+        self.assertEqual(
+            (0, 0, 0, 1), self.score.get_game_reset(game_a, game_b, set_a, set_b)
+        )
+        game_a, game_b, set_a, set_b = 6, 7, 0, 0
+        self.assertEqual(
+            (0, 0, 0, 1), self.score.get_game_reset(game_a, game_b, set_a, set_b)
+        )
+        game_a, game_b, set_a, set_b = 2, 6, 0, 0
+        self.assertEqual(
+            (0, 0, 0, 1), self.score.get_game_reset(game_a, game_b, set_a, set_b)
+        )
+
 
     def test_position_data2array(self):
         # test when add num=2 data to array

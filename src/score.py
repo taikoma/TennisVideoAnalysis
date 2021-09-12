@@ -605,6 +605,10 @@ class Score:
         ----------
         game_list:[int]
         """
+        set_a = 0
+        set_b = 0
+        set_list = ["0-0"]
+
         game_a = 0
         game_b = 0
         game_list = ["0-0"]
@@ -623,8 +627,34 @@ class Score:
                     game_a += 1
                 elif winner == 1:
                     game_b += 1
+
+            game_a, game_b, set_a, set_b = self.get_game_reset(
+                game_a, game_b, set_a, set_b
+            )
+
             game_list.append(str(game_a) + "-" + str(game_b))
-        return game_list
+            set_list.append(str(set_a) + "-" + str(set_b))
+        return game_list, set_list
+
+    def get_game_reset(self, game_a, game_b, set_a, set_b):
+        if game_a > 5 or game_b > 5:
+            if game_a - game_b > 1:
+                set_a += 1
+                game_a = 0
+                game_b = 0
+            elif game_b - game_a > 1:
+                set_b += 1
+                game_a = 0
+                game_b = 0
+            elif game_a - game_b == 1:
+                set_a += 1
+                game_a = 0
+                game_b = 0
+            elif game_b - game_a == 1:
+                set_b += 1
+                game_a = 0
+                game_b = 0
+        return game_a, game_b, set_a, set_b
 
     def position_data2array_insert(
         self,
