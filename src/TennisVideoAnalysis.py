@@ -2242,6 +2242,10 @@ class Application(tkinter.Frame):
         Button_score_text.bind("<Button-1>", self.calc_score)
         pw.add(Button_score_text)
 
+        Button_game_text = ttk.Button(text=u"CalcGame", width=8)
+        Button_game_text.bind("<Button-1>", self.calc_game)
+        pw.add(Button_game_text)
+
     def create_button_server(self):
         if self.score.firstServer == 0:
             self.label_firstServer = ttk.Label(text="1stServer:" + self.score.playerA)
@@ -2845,6 +2849,12 @@ class Application(tkinter.Frame):
         self.score.arrayFirstSecond = first_second_array
         print(point_winner_array)
         print(first_second_array)
+        self.set_tree()
+
+    def calc_game(self,game):
+        game_list = self.score.get_game_list(self.score.arrayScore)
+        self.score.arrayGame=game_list
+        print(game_list)
         self.set_tree()
 
     def show_pattern_message(self, pattern):

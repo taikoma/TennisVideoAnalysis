@@ -257,21 +257,21 @@ class TestScore(unittest.TestCase):
         self.assertEqual("", l)
         self.assertEqual("", r)
 
-    def test_get_winner(self):#(pre_count_a, count_a, pre_count_b, count_b)
+    def test_get_winner(self):  # (pre_count_a, count_a, pre_count_b, count_b)
         winner = self.score.get_winner(0, 0, 0, 0)
-        self.assertEqual(2, winner)#fault
+        self.assertEqual(2, winner)  # fault
         winner = self.score.get_winner(0, 1, 0, 0)
-        self.assertEqual(0, winner)#a won
+        self.assertEqual(0, winner)  # a won
         winner = self.score.get_winner(0, 0, 0, 1)
-        self.assertEqual(1, winner)#b won
-        winner = self.score.get_winner(3,0 ,1 ,0 )#
-        self.assertEqual(0, winner)#b won
-        winner = self.score.get_winner(4,0 ,3 ,0 )#
-        self.assertEqual(0, winner)#b won
-        winner = self.score.get_winner(1,0 ,3 ,0 )#15-40 0-0
-        self.assertEqual(1, winner)#b won
-        winner = self.score.get_winner(3,0 ,4 ,0 )#40-Ad 0-0
-        self.assertEqual(1, winner)#b won
+        self.assertEqual(1, winner)  # b won
+        winner = self.score.get_winner(3, 0, 1, 0)  #
+        self.assertEqual(0, winner)  # b won
+        winner = self.score.get_winner(4, 0, 3, 0)  #
+        self.assertEqual(0, winner)  # b won
+        winner = self.score.get_winner(1, 0, 3, 0)  # 15-40 0-0
+        self.assertEqual(1, winner)  # b won
+        winner = self.score.get_winner(3, 0, 4, 0)  # 40-Ad 0-0
+        self.assertEqual(1, winner)  # b won
 
     def test_get_winner_list(self):
         array_score = [
@@ -287,7 +287,9 @@ class TestScore(unittest.TestCase):
             "40-40",
         ]
         winner_array = self.score.get_winner_list(array_score)
-        self.assertEqual([1, 2, 0, 1, 1, 0, 0, 1, 0, 3], winner_array)#[1, 2, 0, 1, 1, 0, 0, 3, 3, 3]
+        self.assertEqual(
+            [1, 2, 0, 1, 1, 0, 0, 1, 0, 3], winner_array
+        )  # [1, 2, 0, 1, 1, 0, 0, 3, 3, 3]
 
         array_score = [
             "0-0",
@@ -387,6 +389,62 @@ class TestScore(unittest.TestCase):
             ["", "", "", const.PATTERN[6], const.PATTERN[7], "", "", const.PATTERN[6]],
             point_pattern,
         )  # 0:not point 1:1st 2:2nd
+
+    def test_get_game_list(self):
+        array_score = [
+            "0-0",
+            "0-15",
+            "0-15",
+            "15-15",
+            "15-30",
+            "15-40",
+            "30-40",
+            "40-40",
+            "40-Ad",
+            "40-40",
+        ]
+        game_list = self.score.get_game_list(array_score)
+        self.assertEqual(
+            ["0-0", "0-0", "0-0", "0-0", "0-0", "0-0", "0-0", "0-0", "0-0", "0-0"],
+            game_list,
+        )
+
+        array_score = [
+            "40-Ad",
+            "0-0",
+            "0-15",
+        ]
+        game_list = self.score.get_game_list(array_score)
+        self.assertEqual(["0-0", "0-1", "0-1"], game_list)
+
+        array_score = [
+            "40-Ad",
+            "0-0",
+            "0-15",
+            "0-30",
+            "0-40",
+            "0-0",
+            "15-0",
+            "30-0",
+            "40-0",
+            "0-0",
+        ]
+        game_list = self.score.get_game_list(array_score)
+        self.assertEqual(
+            [
+                "0-0",
+                "0-1",
+                "0-1",
+                "0-1",
+                "0-1",
+                "0-2",
+                "0-2",
+                "0-2",
+                "0-2",
+                "1-2",
+            ],
+            game_list,
+        )
 
     def test_position_data2array(self):
         # test when add num=2 data to array

@@ -31,12 +31,12 @@ class Score:
         self.arrayPointXY.append([0, 0])
         self.arrayPointXY.append([0, 0])
 
-        self.arrayCourt = [[], [], [], []]  # 
+        self.arrayCourt = [[], [], [], []]  #
         self.arrayCourt[0].append([0, 0])
         self.arrayCourt[1].append([0, 0])
         self.arrayCourt[2].append([0, 0])
         self.arrayCourt[3].append([0, 0])
-        self.arrayContactServe = []#[[0, 0],[1, 1],[2, 2],[3, 3]]
+        self.arrayContactServe = []  # [[0, 0],[1, 1],[2, 2],[3, 3]]
         self.arrayContactServe.append([0, 0])
 
         self.array_frame_start = []
@@ -56,7 +56,7 @@ class Score:
         self.arrayPointWinner = []  # ウィナーの名前
         self.arrayPointWinner.append("")
 
-        self.pointWin = []#0 1:won 
+        self.pointWin = []  # 0 1:won
         # self.pointWin = []
         self.pointA = []
         self.pointB = []
@@ -79,7 +79,7 @@ class Score:
         self.faultFlug = 0
         self.number = 0
         self.totalGame = 0
-        self.mode = 1#なんのモード？
+        self.mode = 1  # なんのモード？
         self.winner = 0
         self.rally = 0
 
@@ -476,9 +476,9 @@ class Score:
         else:
             if pre_count_a == count_a and pre_count_b == count_b:  # fault
                 winner = 2
-            elif pre_count_a == 4 and count_a == 3:#A->40
+            elif pre_count_a == 4 and count_a == 3:  # A->40
                 winner = 1
-            elif pre_count_b == 4 and count_b == 3:#A->40
+            elif pre_count_b == 4 and count_b == 3:  # A->40
                 winner = 0
             elif pre_count_a < count_a and pre_count_b == count_b:
                 winner = 0
@@ -593,6 +593,38 @@ class Score:
             pre_first_second = first_second_array[-1]
 
         return point_winner_array, first_second_array, point_pattern
+
+    def get_game_list(self, array_score):
+        """
+        array_scoreからゲームの切り替わりを検出してgame_listを返す
+        Parameters
+        ----------
+        array_score:[string] ["0-0","15-0",,]
+
+        Returns
+        ----------
+        game_list:[int]
+        """
+        game_a = 0
+        game_b = 0
+        game_list = ["0-0"]
+        for i in range(1, len(array_score)):
+            if array_score[i] == "0-0":
+                l_p, r_p = self.divide_left_right(array_score[i - 1])
+                pre_l_count = self.score2count(l_p)
+                pre_r_count = self.score2count(r_p)
+
+                l, r = self.divide_left_right(array_score[i])
+                l_count = self.score2count(l)
+                r_count = self.score2count(r)
+
+                winner = self.get_winner(pre_l_count, l_count, pre_r_count, r_count)
+                if winner == 0:
+                    game_a += 1
+                elif winner == 1:
+                    game_b += 1
+            game_list.append(str(game_a) + "-" + str(game_b))
+        return game_list
 
     def position_data2array_insert(
         self,
@@ -811,7 +843,6 @@ class Score:
         self.arrayCourt[1].pop(i)
         self.arrayCourt[2].pop(i)
         self.arrayCourt[3].pop(i)
-
 
         # delete shot all
         self.array_ball_position_shot.pop(i)
