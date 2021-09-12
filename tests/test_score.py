@@ -1499,3 +1499,11 @@ class TestScore(unittest.TestCase):
             ],
             self.score.array_ball_position_shot,
         )
+
+    def test_insert_tree_point(self):
+        self.score.array_frame_start = [100, 200, 300, 400]
+        self.score.array_frame_end = [199, 299, 399, 499]
+        self.score.number = 1  # insert 1th row
+        self.score.insert_tree_point()
+        self.assertEqual([100, 200, 202, 300, 400], self.score.array_frame_start)
+        self.assertEqual([199, 201, 299, 399, 499], self.score.array_frame_end)

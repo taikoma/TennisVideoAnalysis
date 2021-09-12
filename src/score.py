@@ -926,6 +926,51 @@ class Score:
 
             # self.array_ball_position_shot
 
+    def insert_tree_point(self):
+        print("delete_tree_point")
+        i = self.number
+        start = self.array_frame_start[i]
+        # end = self.score.array_frame_end[i]
+        self.array_frame_start.insert(i, start)
+        self.array_frame_end.insert(i, start+1)
+        self.array_frame_start[i+1] = start + 2
+        self.arraySet.insert(i, "")
+        self.arrayGame.insert(i, "")
+        self.arrayScore.insert(i, "")
+        self.arrayScoreResult.insert(i, "")
+        self.arrayFirstSecond.insert(i, "")
+        self.arrayServer.insert(i, "")
+        self.arrayPointWinner.insert(i, "")
+        self.pointWin[0].insert(i, 0)
+        self.pointWin[1].insert(i, 0)
+        self.arrayPointPattern.insert(i, "")
+        self.arrayFault.insert(i, "")
+
+        self.arrayContactServe.insert(i, "")
+
+        self.arrayCourt[0].insert(i, "")
+        self.arrayCourt[1].insert(i, "")
+        self.arrayCourt[2].insert(i, "")
+        self.arrayCourt[3].insert(i, "")
+
+        # delete shot all
+        self.array_ball_position_shot.insert(i, "")
+        self.arrayPlayerAPosition.insert(i, 0)
+        self.arrayPlayerBPosition.insert(i, 0)
+        self.arrayHitPlayer.insert(i, "")
+        self.arrayBounceHit.insert(i, "")
+        self.arrayForeBack.insert(i, "")
+        self.arrayDirection.insert(i, "")
+
+        self.array_x1.insert(i, 0)
+        self.array_y1.insert(i, 0)
+        self.array_x2.insert(i, 0)
+        self.array_y2.insert(i, 0)
+        self.array_x3.insert(i, 0)
+        self.array_y3.insert(i, 0)
+        self.array_x4.insert(i, 0)
+        self.array_y4.insert(i, 0)
+
     def divide_track_data(
         self,
         start_frame,
