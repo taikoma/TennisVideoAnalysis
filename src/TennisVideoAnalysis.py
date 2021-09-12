@@ -2852,8 +2852,9 @@ class Application(tkinter.Frame):
         self.set_tree()
 
     def calc_game(self,game):
-        game_list = self.score.get_game_list(self.score.arrayScore)
+        game_list, set_list = self.score.get_game_list(self.score.arrayScore)
         self.score.arrayGame=game_list
+        self.score.arraySet=set_list
         print(game_list)
         self.set_tree()
 
