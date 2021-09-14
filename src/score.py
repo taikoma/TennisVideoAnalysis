@@ -21,7 +21,15 @@ class Score:
         self.firstServer = firstSever
 
         self.setPlayerName("PlayerA", "PlayerB")
-        self.patternString = const.PATTERN
+        self.patternString = const.PATTERN #PATTERN=[
+            # "サービスエース",
+            # "ストロークウィナー",
+            # "ボレーウィナー",
+            # "リターンエラー",
+            # "ストロークエラー",
+            # "ボレーエラー",
+            # "フォルト",
+            # "ダブルフォルト"]
         self.firstSecondString = ["", "1st", "2nd"]
 
         self.pointXYNum = 0
@@ -938,38 +946,38 @@ class Score:
         self.arrayGame.insert(i, "")
         self.arrayScore.insert(i, "")
         self.arrayScoreResult.insert(i, "")
-        self.arrayFirstSecond.insert(i, "")
+        self.arrayFirstSecond.insert(i, 0)#0:not fault    1:1st fault    2:2nd fault
         self.arrayServer.insert(i, "")
         self.arrayPointWinner.insert(i, "")
         self.pointWin[0].insert(i, 0)
         self.pointWin[1].insert(i, 0)
         self.arrayPointPattern.insert(i, "")
-        self.arrayFault.insert(i, "")
+        self.arrayFault.insert(i, 0)
 
-        self.arrayContactServe.insert(i, "")
+        self.arrayContactServe.insert(i, [0, 0])
 
-        self.arrayCourt[0].insert(i, "")
-        self.arrayCourt[1].insert(i, "")
-        self.arrayCourt[2].insert(i, "")
-        self.arrayCourt[3].insert(i, "")
+        self.arrayCourt[0].insert(i, [0, 0])
+        self.arrayCourt[1].insert(i, [0, 0])
+        self.arrayCourt[2].insert(i, [0, 0])
+        self.arrayCourt[3].insert(i, [0, 0])
 
         # delete shot all
-        self.array_ball_position_shot.insert(i, "")
-        self.arrayPlayerAPosition.insert(i, 0)
-        self.arrayPlayerBPosition.insert(i, 0)
-        self.arrayHitPlayer.insert(i, "")
-        self.arrayBounceHit.insert(i, "")
-        self.arrayForeBack.insert(i, "")
-        self.arrayDirection.insert(i, "")
+        self.array_ball_position_shot.insert(i, [])
+        self.arrayPlayerAPosition.insert(i, [])
+        self.arrayPlayerBPosition.insert(i, [])
+        self.arrayHitPlayer.insert(i, [])
+        self.arrayBounceHit.insert(i, [])
+        self.arrayForeBack.insert(i, [])
+        self.arrayDirection.insert(i, [])
 
-        self.array_x1.insert(i, 0)
-        self.array_y1.insert(i, 0)
-        self.array_x2.insert(i, 0)
-        self.array_y2.insert(i, 0)
-        self.array_x3.insert(i, 0)
-        self.array_y3.insert(i, 0)
-        self.array_x4.insert(i, 0)
-        self.array_y4.insert(i, 0)
+        self.array_x1.insert(i, [])
+        self.array_y1.insert(i, [])
+        self.array_x2.insert(i, [])
+        self.array_y2.insert(i, [])
+        self.array_x3.insert(i, [])
+        self.array_y3.insert(i, [])
+        self.array_x4.insert(i, [])
+        self.array_y4.insert(i, [])
 
     def divide_track_data(
         self,

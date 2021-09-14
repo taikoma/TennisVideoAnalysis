@@ -4,8 +4,8 @@
     "firstServer": 1,
     "videoFile": "C:/Users/taku/Documents/Python/TennisVideoAnalysis/video/20210330-nishikori-titipas.avi",
     "database": "",
-    "sx1": 50,
-    "sy1": 129,
-    "sx2": 76,
-    "sy2": 142
+    "sx1": 8,
+    "sy1": 22,
+    "sx2": 13,
+    "sy2": 25
 }

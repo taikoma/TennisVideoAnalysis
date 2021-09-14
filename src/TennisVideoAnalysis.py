@@ -624,6 +624,11 @@ class Application(tkinter.Frame):
     def select_ball_position(self):
         self.mode_click_select_score_range = False
 
+    def insert_tree_point(self):
+        self.score.insert_tree_point()
+        self.set_tree()
+        self.active_select()
+
     def delete_tree_point(self):
         self.score.delete_tree_point()
         self.set_tree()
@@ -2437,6 +2442,10 @@ class Application(tkinter.Frame):
     def create_right_menu_tree(self):
         """データ画面で右クリックしたときのメニュー画面"""
         self.menu_top_tree = Menu(self, tearoff=False)
+
+        self.menu_top_tree.add_command(
+            label="Insert", underline=5, command=self.insert_tree_point
+        )
 
         self.menu_top_tree.add_command(
             label="Delete", underline=5, command=self.delete_tree_point
