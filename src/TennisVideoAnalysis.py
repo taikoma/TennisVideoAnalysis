@@ -310,8 +310,6 @@ class Application(tkinter.Frame):
 
         self.change_state()
 
-        
-
     def create_court(self, canvas, s, pw):
         out = 5 * s
         single = 1.37 * s
@@ -2207,7 +2205,7 @@ class Application(tkinter.Frame):
         Button_forward1 = ttk.Button(
             padding=[39, 0, 39, 0],
             image=self.img_forward1,
-            command=self.button_forward1
+            command=self.button_forward1,
         )
         # Button_forward1 = ttk.Button(text=u"", width=85, image=self.img_forward1)
         # Button_forward1.bind("<Button-1>", self.button_forward1)
@@ -2250,6 +2248,10 @@ class Application(tkinter.Frame):
         Button_game_text = ttk.Button(text=u"CalcGame", width=8)
         Button_game_text.bind("<Button-1>", self.calc_game)
         pw.add(Button_game_text)
+
+        Button_server_text = ttk.Button(text=u"CalcServer", width=8)
+        Button_server_text.bind("<Button-1>", self.calc_server)
+        pw.add(Button_server_text)
 
     def create_button_server(self):
         if self.score.firstServer == 0:
@@ -2844,7 +2846,7 @@ class Application(tkinter.Frame):
         self.set_tree()
 
     def calc_score(self, event):
-        winner_list = self.score.get_winner_list(self.score.arrayScore)#[0,1,2,0,1]
+        winner_list = self.score.get_winner_list(self.score.arrayScore)  # [0,1,2,0,1]
         print(winner_list)
         print(self.score.playerName)
         (
@@ -2860,11 +2862,15 @@ class Application(tkinter.Frame):
         print(first_second_array)
         self.set_tree()
 
-    def calc_game(self,game):
+    def calc_game(self, game):
         game_list, set_list = self.score.get_game_list(self.score.arrayScore)
-        self.score.arrayGame=game_list
-        self.score.arraySet=set_list
+        self.score.arrayGame = game_list
+        self.score.arraySet = set_list
         print(game_list)
+        self.set_tree()
+
+    def calc_server(self, event):
+        self.score.arrayServer = self.score.get_server_list(self.score.arrayGame)#self.score.arrayServer
         self.set_tree()
 
     def show_pattern_message(self, pattern):

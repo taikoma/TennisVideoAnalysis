@@ -664,6 +664,34 @@ class Score:
                 game_b = 0
         return game_a, game_b, set_a, set_b
 
+    def get_server_num(self, text_game):
+        """
+
+        not number :-1
+        """
+        print(text_game)
+        left = re.findall(r"([0-9]*)-", text_game)
+        right = re.findall(r"-([0-9]*)", text_game)
+        if len(left) > 0 and len(right) > 0:
+            if left[0].isdecimal() and right[0].isdecimal():
+                totalGame = int(left[0])+int(right[0])
+            else:
+                totalGame = -1
+        else:
+            totalGame = -1
+        return totalGame
+
+    def get_server_list(self, array_game):
+        server_array = []
+        for i in range(len(array_game)):
+            text_game = array_game[i]
+            print("text_game", text_game)
+            totalGame = self.get_server_num(text_game)
+            server_array.append(self.playerName[(self.firstServer + totalGame) % 2])
+        return server_array
+
+
+
     def position_data2array_insert(
         self,
         xball,

@@ -452,7 +452,7 @@ class TestScore(unittest.TestCase):
         )
 
     def test_get_game_reset(self):
-        #b set won
+        # b set won
         game_a, game_b, set_a, set_b = 7, 5, 0, 0
         self.assertEqual(
             (0, 0, 1, 0), self.score.get_game_reset(game_a, game_b, set_a, set_b)
@@ -469,7 +469,7 @@ class TestScore(unittest.TestCase):
         self.assertEqual(
             (0, 0, 1, 0), self.score.get_game_reset(game_a, game_b, set_a, set_b)
         )
-        #b set won
+        # b set won
         game_a, game_b, set_a, set_b = 5, 7, 0, 0
         self.assertEqual(
             (0, 0, 0, 1), self.score.get_game_reset(game_a, game_b, set_a, set_b)
@@ -482,7 +482,6 @@ class TestScore(unittest.TestCase):
         self.assertEqual(
             (0, 0, 0, 1), self.score.get_game_reset(game_a, game_b, set_a, set_b)
         )
-
 
     def test_position_data2array(self):
         # test when add num=2 data to array
@@ -1507,3 +1506,38 @@ class TestScore(unittest.TestCase):
         self.score.insert_tree_point()
         self.assertEqual([100, 200, 202, 300, 400], self.score.array_frame_start)
         self.assertEqual([199, 201, 299, 399, 499], self.score.array_frame_end)
+
+    def test_get_server_num(self):
+        text_game = "0-0"
+        self.assertEqual(0, self.score.get_server_num(text_game))
+        text_game = "0-1"
+        self.assertEqual(1, self.score.get_server_num(text_game))
+        text_game = "-"
+        self.assertEqual(-1, self.score.get_server_num(text_game))
+
+    def test_get_server_list(self):
+        array_game = [
+            "0-0",
+            "0-0",
+            "0-0",
+            "0-0",
+            "0-1",
+            "0-1",
+            "0-1",
+            "0-1",
+            "1-1",
+            "1-1",
+            "1-1",
+            "1-1",
+        ]
+        self.score.playerName = ["A", "B"]
+        self.score.firstServer = 0
+        array_server = self.score.get_server_list(array_game)
+        self.assertEqual(
+            ["A", "A", "A", "A", "B", "B", "B", "B", "A", "A", "A", "A"], array_server
+        )
+        self.score.firstServer = 1
+        array_server = self.score.get_server_list(array_game)
+        self.assertEqual(
+            ["B", "B", "B", "B", "A", "A", "A", "A", "B", "B", "B", "B"], array_server
+        )
