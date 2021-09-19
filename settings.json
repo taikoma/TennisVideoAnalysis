@@ -1,11 +1,11 @@
 {
-    "playerA": "PlayerA",
-    "playerB": "PlayerB",
-    "firstServer": 1,
+    "playerA": "Tsitsipas",
+    "playerB": "Nishikori",
+    "firstServer": 0,
     "videoFile": "C:/Users/taku/Documents/Python/TennisVideoAnalysis/video/20210330-nishikori-titipas.avi",
     "database": "",
-    "sx1": 8,
-    "sy1": 22,
-    "sx2": 13,
-    "sy2": 25
+    "sx1": 0,
+    "sy1": 1,
+    "sx2": 0,
+    "sy2": 1
 }
