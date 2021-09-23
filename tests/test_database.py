@@ -44,38 +44,58 @@ class TestDatabase(unittest.TestCase):
         ]
 
     def create_temp_data_shot(self):
+        self.db.shot_frame = [1296, 1730, 1742]
+        self.db.array_ball_position_shot_x = ["5.42", "9.26", "13.96"]
+        self.db.array_ball_position_shot_y = ["17.15", "16.21", "24.5"]
+        self.db.arrayPlayerAPosition_x = ["4.57", "4.57", "4.57"]
+        self.db.arrayPlayerAPosition_y = ["-1.97", "-1.97", "-1.97"]
+        self.db.arrayPlayerBPosition_x = ["1.27", "1.27", "1.27"]
+        self.db.arrayPlayerBPosition_y = ["-8.95", "-8.95", "-8.95"]
+        self.db.arrayHitPlayer = ["Nishioka", "Nishioka", "Nishioka"]
+        self.db.arrayBounceHit = ["Bounce", "Hit", "Bounce"]
+        self.db.arrayForeBack = ["", "Fore", ""]
+        self.db.arrayDirection = ["Cross", "Cross", "Cross"]
+        self.db.array_x1 = [2, 3, 4]
+        self.db.array_y1 = [2, 3, 4]
+        self.db.array_x2 = [2, 3, 4]
+        self.db.array_y2 = [2, 3, 4]
+        self.db.array_x3 = [2, 3, 4]
+        self.db.array_y3 = [2, 3, 4]
+        self.db.array_x4 = [2, 3, 4]
+        self.db.array_y4 = [2, 3, 4]
+
         # shotデータ
-        self.db.array_ball_position_shot = [
-            [],
-            [[1, 1296.0, "5.42", "17.15"]],
-            [[2, 1730.0, "9.26", "16.21"], [2, 1742.0, "13.96", "24.5"]],
-        ]  # point frame bx by
-        self.db.arrayPlayerAPosition = [
-            [],
-            [[1, 861.0, "4.57", "-1.97"]],
-            [[2, 861.0, "4.57", "-1.97"], [2, 861.0, "4.57", "-1.97"]],
-        ]
-        self.db.arrayPlayerBPosition = [
-            [],
-            [[1, 1016.0, "1.27", "-8.95"]],
-            [[2, 1016.0, "1.27", "-8.95"], [2, 1016.0, "1.27", "-8.95"]],
-        ]  #
-        self.db.arrayHitPlayer = [
-            [],
-            ["Nishioka"],
-            ["Nishioka", "Nishioka", "Nishioka"],
-        ]
-        self.db.arrayBounceHit = [[], ["Hit"], ["Bounce", "Hit", "Bounce"]]
-        self.db.arrayForeBack = [[], ["Fore"], ["", "Fore", ""]]
-        self.db.arrayDirection = [[], ["Cross"], ["Cross", "Cross", "Cross"]]
-        self.db.array_x1 = [[], [1], [2, 3, 4]]
-        self.db.array_y1 = [[], [1], [2, 3, 4]]
-        self.db.array_x2 = [[], [1], [2, 3, 4]]
-        self.db.array_y2 = [[], [1], [2, 3, 4]]
-        self.db.array_x3 = [[], [1], [2, 3, 4]]
-        self.db.array_y3 = [[], [1], [2, 3, 4]]
-        self.db.array_x4 = [[], [1], [2, 3, 4]]
-        self.db.array_y4 = [[], [1], [2, 3, 4]]
+        # self.db.array_ball_position_shot = [
+        #     [],
+        #     [[1, 1296.0, "5.42", "17.15"]],
+        #     [[2, 1730.0, "9.26", "16.21"], [2, 1742.0, "13.96", "24.5"]],
+        # ]  # point frame bx by
+        # self.db.arrayPlayerAPosition = [
+        #     [],
+        #     [[1, 861.0, "4.57", "-1.97"]],
+        #     [[2, 861.0, "4.57", "-1.97"], [2, 861.0, "4.57", "-1.97"]],
+        # ]
+        # self.db.arrayPlayerBPosition = [
+        #     [],
+        #     [[1, 1016.0, "1.27", "-8.95"]],
+        #     [[2, 1016.0, "1.27", "-8.95"], [2, 1016.0, "1.27", "-8.95"]],
+        # ]  #
+        # self.db.arrayHitPlayer = [
+        #     [],
+        #     ["Nishioka"],
+        #     ["Nishioka", "Nishioka", "Nishioka"],
+        # ]
+        # self.db.arrayBounceHit = [[], ["Hit"], ["Bounce", "Hit", "Bounce"]]
+        # self.db.arrayForeBack = [[], ["Fore"], ["", "Fore", ""]]
+        # self.db.arrayDirection = [[], ["Cross"], ["Cross", "Cross", "Cross"]]
+        # self.db.array_x1 = [[], [1], [2, 3, 4]]
+        # self.db.array_y1 = [[], [1], [2, 3, 4]]
+        # self.db.array_x2 = [[], [1], [2, 3, 4]]
+        # self.db.array_y2 = [[], [1], [2, 3, 4]]
+        # self.db.array_x3 = [[], [1], [2, 3, 4]]
+        # self.db.array_y3 = [[], [1], [2, 3, 4]]
+        # self.db.array_x4 = [[], [1], [2, 3, 4]]
+        # self.db.array_y4 = [[], [1], [2, 3, 4]]
 
     def create_temp_data_basic(self):
         self.db.playerA = "player_A"
@@ -105,18 +125,28 @@ class TestDatabase(unittest.TestCase):
 
     def test_array2arrays(self):
         print("test_array2arrays")
-        point, frame, ballx, bally = [], [], [], []
-        self.assertEqual([], self.db.array2arrays(point, frame, ballx, bally))  # 初期データ
+        frame, ballx, bally = [], [], []
+        self.assertEqual([], self.db.array2arrays(frame, ballx, bally))  # 初期データ
 
-        point = [1, 2, 3, 4]
+        # point = [1, 2, 3, 4]
         frame = [861, 1296, 1730, 1742]
         ballx = [12.2, 5.42, 9.26, 13.96]
         bally = [23.47, 17.15, 16.21, 24.5]
-        r = self.db.array2arrays(point, frame, ballx, bally)
-        for i in range(len(point)):
-            self.assertEqual(
-                [[point[i], frame[i], ballx[i], bally[i]]], r[i + 1]
-            )  # 仮データ
+        # r = self.db.array2arrays(frame, ballx, bally)
+        # for i in range(len(point)):
+        #     self.assertEqual(
+        #         [[point[i], frame[i], ballx[i], bally[i]]], r[i + 1]
+        #     )  # 仮データ
+
+        self.assertEqual(
+            [
+                [861, 12.2, 23.47],
+                [1296, 5.42, 17.15],
+                [1730, 9.26, 16.21],
+                [1742, 13.96, 24.5],
+            ],
+            self.db.array2arrays(frame, ballx, bally),
+        )
 
     def test_array2arrays2(self):
         point = [1, 2, 3, 3, 4, 4, 4, 4]
@@ -193,6 +223,7 @@ class TestDatabase(unittest.TestCase):
         self.assertEqual(0, db.load_database_shot(db_name))
 
     def test_load_database_shot(self):
+        # レコード数3つのデータ
         db_name = "./data/test.db"
         self.assertEqual(3, self.db.load_database_shot(db_name))
 
@@ -233,18 +264,20 @@ class TestDatabase(unittest.TestCase):
         )
         self.assertEqual([[], [1], [2, 3, 4], [], [], []], score_array_x1)
 
+    # def test_index_shot(self):
+
     def test_db2score(self):
         self.create_temp_data_score()
         self.create_temp_data_shot()
         self.db.db2score()
         self.assertEqual(
-            self.db.array_ball_position_shot, self.db.score.array_ball_position_shot
+            self.db.array_ball_position_shot_x, self.db.score.array_ball_position_shot_x
         )
         self.assertEqual(
-            self.db.arrayPlayerAPosition, self.db.score.arrayPlayerAPosition
+            self.db.arrayPlayerAPosition_x, self.db.score.arrayPlayerAPosition_x
         )
         self.assertEqual(
-            self.db.arrayPlayerBPosition, self.db.score.arrayPlayerBPosition
+            self.db.arrayPlayerBPosition_x, self.db.score.arrayPlayerBPosition_x
         )
         self.assertEqual(self.db.arrayHitPlayer, self.db.score.arrayHitPlayer)
         self.assertEqual(self.db.arrayBounceHit, self.db.score.arrayBounceHit)
@@ -258,3 +291,6 @@ class TestDatabase(unittest.TestCase):
         self.assertEqual(self.db.array_y3, self.db.score.array_y3)
         self.assertEqual(self.db.array_x4, self.db.score.array_x4)
         self.assertEqual(self.db.array_y4, self.db.score.array_y4)
+        self.assertEqual([2,2,2],self.db.score.shot_index)
+
+

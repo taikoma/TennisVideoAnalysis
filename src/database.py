@@ -49,9 +49,13 @@ class Database:
         self.faultFlug = score.faultFlug
         self.arrayFault = score.arrayFault
 
-        self.array_ball_position_shot = score.array_ball_position_shot
-        self.arrayPlayerAPosition = score.arrayPlayerAPosition
-        self.arrayPlayerBPosition = score.arrayPlayerBPosition
+        self.shot_frame = score.shot_frame
+        self.array_ball_position_shot_x = score.array_ball_position_shot_x
+        self.array_ball_position_shot_y = score.array_ball_position_shot_y
+        self.arrayPlayerAPosition_x = score.arrayPlayerAPosition_x
+        self.arrayPlayerAPosition_y = score.arrayPlayerAPosition_y
+        self.arrayPlayerBPosition_x = score.arrayPlayerBPosition_x
+        self.arrayPlayerBPosition_y = score.arrayPlayerBPosition_y
         self.arrayHitPlayer = score.arrayHitPlayer
         self.arrayBounceHit = score.arrayBounceHit
         self.arrayForeBack = score.arrayForeBack
@@ -143,82 +147,113 @@ class Database:
             conn.close()
         return r
 
-    def save_database_shot(self, db_name):
+    def save_database_shot(self, db_name):  #
+        """shotテーブルにshotデータを保存
+        array_ball_position_shot:[num,pos_seek,xball,yball]
+
+        """
         r = 0
         conn = sqlite3.connect(self.dbName)
 
-        point = []
-        frame = []
-        bx = []
-        by = []
-        pax = []
-        pay = []
-        pbx = []
-        pby = []
-        h = []
-        bh = []
-        fb = []
-        d = []
-        x1 = []
-        y1 = []
-        x2 = []
-        y2 = []
-        x3 = []
-        y3 = []
-        x4 = []
-        y4 = []
-        try:
-            for i in range(len(self.array_ball_position_shot)):
-                for j in range(len(self.array_ball_position_shot[i])):
-                    # print(i, j)
-                    point.append(self.array_ball_position_shot[i][j][0])
-                    frame.append(self.array_ball_position_shot[i][j][1])
-                    bx.append(self.array_ball_position_shot[i][j][2])
-                    by.append(self.array_ball_position_shot[i][j][3])
-                    pax.append(self.arrayPlayerAPosition[i][j][2])
-                    pay.append(self.arrayPlayerAPosition[i][j][3])
-                    pbx.append(self.arrayPlayerBPosition[i][j][2])
-                    pby.append(self.arrayPlayerBPosition[i][j][3])
-                    h.append(self.arrayHitPlayer[i][j])
-                    bh.append(self.arrayBounceHit[i][j])
-                    fb.append(self.arrayForeBack[i][j])  # arrayDirection
-                    d.append(self.arrayDirection[i][j])
-                    x1.append(self.array_x1[i][j])
-                    y1.append(self.array_y1[i][j])
-                    x2.append(self.array_x2[i][j])
-                    y2.append(self.array_y2[i][j])
-                    x3.append(self.array_x3[i][j])
-                    y3.append(self.array_y3[i][j])
-                    x4.append(self.array_x4[i][j])
-                    y4.append(self.array_y4[i][j])
+        # point = []
+        # frame = []
+        # bx = []
+        # by = []
+        # pax = []
+        # pay = []
+        # pbx = []
+        # pby = []
+        # h = []
+        # bh = []
+        # fb = []
+        # d = []
+        # x1 = []
+        # y1 = []
+        # x2 = []
+        # y2 = []
+        # x3 = []
+        # y3 = []
+        # x4 = []
+        # y4 = []
+        # try:
+        #     for i in range(len(self.array_ball_position_shot)):
+        #         for j in range(len(self.array_ball_position_shot[i])):
+        #             # print(i, j)
+        #             point.append(self.array_ball_position_shot[i][j][0])#num
+        #             frame.append(self.array_ball_position_shot[i][j][1])#pos_seek
+        #             bx.append(self.array_ball_position_shot[i][j][2])
+        #             by.append(self.array_ball_position_shot[i][j][3])
+        #             pax.append(self.arrayPlayerAPosition[i][j][2])
+        #             pay.append(self.arrayPlayerAPosition[i][j][3])
+        #             pbx.append(self.arrayPlayerBPosition[i][j][2])
+        #             pby.append(self.arrayPlayerBPosition[i][j][3])
+        #             h.append(self.arrayHitPlayer[i][j])
+        #             bh.append(self.arrayBounceHit[i][j])
+        #             fb.append(self.arrayForeBack[i][j])  # arrayDirection
+        #             d.append(self.arrayDirection[i][j])
+        #             x1.append(self.array_x1[i][j])
+        #             y1.append(self.array_y1[i][j])
+        #             x2.append(self.array_x2[i][j])
+        #             y2.append(self.array_y2[i][j])
+        #             x3.append(self.array_x3[i][j])
+        #             y3.append(self.array_y3[i][j])
+        #             x4.append(self.array_x4[i][j])
+        #             y4.append(self.array_y4[i][j])
 
-        except IndexError as e:
-            print("Error Shot", e)
+        # except IndexError as e:
+        #     print("Error Shot", e)
+        print(self.shot_frame)
         try:
-            df_shot = pd.DataFrame(
-                {
-                    "point": point,
-                    "frame": frame,
-                    "ballx": bx,
-                    "bally": by,
-                    "playerAx": pax,
-                    "playerAy": pay,
-                    "playerBx": pbx,
-                    "playerBy": pby,
-                    "hitplayer": h,
-                    "bouncehit": bh,
-                    "foreback": fb,
-                    "direction": d,
-                    "x1": x1,
-                    "y1": y1,
-                    "x2": x2,
-                    "y2": y2,
-                    "x3": x3,
-                    "y3": y3,
-                    "x4": x4,
-                    "y4": y4,
-                }
-            )
+            if len(self.shot_frame) > 0:
+                df_shot = pd.DataFrame(
+                    {
+                        "point": self.shot_frame,
+                        "frame": self.shot_frame,
+                        "ballx": self.array_ball_position_shot_x,
+                        "bally": self.array_ball_position_shot_y,
+                        "playerAx": self.arrayPlayerAPosition_x,
+                        "playerAy": self.arrayPlayerAPosition_y,
+                        "playerBx": self.arrayPlayerBPosition_x,
+                        "playerBy": self.arrayPlayerBPosition_y,
+                        "hitplayer": self.arrayHitPlayer,
+                        "bouncehit": self.arrayBounceHit,
+                        "foreback": self.arrayForeBack,
+                        "direction": self.arrayDirection,
+                        "x1": self.array_x1,
+                        "y1": self.array_y1,
+                        "x2": self.array_x2,
+                        "y2": self.array_y2,
+                        "x3": self.array_x3,
+                        "y3": self.array_y3,
+                        "x4": self.array_x4,
+                        "y4": self.array_y4,
+                    }
+                )
+            else:
+                df_shot = pd.DataFrame(
+                    {
+                        "point": [],
+                        "frame": [],
+                        "ballx": [],
+                        "bally": [],
+                        "playerAx": [],
+                        "playerAy": [],
+                        "playerBx": [],
+                        "playerBy": [],
+                        "hitplayer": [],
+                        "bouncehit": [],
+                        "foreback": [],
+                        "direction": [],
+                        "x1": [],
+                        "y1": [],
+                        "x2": [],
+                        "y2": [],
+                        "x3": [],
+                        "y3": [],
+                        "x4": [],
+                        "y4": [],
+                    }
+                )
         except ValueError as e:
             print("Error Shot", e)
         else:
@@ -232,7 +267,6 @@ class Database:
     def save_database_basic(self, db_name):
         r = 0
         conn = sqlite3.connect(self.dbName)
-        c = conn.cursor()
         try:
             df_basic = pd.DataFrame(
                 {
@@ -277,9 +311,12 @@ class Database:
         self.arrayCourt.clear()
         self.arrayContactServe.clear()
         self.arrayFault.clear()
-        self.array_ball_position_shot.clear()
-        self.arrayPlayerAPosition.clear()
-        self.arrayPlayerBPosition.clear()
+        self.array_ball_position_shot_x.clear()
+        self.array_ball_position_shot_y.clear()
+        self.arrayPlayerAPosition_x.clear()
+        self.arrayPlayerAPosition_y.clear()
+        self.arrayPlayerBPosition_x.clear()
+        self.arrayPlayerBPosition_y.clear()
         self.arrayHitPlayer.clear()
         self.arrayBounceHit.clear()
         self.arrayForeBack.clear()
@@ -295,6 +332,9 @@ class Database:
         self.array_y4.clear()
 
     def load_database_score(self, db_name):
+        """
+        scoreテーブル
+        """
         r = 0
         conn = sqlite3.connect(self.dbName)
         try:
@@ -368,7 +408,7 @@ class Database:
     def load_database_basic(self, db_name):
         r = 0
         conn = sqlite3.connect(db_name)
-        c = conn.cursor()
+        # c = conn.cursor()
         # df_basic
         df_basic = pd.read_sql("select * from match", conn)
         self.playerA = df_basic["playerA"].values[0]
@@ -386,7 +426,7 @@ class Database:
         c = conn.cursor()
         # df_shot
         df_shot = pd.read_sql("select * from shot", conn)
-        point = df_shot["point"].values.tolist()
+        # point = df_shot["point"].values.tolist()
         frame = df_shot["frame"].values.tolist()
         ballx = self.df_float2fillna(df_shot["ballx"]).values.tolist()
         bally = self.df_float2fillna(df_shot["bally"]).values.tolist()
@@ -409,48 +449,58 @@ class Database:
         x4 = self.pop_array_from_df(df_shot, "x4")
         y4 = self.pop_array_from_df(df_shot, "y4")
 
-        self.array_ball_position_shot.extend(
-            self.array2arrays(point, frame, ballx, bally)
-        )
-        self.arrayPlayerAPosition.extend(self.array2arrays(point, frame, pax, pay))
-        self.arrayPlayerBPosition.extend(self.array2arrays(point, frame, pbx, pby))
+        self.shot_frame.extend(frame)
+        self.array_ball_position_shot_x.extend(ballx)
+        self.array_ball_position_shot_y.extend(bally)
+        self.arrayPlayerAPosition_x.extend(pax)
+        self.arrayPlayerAPosition_y.extend(pay)
+        self.arrayPlayerBPosition_x.extend(pbx)
+        self.arrayPlayerBPosition_y.extend(pby)
+
+        # self.array_ball_position_shot.extend(
+        #     self.array2arrays(frame, ballx, bally)
+        # )
+        # self.arrayPlayerAPosition.extend(self.array2arrays(frame, pax, pax))
+        # self.arrayPlayerBPosition.extend(self.array2arrays(frame, pbx, pby))
 
         # print(x1)
 
-        (
-            array_hit,
-            array_bouncehit,
-            array_foreback,
-            array_direction,
-            array_x1,
-            array_y1,
-            array_x2,
-            array_y2,
-            array_x3,
-            array_y3,
-            array_x4,
-            array_y4,
-        ) = self.array2arrays2(point, hit, bh, fb, d, x1, y1, x2, y2, x3, y3, x4, y4)
+        # (
+        #     array_hit,
+        #     array_bouncehit,
+        #     array_foreback,
+        #     array_direction,
+        #     array_x1,
+        #     array_y1,
+        #     array_x2,
+        #     array_y2,
+        #     array_x3,
+        #     array_y3,
+        #     array_x4,
+        #     array_y4,
+        # ) = self.array2arrays2(point, hit, bh, fb, d, x1, y1, x2, y2, x3, y3, x4, y4)
 
-        self.arrayHitPlayer.extend(array_hit)
-        self.arrayBounceHit.extend(array_bouncehit)
-        self.arrayForeBack.extend(array_foreback)
-        self.arrayDirection.extend(array_direction)
-        self.array_x1.extend(array_x1)
-        self.array_y1.extend(array_y1)
-        self.array_x2.extend(array_x2)
-        self.array_y2.extend(array_y2)
-        self.array_x3.extend(array_x3)
-        self.array_y3.extend(array_y3)
-        self.array_x4.extend(array_x4)
-        self.array_y4.extend(array_y4)
+        self.arrayHitPlayer.extend(hit)
+        self.arrayBounceHit.extend(bh)
+        self.arrayForeBack.extend(fb)
+        self.arrayDirection.extend(d)
+        self.array_x1.extend(x1)
+        self.array_y1.extend(y1)
+        self.array_x2.extend(x2)
+        self.array_y2.extend(y2)
+        self.array_x3.extend(x3)
+        self.array_y3.extend(y3)
+        self.array_x4.extend(x4)
+        self.array_y4.extend(y4)
 
-        if self.number == len(
-            self.array_ball_position_shot
-        ):  # if last data is none add []
-            self.array_ball_position_shot.append([])
-            self.arrayPlayerAPosition.append([])
-            self.arrayPlayerBPosition.append([])
+        if self.number == len(self.shot_frame):  # if last data is none add []
+            self.shot_frame.append([])
+            self.array_ball_position_shot_x.append([])
+            self.array_ball_position_shot_y.append([])
+            self.arrayPlayerAPosition_x.append([])
+            self.arrayPlayerAPosition_y.append([])
+            self.arrayPlayerBPosition_x.append([])
+            self.arrayPlayerBPosition_y.append([])
             self.arrayHitPlayer.append([])
             self.arrayBounceHit.append([])
             self.arrayForeBack.append([])
@@ -466,7 +516,6 @@ class Database:
 
         conn.close()
         r = len(df_shot)
-        # print(self.array_x1)
         return r
 
     def pop_array_from_df(self, df, label):
@@ -501,31 +550,27 @@ class Database:
         self.load_database_basic(self.dbName)
         self.load_database_shot(self.dbName)
 
-    def array2arrays(self, point, frame, ballx, bally):
+    def array2arrays(self, frame, ballx, bally):
         """convert array to arrays by point num
         example
-        point=[1,2,3,3,4,4,4,4]
+        # point=[1,2,3,3,4,4,4,4]
         hit=["A","B","A","B","A","B","A","B"]
         array_hit=[[], ['A'], ['B'], ['A', 'B'], ['A', 'B', 'A', 'B']]
         """
-        if len(point) > 0:
-            lastP = point[len(point) - 1] + 1
-        else:
-            lastP = 0
-        # print("lastP:",lastP)
+        # if len(frame) > 0:
+        #     lastP = frame[len(frame) - 1] + 1
+        # else:
+        #     lastP = 0
+        # # print("lastP:",lastP)
         r = []
-        for i in range(lastP):
-            r.append([])
-        # print("r",r)
-        for i in range(len(point)):
-            n = point[i]
-            # print(i,n)
+        # for i in range(lastP):
+        #     r.append([])
+        for i in range(len(frame)):
             temp = []
-            temp.append(point[i])
             temp.append(frame[i])
             temp.append(ballx[i])
             temp.append(bally[i])
-            r[n].append(temp)
+            r.append(temp)
         return r
 
     def array2arrays2(
@@ -631,38 +676,67 @@ class Database:
         self.score.faultFlug = self.faultFlug
         self.score.arrayFault = self.arrayFault
 
-        size = len(self.score.array_frame_start)
+        # size = len(self.score.array_frame_start)
 
-        self.score.array_ball_position_shot = self.check_size_return_array(
-            self.array_ball_position_shot, size
-        )
-        self.score.arrayPlayerAPosition = self.check_size_return_array(
-            self.arrayPlayerAPosition, size
-        )
-        self.score.arrayPlayerBPosition = self.check_size_return_array(
-            self.arrayPlayerBPosition, size
-        )
-        self.score.arrayHitPlayer = self.check_size_return_array(
-            self.arrayHitPlayer, size
-        )
-        self.score.arrayBounceHit = self.check_size_return_array(
-            self.arrayBounceHit, size
-        )
-        self.score.arrayForeBack = self.check_size_return_array(
-            self.arrayForeBack, size
-        )
-        self.score.arrayDirection = self.check_size_return_array(
-            self.arrayDirection, size
+        self.score.shot_frame = self.shot_frame
+        self.score.array_ball_position_shot_x = self.array_ball_position_shot_x
+        self.score.array_ball_position_shot_y = self.array_ball_position_shot_y
+        self.score.arrayPlayerAPosition_x = self.arrayPlayerAPosition_x
+        self.score.arrayPlayerAPosition_y = self.arrayPlayerAPosition_y
+        self.score.arrayPlayerBPosition_x = self.arrayPlayerBPosition_x
+        self.score.arrayPlayerBPosition_y = self.arrayPlayerBPosition_y
+        self.score.arrayHitPlayer = self.arrayHitPlayer
+        self.score.arrayBounceHit = self.arrayBounceHit
+        self.score.arrayForeBack = self.arrayForeBack
+        self.score.arrayDirection = self.arrayDirection
+
+        self.score.array_x1 = self.array_x1
+        self.score.array_y1 = self.array_y1
+        self.score.array_x2 = self.array_x2
+        self.score.array_y2 = self.array_y2
+        self.score.array_x3 = self.array_x3
+        self.score.array_y3 = self.array_y3
+        self.score.array_x4 = self.array_x4
+        self.score.array_y4 = self.array_y4
+
+        self.score.array_frame_start = self.arrayFrameStart
+        self.score.shot_index = self.score.index_shot(
+            self.score.array_frame_start, self.score.shot_frame
         )
 
-        self.score.array_x1 = self.check_size_return_array(self.array_x1, size)
-        self.score.array_y1 = self.check_size_return_array(self.array_y1, size)
-        self.score.array_x2 = self.check_size_return_array(self.array_x2, size)
-        self.score.array_y2 = self.check_size_return_array(self.array_y2, size)
-        self.score.array_x3 = self.check_size_return_array(self.array_x3, size)
-        self.score.array_y3 = self.check_size_return_array(self.array_y3, size)
-        self.score.array_x4 = self.check_size_return_array(self.array_x4, size)
-        self.score.array_y4 = self.check_size_return_array(self.array_y4, size)
+        # for i in len(self.score.array_frame_start):
+        # self.score.shot_index = [0 for i in range(len(self.array_ball_position_shot))]#あとで変更の必要あり
+
+        # self.score.array_ball_position_shot = self.check_size_return_array(
+        #     self.array_ball_position_shot, size
+        # )
+        # self.score.arrayPlayerAPosition = self.check_size_return_array(
+        #     self.arrayPlayerAPosition, size
+        # )
+        # self.score.arrayPlayerBPosition = self.check_size_return_array(
+        #     self.arrayPlayerBPosition, size
+        # )
+        # self.score.arrayHitPlayer = self.check_size_return_array(
+        #     self.arrayHitPlayer, size
+        # )
+        # self.score.arrayBounceHit = self.check_size_return_array(
+        #     self.arrayBounceHit, size
+        # )
+        # self.score.arrayForeBack = self.check_size_return_array(
+        #     self.arrayForeBack, size
+        # )
+        # self.score.arrayDirection = self.check_size_return_array(
+        #     self.arrayDirection, size
+        # )
+
+        # self.score.array_x1 = self.check_size_return_array(self.array_x1, size)
+        # self.score.array_y1 = self.check_size_return_array(self.array_y1, size)
+        # self.score.array_x2 = self.check_size_return_array(self.array_x2, size)
+        # self.score.array_y2 = self.check_size_return_array(self.array_y2, size)
+        # self.score.array_x3 = self.check_size_return_array(self.array_x3, size)
+        # self.score.array_y3 = self.check_size_return_array(self.array_y3, size)
+        # self.score.array_x4 = self.check_size_return_array(self.array_x4, size)
+        # self.score.array_y4 = self.check_size_return_array(self.array_y4, size)
 
         return self.score
 

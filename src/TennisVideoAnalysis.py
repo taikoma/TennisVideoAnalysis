@@ -632,7 +632,18 @@ class Application(tkinter.Frame):
         self.set_tree()
         self.active_select()
 
+    def insert_tree_shot(self):
+        frame = self.pos_seek.get()
+        self.score.insert_tree_shot(
+            self.score.get_index_frame(frame, self.score.shot_frame) + 1,
+            frame,
+        )
+        self.set_shot_tree()
+
     def delete_tree_shot(self):
+        """
+        選択したtreeを削除する
+        """
         curItem = self.shot_tree.focus()
         if curItem:
             self.score.delete_tree_shot_shift(self.start_shot, self.end_shot)
@@ -641,12 +652,16 @@ class Application(tkinter.Frame):
             tkinter.messagebox.showinfo("Error", "データが選択されていません")
 
     def delete_tree_shot_after_end(self):
+        """
+        選択行から最後のショットまでのデータを削除
+        """
         num = self.score.number
         end = self.score.array_frame_end[num]
         self.score.delete_after_end(num, end)
         self.set_shot_tree()
 
     def delete_tree_shot_after_end_all(self):
+        """"""
         for i in range(len(self.score.array_frame_end)):
             end = self.score.array_frame_end[i]
             print(i, end)
@@ -1220,28 +1235,30 @@ class Application(tkinter.Frame):
         self.set_shot_tree()
 
     def reselect_player_a(self, event):
-        """
-        選手Aの位置を再選択したときの処理
+        """選手Aの位置を再選択したときの処理
+        マウスクリック位置を記憶
         選手Aの位置をコート座標に変換し、arrayPlayerAPositionにデータ格納
         reselect_player_afterを呼び出す
         """
 
         self.clickPlayerA = False
         print("reselect_player_a")
-        resized_image = self.read_resized_image(self.pos_seek.get())
-        resized_image_copy = np.copy(resized_image)
+        # resized_image = self.read_resized_image(self.pos_seek.get())
+        # resized_image_copy = np.copy(resized_image)
 
-        # x1,y1の処理
-        self.xa = event.x
-        self.ya = event.y
-        xa_c, ya_c = self.track_data.transform_position(
-            self.xa, self.ya, self.M
-        )  # 選手Aの位置をコート座標に変換
-        self.score.arrayPlayerAPosition[self.score.number][self.num_shot][2] = xa_c
-        self.score.arrayPlayerAPosition[self.score.number][self.num_shot][3] = ya_c
-        if self.score.arrayBounceHit[self.score.number] == "Hit":
-            self.score.array_ball_position_shot[self.score.number][self.num_shot] = ya_c
-        self.reselect_player_after(resized_image_copy)
+        # mouse位置x1 y1を記憶
+        self.xa, self.ya = event.x, event.y
+
+        # 選手Aの位置をコート座標に変換
+        xa_c, ya_c = self.track_data.transform_position(self.xa, self.ya, self.M)
+
+        # 選手Aの位置を配列に保存
+        frame = self.pos_seek.get()
+        self.insert_position_xy_a(frame, xa_c, ya_c)
+
+        # if self.score.arrayBounceHit[self.score.number] == "Hit":
+        #     self.score.array_ball_position_shot[self.score.number][self.num_shot] = ya_c
+        # self.reselect_player_after(resized_image_copy)
 
     def reselect_player_b(self, event):
         """
@@ -1822,16 +1839,17 @@ class Application(tkinter.Frame):
         """
         ボールと選手の位置データxyをコート画面に表示
         """
-        xball_c = self.score.array_ball_position_shot[self.score.number][i][2]
-        yball_c = self.score.array_ball_position_shot[self.score.number][i][3]
-        xa = self.score.arrayPlayerAPosition[self.score.number][i][2]
-        ya = self.score.arrayPlayerAPosition[self.score.number][i][3]
-        xb = self.score.arrayPlayerBPosition[self.score.number][i][2]
-        yb = self.score.arrayPlayerBPosition[self.score.number][i][3]
+        index_shot = self.score.get_index_shot(self.score.number, self.score.shot_index)
+
+        xball_c = self.score.array_ball_position_shot_x[index_shot[i]]
+        yball_c = self.score.array_ball_position_shot_y[index_shot[i]]
+        xa = self.score.arrayPlayerAPosition_x[index_shot[i]]
+        ya = self.score.arrayPlayerAPosition_y[index_shot[i]]
+        xb = self.score.arrayPlayerBPosition_x[index_shot[i]]
+        yb = self.score.arrayPlayerBPosition_y[index_shot[i]]
 
         print("position ball:", i, xball_c, yball_c)
         print("position a:", i, xa, ya)
-        print("position b:", i, xb, yb)
         print("position b:", i, xb, yb)
 
         if xball_c != "" and yball_c != "":
@@ -1976,7 +1994,7 @@ class Application(tkinter.Frame):
             x4,
             y4,
         )  #
-        self.score.convert_bally2playery()  # ボールy座標を選手座標に合わせる
+        self.score.convert_bally2player_y()  # ボールy座標を選手座標に合わせる
         self.set_shot_tree()
 
     def load_track_ball_data(self, filename):
@@ -1994,6 +2012,10 @@ class Application(tkinter.Frame):
         self.pos_seek.set(int(self.tree.item(curItem)["values"][1]))
 
     def save_data(self):
+        """
+        前回保存したファイル名で保存する
+        ファイル名が存在しなければ選択画面を開く
+        """
         print("save_data")
         print(self.fld)
         if not (self.fld):
@@ -2017,6 +2039,9 @@ class Application(tkinter.Frame):
             db.save_database()
 
     def save_data_as(self):
+        """
+        保存画面を開いて選択したdbファイルを保存する
+        """
         dir = "../data/"
         self.fld = filedialog.asksaveasfilename(
             initialdir=dir, filetypes=[("Db Files", (".db"))]
@@ -2469,6 +2494,10 @@ class Application(tkinter.Frame):
         )
 
         self.menu_top_tree_point.add_command(
+            label="データ挿入", underline=5, command=self.insert_tree_shot
+        )
+
+        self.menu_top_tree_point.add_command(
             label="Endフレーム以降のデータ削除",
             underline=5,
             command=self.delete_tree_shot_after_end,
@@ -2870,7 +2899,9 @@ class Application(tkinter.Frame):
         self.set_tree()
 
     def calc_server(self, event):
-        self.score.arrayServer = self.score.get_server_list(self.score.arrayGame)#self.score.arrayServer
+        self.score.arrayServer = self.score.get_server_list(
+            self.score.arrayGame
+        )  # self.score.arrayServer
         self.set_tree()
 
     def show_pattern_message(self, pattern):
@@ -2991,23 +3022,23 @@ class Application(tkinter.Frame):
         # print("len(self.score.array_ball_position_shot[self.score.number]):",len(self.score.array_ball_position_shot[self.score.number]))
         for i, t in enumerate(self.shot_tree.get_children()):
             self.shot_tree.delete(t)
-        for i in range(len(self.score.array_ball_position_shot[self.score.number])):
-            print("i", i)
+
+        index_shot = self.score.get_index_shot(self.score.number, self.score.shot_index)
+        for i in range(len(index_shot)):
             self.shot_tree.insert(
                 "",
                 i,
                 values=(
                     self.score.number,
                     (i + 1),
-                    self.score.array_ball_position_shot[self.score.number][i][1],
-                    self.score.arrayHitPlayer[self.score.number][i],
-                    self.score.arrayBounceHit[self.score.number][i],
-                    self.score.arrayForeBack[self.score.number][i],
+                    self.score.shot_frame[index_shot[i]],
+                    self.score.arrayHitPlayer[index_shot[i]],
+                    self.score.arrayBounceHit[index_shot[i]],
+                    self.score.arrayForeBack[index_shot[i]],
                 ),
-            )  # self.score.arrayDirection[self.score.number][i]
+            )
 
     def set_tree(self):
-
         for i, t in enumerate(self.tree.get_children()):
             self.tree.delete(t)
         for i in range(len(self.score.array_frame_start)):
@@ -3097,30 +3128,31 @@ class Application(tkinter.Frame):
         ky = self.h / self.vid.height
         i = self.score.number
         j = self.num_shot
+        index_shot = self.score.get_index_shot(self.score.number, self.score.shot_index)
 
         # コート座標が4つ存在するときに計算　コート座標⇒変換行列⇒コート座標に変換
         # 保存されているデータがコート中心座標なので、
         if (
-            self.score.array_x1[i][j]
-            or self.score.array_x2[i][j]
-            or self.score.array_x3[i][j]
-            or self.score.array_x4[i][j]
+            self.score.array_x1[index_shot[j]]
+            or self.score.array_x2[index_shot[j]]
+            or self.score.array_x3[index_shot[j]]
+            or self.score.array_x4[index_shot[j]]
         ):
             self.score.arrayPointXY[0] = [
-                self.score.array_x1[i][j] * kx,
-                self.score.array_y1[i][j] * ky,
+                self.score.array_x1[index_shot[j]] * kx,
+                self.score.array_y1[index_shot[j]] * ky,
             ]
             self.score.arrayPointXY[1] = [
-                self.score.array_x2[i][j] * kx,
-                self.score.array_y2[i][j] * ky,
+                self.score.array_x2[index_shot[j]] * kx,
+                self.score.array_y2[index_shot[j]] * ky,
             ]
             self.score.arrayPointXY[2] = [
-                self.score.array_x3[i][j] * kx,
-                self.score.array_y3[i][j] * ky,
+                self.score.array_x3[index_shot[j]] * kx,
+                self.score.array_y3[index_shot[j]] * ky,
             ]
             self.score.arrayPointXY[3] = [
-                self.score.array_x4[i][j] * kx,
-                self.score.array_y4[i][j] * ky,
+                self.score.array_x4[index_shot[j]] * kx,
+                self.score.array_y4[index_shot[j]] * ky,
             ]
             self.array2invM()
             self.draw_court_line(
@@ -3129,20 +3161,20 @@ class Application(tkinter.Frame):
 
             # #xy2leftup　コート中心座標をコート左上座標に変換
             print(
-                self.score.arrayPlayerAPosition[i][j],
-                self.score.arrayPlayerAPosition[i][j],
+                self.score.arrayPlayerAPosition_x[index_shot[j]],
+                self.score.arrayPlayerAPosition_y[index_shot[j]],
             )
             print(
-                self.score.arrayPlayerBPosition[i][j],
-                self.score.arrayPlayerBPosition[i][j],
+                self.score.arrayPlayerBPosition_x[index_shot[j]],
+                self.score.arrayPlayerBPosition_y[index_shot[j]],
             )
             self.xa_c, self.ya_c = self.track_data.xy2leftup(
-                self.score.arrayPlayerAPosition[i][j][2],
-                self.score.arrayPlayerAPosition[i][j][3],
+                self.score.arrayPlayerAPosition_x[index_shot[j]],
+                self.score.arrayPlayerAPosition_y[index_shot[j]],
             )
             self.xb_c, self.yb_c = self.track_data.xy2leftup(
-                self.score.arrayPlayerBPosition[i][j][2],
-                self.score.arrayPlayerBPosition[i][j][3],
+                self.score.arrayPlayerBPosition_x[index_shot[j]],
+                self.score.arrayPlayerBPosition_y[index_shot[j]],
             )
 
             # コート座標を映像座標に変換する
@@ -3280,7 +3312,7 @@ if __name__ == "__main__":
         filename = "../data/track-data2.csv"
         app.load_track_data(filename)
 
-    app.delete_tree_shot_after_end_all()
+    # app.delete_tree_shot_after_end_all()
 
     app.bind("<Right>", app.button_forward1)  # 右矢印をクリックしたらフレーム+1
     app.bind("<Control-Right>", app.button_forward10)  # ctrf+右矢印をクリックしたらフレーム+10
@@ -3293,6 +3325,7 @@ if __name__ == "__main__":
     app.bind("<Delete>", app.button_delete_tree_point)
     app.bind("<Up>", app.button_select_up)
     app.bind("<Down>", app.button_select_down)
+    app.bind("<Control-s>", app.save_data)
     app.focus_set()
     app.pack()
     app.mainloop()

@@ -483,492 +483,389 @@ class TestScore(unittest.TestCase):
             (0, 0, 0, 1), self.score.get_game_reset(game_a, game_b, set_a, set_b)
         )
 
-    def test_position_data2array(self):
-        # test when add num=2 data to array
-        self.score.playerName = ["A", "B"]
-        self.score.firstServer = 0
-        self.score.totalGame = 1
+    # def test_position_data2array(self):
+    #     # test when add num=2 data to array
+    #     self.score.playerName = ["A", "B"]
+    #     self.score.firstServer = 0
+    #     self.score.totalGame = 1
 
-        self.score.array_ball_position_shot = [[], [], [], []]
-        self.score.arrayPlayerAPosition = [[], [], [], []]
-        self.score.arrayPlayerBPosition = [[], [], [], []]
-        self.score.arrayHitPlayer = [[], [], [], []]
-        self.score.arrayBounceHit = [[], [], [], []]
-        self.score.arrayForeBack = [[], [], [], []]
-        self.score.arrayDirection = [[], [], [], []]
-        self.score.array_x1 = [[], [], [], []]
-        self.score.array_y1 = [[], [], [], []]
-        self.score.array_x2 = [[], [], [], []]
-        self.score.array_y2 = [[], [], [], []]
-        self.score.array_x3 = [[], [], [], []]
-        self.score.array_y3 = [[], [], [], []]
-        self.score.array_x4 = [[], [], [], []]
-        self.score.array_y4 = [[], [], [], []]
+    #     self.score.array_ball_position_shot = [[], [], [], []]
+    #     self.score.arrayPlayerAPosition = [[], [], [], []]
+    #     self.score.arrayPlayerBPosition = [[], [], [], []]
+    #     self.score.arrayHitPlayer = [[], [], [], []]
+    #     self.score.arrayBounceHit = [[], [], [], []]
+    #     self.score.arrayForeBack = [[], [], [], []]
+    #     self.score.arrayDirection = [[], [], [], []]
+    #     self.score.array_x1 = [[], [], [], []]
+    #     self.score.array_y1 = [[], [], [], []]
+    #     self.score.array_x2 = [[], [], [], []]
+    #     self.score.array_y2 = [[], [], [], []]
+    #     self.score.array_x3 = [[], [], [], []]
+    #     self.score.array_y3 = [[], [], [], []]
+    #     self.score.array_x4 = [[], [], [], []]
+    #     self.score.array_y4 = [[], [], [], []]
 
-        num = 2
-        self.score.number = num
-        pos_seek = 100
-        xball = 10
-        yball = 20
-        x1, y1, x2, y2, x3, y3, x4, y4 = 0, 1, 2, 3, 4, 5, 6, 7
-        self.score.position_data2array(
-            xball,
-            yball,
-            3,
-            4,
-            5,
-            6,
-            0,
-            "Hit",
-            "Fore",
-            "Cross",
-            x1,
-            y1,
-            x2,
-            y2,
-            x3,
-            y3,
-            x4,
-            y4,
-            pos_seek,
-        )
-        self.assertEqual(
-            [[], [], [[num, pos_seek, xball, yball]], []],
-            self.score.array_ball_position_shot,
-        )
-        self.assertEqual([[], [], ["B"], []], self.score.arrayHitPlayer)
-        self.assertEqual([[], [], [0], []], self.score.array_x1)
-        self.assertEqual([[], [], [7], []], self.score.array_y4)
+    #     num = 2
+    #     self.score.number = num
+    #     pos_seek = 100
+    #     xball = 10
+    #     yball = 20
+    #     x1, y1, x2, y2, x3, y3, x4, y4 = 0, 1, 2, 3, 4, 5, 6, 7
+    #     self.score.position_data2array(
+    #         xball,
+    #         yball,
+    #         3,
+    #         4,
+    #         5,
+    #         6,
+    #         0,
+    #         "Hit",
+    #         "Fore",
+    #         "Cross",
+    #         x1,
+    #         y1,
+    #         x2,
+    #         y2,
+    #         x3,
+    #         y3,
+    #         x4,
+    #         y4,
+    #         pos_seek,
+    #     )
+    #     self.assertEqual(
+    #         [[], [], [[num, pos_seek, xball, yball]], []],
+    #         self.score.array_ball_position_shot,
+    #     )
+    #     self.assertEqual([[], [], ["B"], []], self.score.arrayHitPlayer)
+    #     self.assertEqual([[], [], [0], []], self.score.array_x1)
+    #     self.assertEqual([[], [], [7], []], self.score.array_y4)
 
-    def test_position_data2array_fix(self):
-        #
-        self.score.playerName = ["A", "B"]
-        self.score.firstServer = 0
-        self.score.totalGame = 1
+    # def test_position_data2array_fix(self):
+    #     #
+    #     self.score.playerName = ["A", "B"]
+    #     self.score.firstServer = 0
+    #     self.score.totalGame = 1
 
-        self.score.array_ball_position_shot = [
-            [],
-            [],
-            [[1, 11, 1, 2], [2, 51, 3, 4]],
-            [],
-        ]
-        self.score.arrayPlayerAPosition = [
-            [],
-            [],
-            [[1, 11, 11, 12], [2, 51, 13, 14]],
-            [],
-        ]
-        self.score.arrayPlayerBPosition = [
-            [],
-            [],
-            [[1, 11, 21, 22], [2, 51, 23, 24]],
-            [],
-        ]
-        self.score.arrayHitPlayer = [[], [], ["A", "A"], []]
-        self.score.arrayBounceHit = [[], [], ["Bounce", "Hit"], []]
-        self.score.arrayForeBack = [[], [], ["Fore", "Back"], []]
-        self.score.arrayDirection = [[], [], ["Cross", "Cross"], []]
-        self.score.array_x1 = [[], [], [1, 2], []]
-        self.score.array_y1 = [[], [], [3, 4], []]
-        self.score.array_x2 = [[], [], [5, 6], []]
-        self.score.array_y2 = [[], [], [7, 8], []]
-        self.score.array_x3 = [[], [], [9, 10], []]
-        self.score.array_y3 = [[], [], [11, 12], []]
-        self.score.array_x4 = [[], [], [13, 14], []]
-        self.score.array_y4 = [[], [], [15, 16], []]
+    #     self.score.array_ball_position_shot = [
+    #         [],
+    #         [],
+    #         [[1, 11, 1, 2], [2, 51, 3, 4]],
+    #         [],
+    #     ]
+    #     self.score.arrayPlayerAPosition = [
+    #         [],
+    #         [],
+    #         [[1, 11, 11, 12], [2, 51, 13, 14]],
+    #         [],
+    #     ]
+    #     self.score.arrayPlayerBPosition = [
+    #         [],
+    #         [],
+    #         [[1, 11, 21, 22], [2, 51, 23, 24]],
+    #         [],
+    #     ]
+    #     self.score.arrayHitPlayer = [[], [], ["A", "A"], []]
+    #     self.score.arrayBounceHit = [[], [], ["Bounce", "Hit"], []]
+    #     self.score.arrayForeBack = [[], [], ["Fore", "Back"], []]
+    #     self.score.arrayDirection = [[], [], ["Cross", "Cross"], []]
+    #     self.score.array_x1 = [[], [], [1, 2], []]
+    #     self.score.array_y1 = [[], [], [3, 4], []]
+    #     self.score.array_x2 = [[], [], [5, 6], []]
+    #     self.score.array_y2 = [[], [], [7, 8], []]
+    #     self.score.array_x3 = [[], [], [9, 10], []]
+    #     self.score.array_y3 = [[], [], [11, 12], []]
+    #     self.score.array_x4 = [[], [], [13, 14], []]
+    #     self.score.array_y4 = [[], [], [15, 16], []]
 
-        num = 2
-        self.score.number = num
-        rally = 2
-        self.score.rally = rally
-        pos_seek = 100
-        xball = 10
-        yball = 20
-        x1, y1, x2, y2, x3, y3, x4, y4 = 0, 1, 2, 3, 4, 5, 6, 7
-        self.score.position_data2array_fix(
-            xball,
-            yball,
-            3,
-            4,
-            5,
-            6,
-            0,
-            "Hit",
-            "Fore",
-            "Cross",
-            x1,
-            y1,
-            x2,
-            y2,
-            x3,
-            y3,
-            x4,
-            y4,
-            pos_seek,
-        )
-        self.assertEqual(
-            [[], [], [[1, 11, 1, 2], [rally, pos_seek, xball, yball]], []],
-            self.score.array_ball_position_shot,
-        )
-        self.assertEqual([[], [], ["A", "B"], []], self.score.arrayHitPlayer)
-        self.assertEqual([[], [], [1, 0], []], self.score.array_x1)
-        self.assertEqual([[], [], [15, 7], []], self.score.array_y4)
+    #     num = 2
+    #     self.score.number = num
+    #     rally = 2
+    #     self.score.rally = rally
+    #     pos_seek = 100
+    #     xball = 10
+    #     yball = 20
+    #     x1, y1, x2, y2, x3, y3, x4, y4 = 0, 1, 2, 3, 4, 5, 6, 7
+    #     self.score.position_data2array_fix(
+    #         xball,
+    #         yball,
+    #         3,
+    #         4,
+    #         5,
+    #         6,
+    #         0,
+    #         "Hit",
+    #         "Fore",
+    #         "Cross",
+    #         x1,
+    #         y1,
+    #         x2,
+    #         y2,
+    #         x3,
+    #         y3,
+    #         x4,
+    #         y4,
+    #         pos_seek,
+    #     )
+    #     self.assertEqual(
+    #         [[], [], [[1, 11, 1, 2], [rally, pos_seek, xball, yball]], []],
+    #         self.score.array_ball_position_shot,
+    #     )
+    #     self.assertEqual([[], [], ["A", "B"], []], self.score.arrayHitPlayer)
+    #     self.assertEqual([[], [], [1, 0], []], self.score.array_x1)
+    #     self.assertEqual([[], [], [15, 7], []], self.score.array_y4)
 
     def test_delete_position_data(self):
         # delete middle
-        self.score.array_ball_position_shot = [
-            [],
-            [],
-            [[1, 11, 1, 2], [2, 51, 3, 4], [3, 101, 5, 6]],
-            [],
-        ]
-        self.score.arrayPlayerAPosition = [
-            [],
-            [],
-            [[1, 11, 11, 12], [2, 51, 13, 14], [3, 101, 15, 16]],
-            [],
-        ]
-        self.score.arrayPlayerBPosition = [
-            [],
-            [],
-            [[1, 11, 21, 22], [2, 51, 23, 24], [3, 101, 25, 26]],
-            [],
-        ]
-        self.score.arrayHitPlayer = [[], [], ["A", "A", "B"], []]
-        self.score.arrayBounceHit = [[], [], ["Bounce", "Hit", "Bounce"], []]
-        self.score.arrayForeBack = [[], [], ["Fore", "Back", "Back"], []]
-        self.score.arrayDirection = [[], [], ["Cross", "Cross", "Cross"], []]
-        self.score.array_x1 = [[], [], [1, 2, 3], []]
-        self.score.array_y1 = [[], [], [3, 4, 5], []]
-        self.score.array_x2 = [[], [], [5, 6, 7], []]
-        self.score.array_y2 = [[], [], [7, 8, 9], []]
-        self.score.array_x3 = [[], [], [9, 10, 11], []]
-        self.score.array_y3 = [[], [], [11, 12, 13], []]
-        self.score.array_x4 = [[], [], [13, 14, 15], []]
-        self.score.array_y4 = [[], [], [15, 16, 17], []]
-        num = 2
-        self.score.number = num
+        self.score.shot_index = [0, 0, 1]
+        self.score.shot_frame = [11, 51, 101]
+        self.score.array_ball_position_shot_x = [1, 3, 5]
+        self.score.array_ball_position_shot_y = [2, 4, 6]
+        self.score.arrayPlayerAPosition_x = [11, 13, 15]
+        self.score.arrayPlayerAPosition_y = [12, 14, 16]
+        self.score.arrayPlayerBPosition_x = [21, 23, 25]
+        self.score.arrayPlayerBPosition_y = [22, 24, 26]
+        self.score.arrayHitPlayer = ["A", "A", "B"]
+        self.score.arrayBounceHit = ["Bounce", "Hit", "Bounce"]
+        self.score.arrayForeBack = ["Fore", "Back", "Back"]
+        self.score.arrayDirection = ["Cross", "Cross", "Cross"]
+        self.score.array_x1 = [1, 2, 3]
+        self.score.array_y1 = [3, 4, 5]
+        self.score.array_x2 = [5, 6, 7]
+        self.score.array_y2 = [7, 8, 9]
+        self.score.array_x3 = [9, 10, 11]
+        self.score.array_y3 = [11, 12, 13]
+        self.score.array_x4 = [13, 14, 15]
+        self.score.array_y4 = [15, 16, 17]
+        # num = 2
+        # self.score.number = num
         i = 1
         self.score.delete_position_data(i)
-        self.assertEqual(
-            [[], [], [[1, 11, 1, 2], [2, 101, 5, 6]], []],
-            self.score.array_ball_position_shot,
-        )
-        self.assertEqual(
-            [[], [], [[1, 11, 11, 12], [2, 101, 15, 16]], []],
-            self.score.arrayPlayerAPosition,
-        )
-        self.assertEqual([[], [], [1, 3], []], self.score.array_x1)
-        self.assertEqual([[], [], [15, 17], []], self.score.array_y4)
+        self.assertEqual([0, 1], self.score.shot_index)
+        self.assertEqual([11, 101], self.score.shot_frame)
+        self.assertEqual([1, 5], self.score.array_ball_position_shot_x)
+        self.assertEqual([2, 6], self.score.array_ball_position_shot_y)
+        self.assertEqual([11, 15], self.score.arrayPlayerAPosition_x)
+        self.assertEqual([12, 16], self.score.arrayPlayerAPosition_y)
+        self.assertEqual([21, 25], self.score.arrayPlayerBPosition_x)
+        self.assertEqual([22, 26], self.score.arrayPlayerBPosition_y)
+        self.assertEqual([1, 3], self.score.array_x1)
+        self.assertEqual([15, 17], self.score.array_y4)
 
         # delete last
-        self.score.array_ball_position_shot = [
-            [],
-            [],
-            [[1, 11, 1, 2], [2, 51, 3, 4], [3, 101, 5, 6]],
-            [],
-        ]
-        self.score.arrayPlayerAPosition = [
-            [],
-            [],
-            [[1, 11, 11, 12], [2, 51, 13, 14], [3, 101, 15, 16]],
-            [],
-        ]
-        self.score.arrayPlayerBPosition = [
-            [],
-            [],
-            [[1, 11, 21, 22], [2, 51, 23, 24], [3, 101, 25, 26]],
-            [],
-        ]
-        self.score.arrayHitPlayer = [[], [], ["A", "A", "B"], []]
-        self.score.arrayBounceHit = [[], [], ["Bounce", "Hit", "Bounce"], []]
-        self.score.arrayForeBack = [[], [], ["Fore", "Back", "Back"], []]
-        self.score.arrayDirection = [[], [], ["Cross", "Cross", "Cross"], []]
-        self.score.array_x1 = [[], [], [1, 2, 3], []]
-        self.score.array_y1 = [[], [], [3, 4, 5], []]
-        self.score.array_x2 = [[], [], [5, 6, 7], []]
-        self.score.array_y2 = [[], [], [7, 8, 9], []]
-        self.score.array_x3 = [[], [], [9, 10, 11], []]
-        self.score.array_y3 = [[], [], [11, 12, 13], []]
-        self.score.array_x4 = [[], [], [13, 14, 15], []]
-        self.score.array_y4 = [[], [], [15, 16, 17], []]
-        num = 2
-        self.score.number = num
+        self.score.shot_index = [0, 0, 1]
+        self.score.shot_frame = [11, 51, 101]
+        self.score.array_ball_position_shot_x = [1, 3, 5]
+        self.score.array_ball_position_shot_y = [2, 4, 6]
+        self.score.arrayPlayerAPosition_x = [11, 13, 15]
+        self.score.arrayPlayerAPosition_y = [12, 14, 16]
+        self.score.arrayPlayerBPosition_x = [21, 23, 25]
+        self.score.arrayPlayerBPosition_y = [22, 24, 26]
+        self.score.arrayHitPlayer = ["A", "A", "B"]
+        self.score.arrayBounceHit = ["Bounce", "Hit", "Bounce"]
+        self.score.arrayForeBack = ["Fore", "Back", "Back"]
+        self.score.arrayDirection = ["Cross", "Cross", "Cross"]
+        self.score.array_x1 = [1, 2, 3]
+        self.score.array_y1 = [3, 4, 5]
+        self.score.array_x2 = [5, 6, 7]
+        self.score.array_y2 = [7, 8, 9]
+        self.score.array_x3 = [9, 10, 11]
+        self.score.array_y3 = [11, 12, 13]
+        self.score.array_x4 = [13, 14, 15]
+        self.score.array_y4 = [15, 16, 17]
+        # num = 2
+        # self.score.number = num
         i = 2
         self.score.delete_position_data(i)
-        self.assertEqual(
-            [[], [], [[1, 11, 1, 2], [2, 51, 3, 4]], []],
-            self.score.array_ball_position_shot,
-        )
-        self.assertEqual(
-            [[], [], [[1, 11, 11, 12], [2, 51, 13, 14]], []],
-            self.score.arrayPlayerAPosition,
-        )
-        self.assertEqual([[], [], [1, 2], []], self.score.array_x1)
-        self.assertEqual([[], [], [15, 16], []], self.score.array_y4)
-
-        # delete first
-        self.score.array_ball_position_shot = [
-            [],
-            [],
-            [[1, 11, 1, 2], [2, 51, 3, 4], [3, 101, 5, 6]],
-            [],
-        ]
-        self.score.arrayPlayerAPosition = [
-            [],
-            [],
-            [[1, 11, 11, 12], [2, 51, 13, 14], [3, 101, 15, 16]],
-            [],
-        ]
-        self.score.arrayPlayerBPosition = [
-            [],
-            [],
-            [[1, 11, 21, 22], [2, 51, 23, 24], [3, 101, 25, 26]],
-            [],
-        ]
-        self.score.arrayHitPlayer = [[], [], ["A", "A", "B"], []]
-        self.score.arrayBounceHit = [[], [], ["Bounce", "Hit", "Bounce"], []]
-        self.score.arrayForeBack = [[], [], ["Fore", "Back", "Back"], []]
-        self.score.arrayDirection = [[], [], ["Cross", "Cross", "Cross"], []]
-        self.score.array_x1 = [[], [], [1, 2, 3], []]
-        self.score.array_y1 = [[], [], [3, 4, 5], []]
-        self.score.array_x2 = [[], [], [5, 6, 7], []]
-        self.score.array_y2 = [[], [], [7, 8, 9], []]
-        self.score.array_x3 = [[], [], [9, 10, 11], []]
-        self.score.array_y3 = [[], [], [11, 12, 13], []]
-        self.score.array_x4 = [[], [], [13, 14, 15], []]
-        self.score.array_y4 = [[], [], [15, 16, 17], []]
-        num = 2
-        self.score.number = num
-        i = 0
-        self.score.delete_position_data(i)
-        self.assertEqual(
-            [[], [], [[1, 51, 3, 4], [2, 101, 5, 6]], []],
-            self.score.array_ball_position_shot,
-        )
-        self.assertEqual(
-            [[], [], [[1, 51, 13, 14], [2, 101, 15, 16]], []],
-            self.score.arrayPlayerAPosition,
-        )
-        self.assertEqual([[], [], [2, 3], []], self.score.array_x1)
-        self.assertEqual([[], [], [16, 17], []], self.score.array_y4)
+        self.assertEqual([0, 0], self.score.shot_index)
+        self.assertEqual([11, 51], self.score.shot_frame)
+        self.assertEqual([1, 3], self.score.array_ball_position_shot_x)
+        self.assertEqual([2, 4], self.score.array_ball_position_shot_y)
+        self.assertEqual([11, 13], self.score.arrayPlayerAPosition_x)
+        self.assertEqual([12, 14], self.score.arrayPlayerAPosition_y)
+        self.assertEqual([21, 23], self.score.arrayPlayerBPosition_x)
+        self.assertEqual([22, 24], self.score.arrayPlayerBPosition_y)
+        self.assertEqual([1, 2], self.score.array_x1)
+        self.assertEqual([15, 16], self.score.array_y4)
 
     def test_delete_point_shift(self):
         # middle
         print("test_delete_point_shift")
-        self.score.array_ball_position_shot = [
-            [],
-            [],
-            [[1, 11, 1, 2], [2, 51, 3, 4], [3, 101, 5, 6], [4, 201, 7, 8]],
-            [],
-        ]
-        self.score.arrayPlayerAPosition = [
-            [],
-            [],
-            [[1, 11, 11, 12], [2, 51, 13, 14], [3, 101, 15, 16], [4, 201, 17, 18]],
-            [],
-        ]
-        self.score.arrayPlayerBPosition = [
-            [],
-            [],
-            [[1, 11, 21, 22], [2, 51, 23, 24], [3, 101, 25, 26], [4, 201, 17, 18]],
-            [],
-        ]
-        self.score.arrayHitPlayer = [[], [], ["A", "A", "B", "A"], []]
-        self.score.arrayBounceHit = [[], [], ["Bounce", "Hit", "Bounce", "Hit"], []]
-        self.score.arrayForeBack = [[], [], ["Fore", "Back", "Back", "Back"], []]
-        self.score.arrayDirection = [[], [], ["Cross", "Cross", "Cross", "Cross"], []]
-        self.score.array_x1 = [[], [], [1, 2, 3, 4], []]
-        self.score.array_y1 = [[], [], [3, 4, 5, 6], []]
-        self.score.array_x2 = [[], [], [5, 6, 7, 8], []]
-        self.score.array_y2 = [[], [], [7, 8, 9, 10], []]
-        self.score.array_x3 = [[], [], [9, 10, 11, 12], []]
-        self.score.array_y3 = [[], [], [11, 12, 13, 14], []]
-        self.score.array_x4 = [[], [], [13, 14, 15, 16], []]
-        self.score.array_y4 = [[], [], [15, 16, 17, 18], []]
-        num = 2
-        self.score.number = num
+        self.score.shot_index = [0, 0, 1, 2]
+        self.score.shot_frame = [11, 51, 101, 201]
+        self.score.array_ball_position_shot_x = [1, 3, 5, 7]
+        self.score.array_ball_position_shot_y = [2, 4, 6, 7]
+        self.score.arrayPlayerAPosition_x = [11, 13, 15, 17]
+        self.score.arrayPlayerAPosition_y = [12, 14, 16, 18]
+        self.score.arrayPlayerBPosition_x = [21, 23, 25, 27]
+        self.score.arrayPlayerBPosition_y = [22, 24, 26, 28]
+        self.score.arrayHitPlayer = ["A", "A", "B", "A"]
+        self.score.arrayBounceHit = ["Bounce", "Hit", "Bounce", "Hit"]
+        self.score.arrayForeBack = ["Fore", "Back", "Back", "Back"]
+        self.score.arrayDirection = ["Cross", "Cross", "Cross", "Cross"]
+        self.score.array_x1 = [1, 2, 3, 4]
+        self.score.array_y1 = [3, 4, 5, 6]
+        self.score.array_x2 = [5, 6, 7, 8]
+        self.score.array_y2 = [7, 8, 9, 10]
+        self.score.array_x3 = [9, 10, 11, 12]
+        self.score.array_y3 = [11, 12, 13, 14]
+        self.score.array_x4 = [13, 14, 15, 16]
+        self.score.array_y4 = [15, 16, 17, 18]
+        # num = 2
+        # self.score.number = num
         start_shot = 1
         end_shot = 2
         self.score.delete_tree_shot_shift(start_shot, end_shot)
-        self.assertEqual(
-            [[], [], [[1, 11, 1, 2], [2, 201, 7, 8]], []],
-            self.score.array_ball_position_shot,
-        )
-        self.assertEqual([[], [], [1, 4], []], self.score.array_x1)
-        self.assertEqual([[], [], [15, 18], []], self.score.array_y4)
+        self.assertEqual([0, 2], self.score.shot_index)
+        self.assertEqual([11, 201], self.score.shot_frame)
+        self.assertEqual([1, 7], self.score.array_ball_position_shot_x)
+        self.assertEqual([2, 7], self.score.array_ball_position_shot_y)
+        self.assertEqual([11, 17], self.score.arrayPlayerAPosition_x)
+        self.assertEqual([12, 18], self.score.arrayPlayerAPosition_y)
+        self.assertEqual([21, 27], self.score.arrayPlayerBPosition_x)
+        self.assertEqual([22, 28], self.score.arrayPlayerBPosition_y)
+        self.assertEqual([1, 4], self.score.array_x1)
+        self.assertEqual([15, 18], self.score.array_y4)
 
         # all
-        self.score.array_ball_position_shot = [
-            [],
-            [],
-            [[1, 11, 1, 2], [2, 51, 3, 4], [3, 101, 5, 6], [4, 201, 7, 8]],
-            [],
-        ]
-        self.score.arrayPlayerAPosition = [
-            [],
-            [],
-            [[1, 11, 11, 12], [2, 51, 13, 14], [3, 101, 15, 16], [4, 201, 17, 18]],
-            [],
-        ]
-        self.score.arrayPlayerBPosition = [
-            [],
-            [],
-            [[1, 11, 21, 22], [2, 51, 23, 24], [3, 101, 25, 26], [4, 201, 17, 18]],
-            [],
-        ]
-        self.score.arrayHitPlayer = [[], [], ["A", "A", "B", "A"], []]
-        self.score.arrayBounceHit = [[], [], ["Bounce", "Hit", "Bounce", "Hit"], []]
-        self.score.arrayForeBack = [[], [], ["Fore", "Back", "Back", "Back"], []]
-        self.score.arrayDirection = [[], [], ["Cross", "Cross", "Cross", "Cross"], []]
-        self.score.array_x1 = [[], [], [1, 2, 3, 4], []]
-        self.score.array_y1 = [[], [], [3, 4, 5, 6], []]
-        self.score.array_x2 = [[], [], [5, 6, 7, 8], []]
-        self.score.array_y2 = [[], [], [7, 8, 9, 10], []]
-        self.score.array_x3 = [[], [], [9, 10, 11, 12], []]
-        self.score.array_y3 = [[], [], [11, 12, 13, 14], []]
-        self.score.array_x4 = [[], [], [13, 14, 15, 16], []]
-        self.score.array_y4 = [[], [], [15, 16, 17, 18], []]
-        num = 2
-        self.score.number = num
+        self.score.shot_index = [0, 0, 1, 2]
+        self.score.shot_frame = [11, 51, 101, 201]
+        self.score.array_ball_position_shot_x = [1, 3, 5, 7]
+        self.score.array_ball_position_shot_y = [2, 4, 6, 7]
+        self.score.arrayPlayerAPosition_x = [11, 13, 15, 17]
+        self.score.arrayPlayerAPosition_y = [12, 14, 16, 18]
+        self.score.arrayPlayerBPosition_x = [21, 23, 25, 27]
+        self.score.arrayPlayerBPosition_y = [22, 24, 26, 28]
+        self.score.arrayHitPlayer = ["A", "A", "B", "A"]
+        self.score.arrayBounceHit = ["Bounce", "Hit", "Bounce", "Hit"]
+        self.score.arrayForeBack = ["Fore", "Back", "Back", "Back"]
+        self.score.arrayDirection = ["Cross", "Cross", "Cross", "Cross"]
+        self.score.array_x1 = [1, 2, 3, 4]
+        self.score.array_y1 = [3, 4, 5, 6]
+        self.score.array_x2 = [5, 6, 7, 8]
+        self.score.array_y2 = [7, 8, 9, 10]
+        self.score.array_x3 = [9, 10, 11, 12]
+        self.score.array_y3 = [11, 12, 13, 14]
+        self.score.array_x4 = [13, 14, 15, 16]
+        self.score.array_y4 = [15, 16, 17, 18]
+        # num = 2
+        # self.score.number = num
         start_shot = 0
         end_shot = 3
         self.score.delete_tree_shot_shift(start_shot, end_shot)
-        self.assertEqual([[], [], [], []], self.score.array_ball_position_shot)
-        self.assertEqual([[], [], [], []], self.score.array_x1)
-        self.assertEqual([[], [], [], []], self.score.array_y4)
+        self.assertEqual([], self.score.shot_index)
+        self.assertEqual([], self.score.array_ball_position_shot_x)
+        self.assertEqual([], self.score.array_x1)
+        self.assertEqual([], self.score.array_y4)
 
         # last2
         print("test_delete_point_shift")
-        self.score.array_ball_position_shot = [
-            [],
-            [],
-            [[1, 11, 1, 2], [2, 51, 3, 4], [3, 101, 5, 6], [4, 201, 7, 8]],
-            [],
-        ]
-        self.score.arrayPlayerAPosition = [
-            [],
-            [],
-            [[1, 11, 11, 12], [2, 51, 13, 14], [3, 101, 15, 16], [4, 201, 17, 18]],
-            [],
-        ]
-        self.score.arrayPlayerBPosition = [
-            [],
-            [],
-            [[1, 11, 21, 22], [2, 51, 23, 24], [3, 101, 25, 26], [4, 201, 17, 18]],
-            [],
-        ]
-        self.score.arrayHitPlayer = [[], [], ["A", "A", "B", "A"], []]
-        self.score.arrayBounceHit = [[], [], ["Bounce", "Hit", "Bounce", "Hit"], []]
-        self.score.arrayForeBack = [[], [], ["Fore", "Back", "Back", "Back"], []]
-        self.score.arrayDirection = [[], [], ["Cross", "Cross", "Cross", "Cross"], []]
-        self.score.array_x1 = [[], [], [1, 2, 3, 4], []]
-        self.score.array_y1 = [[], [], [3, 4, 5, 6], []]
-        self.score.array_x2 = [[], [], [5, 6, 7, 8], []]
-        self.score.array_y2 = [[], [], [7, 8, 9, 10], []]
-        self.score.array_x3 = [[], [], [9, 10, 11, 12], []]
-        self.score.array_y3 = [[], [], [11, 12, 13, 14], []]
-        self.score.array_x4 = [[], [], [13, 14, 15, 16], []]
-        self.score.array_y4 = [[], [], [15, 16, 17, 18], []]
-        num = 2
-        self.score.number = num
+        self.score.shot_index = [0, 0, 1, 2]
+        self.score.shot_frame = [11, 51, 101, 201]
+        self.score.array_ball_position_shot_x = [1, 3, 5, 7]
+        self.score.array_ball_position_shot_y = [2, 4, 6, 7]
+        self.score.arrayPlayerAPosition_x = [11, 13, 15, 17]
+        self.score.arrayPlayerAPosition_y = [12, 14, 16, 18]
+        self.score.arrayPlayerBPosition_x = [21, 23, 25, 27]
+        self.score.arrayPlayerBPosition_y = [22, 24, 26, 28]
+        self.score.arrayHitPlayer = ["A", "A", "B", "A"]
+        self.score.arrayBounceHit = ["Bounce", "Hit", "Bounce", "Hit"]
+        self.score.arrayForeBack = ["Fore", "Back", "Back", "Back"]
+        self.score.arrayDirection = ["Cross", "Cross", "Cross", "Cross"]
+        self.score.array_x1 = [1, 2, 3, 4]
+        self.score.array_y1 = [3, 4, 5, 6]
+        self.score.array_x2 = [5, 6, 7, 8]
+        self.score.array_y2 = [7, 8, 9, 10]
+        self.score.array_x3 = [9, 10, 11, 12]
+        self.score.array_y3 = [11, 12, 13, 14]
+        self.score.array_x4 = [13, 14, 15, 16]
+        self.score.array_y4 = [15, 16, 17, 18]
+        # num = 2
+        # self.score.number = num
         start_shot = 2
         end_shot = 3
         self.score.delete_tree_shot_shift(start_shot, end_shot)
-        self.assertEqual(
-            [[], [], [[1, 11, 1, 2], [2, 51, 3, 4]], []],
-            self.score.array_ball_position_shot,
-        )
-        self.assertEqual([[], [], [1, 2], []], self.score.array_x1)
-        self.assertEqual([[], [], [15, 16], []], self.score.array_y4)
+        self.assertEqual([0, 0], self.score.shot_index)
+        self.assertEqual([11, 51], self.score.shot_frame)
+        self.assertEqual([1, 3], self.score.array_ball_position_shot_x)
+        self.assertEqual([2, 4], self.score.array_ball_position_shot_y)
+        self.assertEqual([11, 13], self.score.arrayPlayerAPosition_x)
+        self.assertEqual([12, 14], self.score.arrayPlayerAPosition_y)
+        self.assertEqual([21, 23], self.score.arrayPlayerBPosition_x)
+        self.assertEqual([22, 24], self.score.arrayPlayerBPosition_y)
 
         # last1
         print("test_delete_point_shift")
-        self.score.array_ball_position_shot = [
-            [],
-            [],
-            [[1, 11, 1, 2], [2, 51, 3, 4], [3, 101, 5, 6], [4, 201, 7, 8]],
-            [],
-        ]
-        self.score.arrayPlayerAPosition = [
-            [],
-            [],
-            [[1, 11, 11, 12], [2, 51, 13, 14], [3, 101, 15, 16], [4, 201, 17, 18]],
-            [],
-        ]
-        self.score.arrayPlayerBPosition = [
-            [],
-            [],
-            [[1, 11, 21, 22], [2, 51, 23, 24], [3, 101, 25, 26], [4, 201, 17, 18]],
-            [],
-        ]
-        self.score.arrayHitPlayer = [[], [], ["A", "A", "B", "A"], []]
-        self.score.arrayBounceHit = [[], [], ["Bounce", "Hit", "Bounce", "Hit"], []]
-        self.score.arrayForeBack = [[], [], ["Fore", "Back", "Back", "Back"], []]
-        self.score.arrayDirection = [[], [], ["Cross", "Cross", "Cross", "Cross"], []]
-        self.score.array_x1 = [[], [], [1, 2, 3, 4], []]
-        self.score.array_y1 = [[], [], [3, 4, 5, 6], []]
-        self.score.array_x2 = [[], [], [5, 6, 7, 8], []]
-        self.score.array_y2 = [[], [], [7, 8, 9, 10], []]
-        self.score.array_x3 = [[], [], [9, 10, 11, 12], []]
-        self.score.array_y3 = [[], [], [11, 12, 13, 14], []]
-        self.score.array_x4 = [[], [], [13, 14, 15, 16], []]
-        self.score.array_y4 = [[], [], [15, 16, 17, 18], []]
+        self.score.shot_index = [0, 0, 1, 2]
+        self.score.shot_frame = [11, 51, 101, 201]
+        self.score.array_ball_position_shot_x = [1, 3, 5, 7]
+        self.score.array_ball_position_shot_y = [2, 4, 6, 7]
+        self.score.arrayPlayerAPosition_x = [11, 13, 15, 17]
+        self.score.arrayPlayerAPosition_y = [12, 14, 16, 18]
+        self.score.arrayPlayerBPosition_x = [21, 23, 25, 27]
+        self.score.arrayPlayerBPosition_y = [22, 24, 26, 28]
+        self.score.arrayHitPlayer = ["A", "A", "B", "A"]
+        self.score.arrayBounceHit = ["Bounce", "Hit", "Bounce", "Hit"]
+        self.score.arrayForeBack = ["Fore", "Back", "Back", "Back"]
+        self.score.arrayDirection = ["Cross", "Cross", "Cross", "Cross"]
+        self.score.array_x1 = [1, 2, 3, 4]
+        self.score.array_y1 = [3, 4, 5, 6]
+        self.score.array_x2 = [5, 6, 7, 8]
+        self.score.array_y2 = [7, 8, 9, 10]
+        self.score.array_x3 = [9, 10, 11, 12]
+        self.score.array_y3 = [11, 12, 13, 14]
+        self.score.array_x4 = [13, 14, 15, 16]
+        self.score.array_y4 = [15, 16, 17, 18]
         num = 2
         self.score.number = num
         start_shot = 3
         end_shot = 3
         self.score.delete_tree_shot_shift(start_shot, end_shot)
-        self.assertEqual(
-            [[], [], [[1, 11, 1, 2], [2, 51, 3, 4], [3, 101, 5, 6]], []],
-            self.score.array_ball_position_shot,
-        )
-        self.assertEqual([[], [], [1, 2, 3], []], self.score.array_x1)
-        self.assertEqual([[], [], [15, 16, 17], []], self.score.array_y4)
+        self.assertEqual([0, 0, 1], self.score.shot_index)
+        self.assertEqual([11, 51, 101], self.score.shot_frame)
+        self.assertEqual([1, 3, 5], self.score.array_ball_position_shot_x)
+        self.assertEqual([2, 4, 6], self.score.array_ball_position_shot_y)
+        self.assertEqual([11, 13, 15], self.score.arrayPlayerAPosition_x)
+        self.assertEqual([12, 14, 16], self.score.arrayPlayerAPosition_y)
+        self.assertEqual([21, 23, 25], self.score.arrayPlayerBPosition_x)
+        self.assertEqual([22, 24, 26], self.score.arrayPlayerBPosition_y)
 
         # 1st1
         print("test_delete_point_shift")
-        self.score.array_ball_position_shot = [
-            [],
-            [],
-            [[1, 11, 1, 2], [2, 51, 3, 4], [3, 101, 5, 6], [4, 201, 7, 8]],
-            [],
-        ]
-        self.score.arrayPlayerAPosition = [
-            [],
-            [],
-            [[1, 11, 11, 12], [2, 51, 13, 14], [3, 101, 15, 16], [4, 201, 17, 18]],
-            [],
-        ]
-        self.score.arrayPlayerBPosition = [
-            [],
-            [],
-            [[1, 11, 21, 22], [2, 51, 23, 24], [3, 101, 25, 26], [4, 201, 17, 18]],
-            [],
-        ]
-        self.score.arrayHitPlayer = [[], [], ["A", "A", "B", "A"], []]
-        self.score.arrayBounceHit = [[], [], ["Bounce", "Hit", "Bounce", "Hit"], []]
-        self.score.arrayForeBack = [[], [], ["Fore", "Back", "Back", "Back"], []]
-        self.score.arrayDirection = [[], [], ["Cross", "Cross", "Cross", "Cross"], []]
-        self.score.array_x1 = [[], [], [1, 2, 3, 4], []]
-        self.score.array_y1 = [[], [], [3, 4, 5, 6], []]
-        self.score.array_x2 = [[], [], [5, 6, 7, 8], []]
-        self.score.array_y2 = [[], [], [7, 8, 9, 10], []]
-        self.score.array_x3 = [[], [], [9, 10, 11, 12], []]
-        self.score.array_y3 = [[], [], [11, 12, 13, 14], []]
-        self.score.array_x4 = [[], [], [13, 14, 15, 16], []]
-        self.score.array_y4 = [[], [], [15, 16, 17, 18], []]
-        num = 2
-        self.score.number = num
+        self.score.shot_index = [0, 0, 1, 2]
+        self.score.shot_frame = [11, 51, 101, 201]
+        self.score.array_ball_position_shot_x = [1, 3, 5, 7]
+        self.score.array_ball_position_shot_y = [2, 4, 6, 7]
+        self.score.arrayPlayerAPosition_x = [11, 13, 15, 17]
+        self.score.arrayPlayerAPosition_y = [12, 14, 16, 18]
+        self.score.arrayPlayerBPosition_x = [21, 23, 25, 27]
+        self.score.arrayPlayerBPosition_y = [22, 24, 26, 28]
+        self.score.arrayHitPlayer = ["A", "A", "B", "A"]
+        self.score.arrayBounceHit = ["Bounce", "Hit", "Bounce", "Hit"]
+        self.score.arrayForeBack = ["Fore", "Back", "Back", "Back"]
+        self.score.arrayDirection = ["Cross", "Cross", "Cross", "Cross"]
+        self.score.array_x1 = [1, 2, 3, 4]
+        self.score.array_y1 = [3, 4, 5, 6]
+        self.score.array_x2 = [5, 6, 7, 8]
+        self.score.array_y2 = [7, 8, 9, 10]
+        self.score.array_x3 = [9, 10, 11, 12]
+        self.score.array_y3 = [11, 12, 13, 14]
+        self.score.array_x4 = [13, 14, 15, 16]
+        self.score.array_y4 = [15, 16, 17, 18]
+        # num = 2
+        # self.score.number = num
         start_shot = 0
         end_shot = 0
         self.score.delete_tree_shot_shift(start_shot, end_shot)
-        self.assertEqual(
-            [[], [], [[1, 51, 3, 4], [2, 101, 5, 6], [3, 201, 7, 8]], []],
-            self.score.array_ball_position_shot,
-        )
-        self.assertEqual([[], [], [2, 3, 4], []], self.score.array_x1)
-        self.assertEqual([[], [], [16, 17, 18], []], self.score.array_y4)
+        self.assertEqual([0, 1, 2], self.score.shot_index)
+        self.assertEqual([51, 101, 201], self.score.shot_frame)
+        self.assertEqual([3, 5, 7], self.score.array_ball_position_shot_x)
+        self.assertEqual([4, 6, 7], self.score.array_ball_position_shot_y)
+        self.assertEqual([13, 15, 17], self.score.arrayPlayerAPosition_x)
+        self.assertEqual([14, 16, 18], self.score.arrayPlayerAPosition_y)
+        self.assertEqual([23, 25, 27], self.score.arrayPlayerBPosition_x)
+        self.assertEqual([24, 26, 28], self.score.arrayPlayerBPosition_y)
+        self.assertEqual([2, 3, 4], self.score.array_x1)
+        self.assertEqual([16, 17, 18], self.score.array_y4)
 
     def test_divide_track_data(self):
         self.score.array_ball_position_shot = [
@@ -1280,6 +1177,9 @@ class TestScore(unittest.TestCase):
         )
 
     def test_delete_tree_point(self):
+        self.score.shot_index = [0, 0, 1, 2]
+        self.score.shot_frame = [11, 51, 101, 201]
+
         self.score.array_frame_start = [100, 200, 300, 400]
         self.score.array_frame_end = [100, 200, 300, 400]
         self.score.arraySet = [100, 200, 300, 400]
@@ -1296,9 +1196,6 @@ class TestScore(unittest.TestCase):
         self.score.arrayPointPattern = [100, 200, 300, 400]
         self.score.arrayFault = [0, 0, 1, 0]
 
-        # "Court1X": list(np.array(self.arrayCourt)[0][:, 0]),#[[0, 0], [0, 0], [0, 0], [0, 0],[0, 0], [0, 0], [0, 0], [0, 0]]
-        ##[[0, 0],[0, 0],[0, 0]]
-
         self.score.arrayContactServe = [[0, 0], [1, 1], [2, 2], [3, 3]]
 
         self.score.arrayCourt = [
@@ -1308,51 +1205,34 @@ class TestScore(unittest.TestCase):
             [[30, 30], [31, 31], [32, 32], [33, 33]],
         ]
 
-        self.score.array_ball_position_shot = [
-            [],
-            [[1, 11, 1, 2], [2, 51, 3, 4]],
-            [[1, 11, 1, 2], [2, 51, 3, 4], [3, 101, 5, 6], [4, 201, 7, 8]],
-            [],
-        ]
-        self.score.arrayPlayerAPosition = [
-            [],
-            [[1, 11, 11, 12], [2, 51, 13, 14]],
-            [[1, 11, 11, 12], [2, 51, 13, 14], [3, 101, 15, 16], [4, 201, 17, 18]],
-            [],
-        ]
-        self.score.arrayPlayerBPosition = [
-            [],
-            [[1, 11, 21, 22], [2, 51, 23, 24]],
-            [[1, 11, 21, 22], [2, 51, 23, 24], [3, 101, 25, 26], [4, 201, 17, 18]],
-            [],
-        ]
-        self.score.arrayHitPlayer = [[], ["A", "A"], ["A", "A", "B", "A"], []]
-        self.score.arrayBounceHit = [
-            [],
-            ["Bounce", "Hit"],
-            ["Bounce", "Hit", "Bounce", "Hit"],
-            [],
-        ]
-        self.score.arrayForeBack = [
-            [],
-            ["Fore", "Back"],
-            ["Fore", "Back", "Back", "Back"],
-            [],
-        ]
+        self.score.array_ball_position_shot_x = [1, 3, 1, 3, 5, 7]
+        self.score.array_ball_position_shot_y = [2, 4, 2, 4, 6, 8]
+
+        self.score.arrayPlayerAPosition_x = [11, 13, 11, 13, 15, 17]
+        self.score.arrayPlayerAPosition_y = [21, 23, 21, 23, 25, 27]
+
+        self.score.arrayPlayerBPosition_x = [31, 33, 31, 33, 35, 37]
+        self.score.arrayPlayerBPosition_y = [41, 43, 41, 43, 45, 47]
+
+        self.score.arrayHitPlayer = ["A", "A", "A", "A", "B", "A"]
+        self.score.arrayBounceHit = ["Bounce", "Hit", "Bounce", "Hit", "Bounce", "Hit"]
+        self.score.arrayForeBack = ["Fore", "Back", "Fore", "Back", "Back", "Back"]
         self.score.arrayDirection = [
-            [],
-            ["Cross", "Cross"],
-            ["Cross", "Cross", "Cross", "Cross"],
-            [],
+            "Cross",
+            "Cross",
+            "Cross",
+            "Cross",
+            "Cross",
+            "Cross",
         ]
-        self.score.array_x1 = [[], [1, 2], [1, 2, 3, 4], []]
-        self.score.array_y1 = [[], [3, 4], [3, 4, 5, 6], []]
-        self.score.array_x2 = [[], [5, 6], [5, 6, 7, 8], []]
-        self.score.array_y2 = [[], [7, 8], [7, 8, 9, 10], []]
-        self.score.array_x3 = [[], [9, 10], [9, 10, 11, 12], []]
-        self.score.array_y3 = [[], [11, 12], [11, 12, 13, 14], []]
-        self.score.array_x4 = [[], [13, 14], [13, 14, 15, 16], []]
-        self.score.array_y4 = [[], [15, 16], [15, 16, 17, 18], []]
+        self.score.array_x1 = [1, 2, 1, 2, 3, 4]
+        self.score.array_y1 = [3, 4, 3, 4, 5, 6]
+        self.score.array_x2 = [5, 6, 5, 6, 7, 8]
+        self.score.array_y2 = [7, 8, 7, 8, 9, 10]
+        self.score.array_x3 = [9, 10, 9, 10, 11, 12]
+        self.score.array_y3 = [11, 12, 11, 12, 13, 14]
+        self.score.array_x4 = [13, 14, 13, 14, 15, 16]
+        self.score.array_y4 = [15, 16, 15, 16, 17, 18]
 
         self.score.number = 1  # delete 1th row
 
@@ -1360,10 +1240,11 @@ class TestScore(unittest.TestCase):
         self.assertEqual([100, 300, 400], self.score.array_frame_start)
         self.assertEqual([0, 1, 2], self.score.pointWin[0])
         self.assertEqual([0, 1, 2], self.score.pointWin[1])
-        self.assertEqual(
-            [[], [[1, 11, 1, 2], [2, 51, 3, 4], [3, 101, 5, 6], [4, 201, 7, 8]], []],
-            self.score.array_ball_position_shot,
-        )
+
+        self.assertEqual([1, 3, 1, 3, 5, 7], self.score.array_ball_position_shot_x)
+
+        self.assertEqual([0, 0, 0, 0], self.score.shot_index)
+
         self.assertEqual([[0, 0], [2, 2], [3, 3]], self.score.arrayContactServe)
         self.assertEqual(
             [
@@ -1375,137 +1256,128 @@ class TestScore(unittest.TestCase):
             self.score.arrayCourt,
         )
 
-    def test_position_data2array_insert(self):
-        self.score.array_ball_position_shot = [
-            [],
-            [[1, 11, 1, 2], [2, 51, 3, 4]],
-            [[1, 11, 1, 2], [2, 51, 3, 4], [3, 101, 5, 6], [4, 201, 7, 8]],
-            [],
-        ]
-        self.score.arrayPlayerAPosition = [
-            [],
-            [[1, 11, 11, 12], [2, 51, 13, 14]],
-            [[1, 11, 11, 12], [2, 51, 13, 14], [3, 101, 15, 16], [4, 201, 717, 18]],
-            [],
-        ]
-        self.score.arrayPlayerBPosition = [
-            [],
-            [[1, 11, 21, 22], [2, 51, 23, 24]],
-            [[1, 11, 21, 22], [2, 51, 23, 24], [3, 101, 25, 26], [4, 201, 717, 18]],
-            [],
-        ]
-        self.score.arrayHitPlayer = [[], ["A", "A"], ["A", "A", "B", "A"], []]
-        self.score.arrayBounceHit = [
-            [],
-            ["Bounce", "Hit"],
-            ["Bounce", "Hit", "Bounce", "Hit"],
-            [],
-        ]
-        self.score.arrayForeBack = [
-            [],
-            ["Fore", "Back"],
-            ["Fore", "Back", "Back", "Back"],
-            [],
-        ]
-        self.score.arrayDirection = [
-            [],
-            ["Cross", "Cross"],
-            ["Cross", "Cross", "Cross", "Cross"],
-            [],
-        ]
-        self.score.array_x1 = [[], [1, 2], [1, 2, 3, 4], []]
-        self.score.array_y1 = [[], [3, 4], [3, 4, 5, 6], []]
-        self.score.array_x2 = [[], [5, 6], [5, 6, 7, 8], []]
-        self.score.array_y2 = [[], [7, 8], [7, 8, 9, 10], []]
-        self.score.array_x3 = [[], [9, 10], [9, 10, 11, 12], []]
-        self.score.array_y3 = [[], [11, 12], [11, 12, 13, 14], []]
-        self.score.array_x4 = [[], [13, 14], [13, 14, 15, 16], []]
-        self.score.array_y4 = [[], [15, 16], [15, 16, 17, 18], []]
-        self.score.number = 2
-        pos_seek = 100
-        xball = 10
-        yball = 20
-        x1, y1, x2, y2, x3, y3, x4, y4 = 0, 1, 2, 3, 4, 5, 6, 7
-        self.score.position_data2array_insert(
-            xball,
-            yball,
-            3,
-            4,
-            5,
-            6,
-            0,
-            "Hit",
-            "Fore",
-            "Cross",
-            x1,
-            y1,
-            x2,
-            y2,
-            x3,
-            y3,
-            x4,
-            y4,
-            pos_seek,
-        )
+    # def test_position_data2array_insert(self):
+    #     self.score.array_ball_position_shot = [
+    #         [],
+    #         [[1, 11, 1, 2], [2, 51, 3, 4]],
+    #         [[1, 11, 1, 2], [2, 51, 3, 4], [3, 101, 5, 6], [4, 201, 7, 8]],
+    #         [],
+    #     ]
+    #     self.score.arrayPlayerAPosition = [
+    #         [],
+    #         [[1, 11, 11, 12], [2, 51, 13, 14]],
+    #         [[1, 11, 11, 12], [2, 51, 13, 14], [3, 101, 15, 16], [4, 201, 717, 18]],
+    #         [],
+    #     ]
+    #     self.score.arrayPlayerBPosition = [
+    #         [],
+    #         [[1, 11, 21, 22], [2, 51, 23, 24]],
+    #         [[1, 11, 21, 22], [2, 51, 23, 24], [3, 101, 25, 26], [4, 201, 717, 18]],
+    #         [],
+    #     ]
+    #     self.score.arrayHitPlayer = [[], ["A", "A"], ["A", "A", "B", "A"], []]
+    #     self.score.arrayBounceHit = [
+    #         [],
+    #         ["Bounce", "Hit"],
+    #         ["Bounce", "Hit", "Bounce", "Hit"],
+    #         [],
+    #     ]
+    #     self.score.arrayForeBack = [
+    #         [],
+    #         ["Fore", "Back"],
+    #         ["Fore", "Back", "Back", "Back"],
+    #         [],
+    #     ]
+    #     self.score.arrayDirection = [
+    #         [],
+    #         ["Cross", "Cross"],
+    #         ["Cross", "Cross", "Cross", "Cross"],
+    #         [],
+    #     ]
+    #     self.score.array_x1 = [[], [1, 2], [1, 2, 3, 4], []]
+    #     self.score.array_y1 = [[], [3, 4], [3, 4, 5, 6], []]
+    #     self.score.array_x2 = [[], [5, 6], [5, 6, 7, 8], []]
+    #     self.score.array_y2 = [[], [7, 8], [7, 8, 9, 10], []]
+    #     self.score.array_x3 = [[], [9, 10], [9, 10, 11, 12], []]
+    #     self.score.array_y3 = [[], [11, 12], [11, 12, 13, 14], []]
+    #     self.score.array_x4 = [[], [13, 14], [13, 14, 15, 16], []]
+    #     self.score.array_y4 = [[], [15, 16], [15, 16, 17, 18], []]
+    #     self.score.number = 2
+    #     pos_seek = 100
+    #     xball = 10
+    #     yball = 20
+    #     x1, y1, x2, y2, x3, y3, x4, y4 = 0, 1, 2, 3, 4, 5, 6, 7
+    #     self.score.position_data2array_insert(
+    #         xball,
+    #         yball,
+    #         3,
+    #         4,
+    #         5,
+    #         6,
+    #         0,
+    #         "Hit",
+    #         "Fore",
+    #         "Cross",
+    #         x1,
+    #         y1,
+    #         x2,
+    #         y2,
+    #         x3,
+    #         y3,
+    #         x4,
+    #         y4,
+    #         pos_seek,
+    #     )
+    #     self.assertEqual(
+    #         self.score.array_ball_position_shot,
+    #         [
+    #             [],
+    #             [[1, 11, 1, 2], [2, 51, 3, 4]],
+    #             [
+    #                 [1, 11, 1, 2],
+    #                 [2, 51, 3, 4],
+    #                 [3, 100, 10, 20],
+    #                 [4, 101, 5, 6],
+    #                 [5, 201, 7, 8],
+    #             ],
+    #             [],
+    #         ],
+    #     )
+
+    def test_convert_bally2player_y(self):
+        self.score.array_ball_position_shot_x = [1, 3, 1, 3, 5, 7]
+        self.score.array_ball_position_shot_y = [2, 4, 2, 4, 6, 8]
+
+        self.score.arrayPlayerAPosition_x = [11, 13, 11, 13, 15, 17]
+        self.score.arrayPlayerAPosition_y = [12, 14, 12, 14, 16, 18]
+
+        self.score.arrayPlayerBPosition_x = [21, 23, 21, 23, 25, 27]
+        self.score.arrayPlayerBPosition_y = [22, 24, 22, 24, 26, 28]
+
+        self.score.arrayHitPlayer = ["Up", "Down", "Up", "Down", "Up", "Down"]
+        self.score.convert_bally2player_y()
         self.assertEqual(
-            self.score.array_ball_position_shot,
-            [
-                [],
-                [[1, 11, 1, 2], [2, 51, 3, 4]],
-                [
-                    [1, 11, 1, 2],
-                    [2, 51, 3, 4],
-                    [3, 100, 10, 20],
-                    [4, 101, 5, 6],
-                    [5, 201, 7, 8],
-                ],
-                [],
-            ],
+            [12, 24, 12, 24, 16, 28],
+            self.score.array_ball_position_shot_y,
         )
 
-    def test_convert_bally2playery(self):
-        self.score.array_ball_position_shot = [
-            [],
-            [[1, 11, 1, 2], [2, 51, 3, 4]],
-            [[1, 11, 1, 2], [2, 51, 3, 4], [3, 101, 5, 6], [4, 201, 7, 8]],
-            [],
-        ]
-        self.score.arrayPlayerAPosition = [
-            [],
-            [[1, 11, 11, 12], [2, 51, 313, 14]],
-            [[1, 11, 11, 12], [2, 51, 13, 14], [3, 101, 15, 16], [4, 201, 17, 18]],
-            [],
-        ]
-        self.score.arrayPlayerBPosition = [
-            [],
-            [[1, 11, 21, 22], [2, 51, 323, 24]],
-            [[1, 11, 21, 22], [2, 51, 23, 24], [3, 101, 25, 26], [4, 201, 17, 18]],
-            [],
-        ]
-        self.score.arrayHitPlayer = [
-            [],
-            ["Up", "Down"],
-            ["Up", "Down", "Up", "Down"],
-            [],
-        ]
-        self.score.convert_bally2playery()
-        self.assertEqual(
-            [
-                [],
-                [[1, 11, 1, 12], [2, 51, 3, 24]],
-                [[1, 11, 1, 12], [2, 51, 3, 24], [3, 101, 5, 16], [4, 201, 7, 18]],
-                [],
-            ],
-            self.score.array_ball_position_shot,
-        )
+    def test_index_shot(self):
+        score_frame = [0, 100, 200, 300, 400, 500]
+        shot_frame = [50, 80, 130, 250, 450, 550, 1000, 3200]
+        shot_index = self.score.index_shot(score_frame, shot_frame)
+        self.assertEqual([0, 0, 1, 2, 4, 5, 5, 5], shot_index)
 
     def test_insert_tree_point(self):
+        self.score.shot_frame = [50, 80, 130, 250, 450, 550, 1000, 3200]
+
         self.score.array_frame_start = [100, 200, 300, 400]
         self.score.array_frame_end = [199, 299, 399, 499]
         self.score.number = 1  # insert 1th row
         self.score.insert_tree_point()
         self.assertEqual([100, 200, 202, 300, 400], self.score.array_frame_start)
         self.assertEqual([199, 201, 299, 399, 499], self.score.array_frame_end)
+
+        self.assertEqual([0, 0, 0, 2, 4, 4, 4, 4], self.score.shot_index)
 
     def test_get_server_num(self):
         text_game = "0-0"
@@ -1541,3 +1413,72 @@ class TestScore(unittest.TestCase):
         self.assertEqual(
             ["B", "B", "B", "B", "A", "A", "A", "A", "B", "B", "B", "B"], array_server
         )
+
+    def test_get_index_shot(self):
+        shot_index = [0, 0, 1, 1, 2, 3, 4]
+        num_point = 1
+        self.assertEqual([2, 3], self.score.get_index_shot(num_point, shot_index))
+        num_point = 10
+        self.assertEqual([], self.score.get_index_shot(num_point, shot_index))
+
+    def test_get_index_frame(self):
+        shot_frame = [11, 51, 101, 201]
+        frame = 100
+        self.assertEqual(1, self.score.get_index_frame(frame, shot_frame))
+
+    def test_insert_tree_shot(self):
+        self.score.shot_index = [0, 0, 1, 2]
+        self.score.shot_frame = [11, 51, 101, 201]
+        self.score.array_ball_position_shot_x = [1, 3, 5, 7]
+        self.score.array_ball_position_shot_y = [2, 4, 6, 7]
+        self.score.arrayPlayerAPosition_x = [11, 13, 15, 17]
+        self.score.arrayPlayerAPosition_y = [12, 14, 16, 18]
+        self.score.arrayPlayerBPosition_x = [21, 23, 25, 27]
+        self.score.arrayPlayerBPosition_y = [22, 24, 26, 28]
+        self.score.arrayHitPlayer = ["A", "A", "B", "A"]
+        self.score.arrayBounceHit = ["Bounce", "Hit", "Bounce", "Hit"]
+        self.score.arrayForeBack = ["Fore", "Back", "Back", "Back"]
+        self.score.arrayDirection = ["Cross", "Cross", "Cross", "Cross"]
+        self.score.array_x1 = [1, 2, 3, 4]
+        self.score.array_y1 = [3, 4, 5, 6]
+        self.score.array_x2 = [5, 6, 7, 8]
+        self.score.array_y2 = [7, 8, 9, 10]
+        self.score.array_x3 = [9, 10, 11, 12]
+        self.score.array_y3 = [11, 12, 13, 14]
+        self.score.array_x4 = [13, 14, 15, 16]
+        self.score.array_y4 = [15, 16, 17, 18]
+
+        self.score.number = 1
+        self.score.insert_tree_shot(2, 80)
+        self.assertEqual([0, 0, 1, 1, 2], self.score.shot_index)
+        self.assertEqual([11, 51, 80, 101, 201], self.score.shot_frame)
+        self.assertEqual([1, 3, 3, 5, 7], self.score.array_ball_position_shot_x)
+
+    def test_insert_position_xy(self):
+        self.score.shot_index = [0, 0, 1, 2]
+        self.score.shot_frame = [11, 51, 101, 201]
+        self.score.array_ball_position_shot_x = [1, 3, 5, 7]
+        self.score.array_ball_position_shot_y = [2, 4, 6, 7]
+        self.score.arrayPlayerAPosition_x = [11, 13, 15, 17]
+        self.score.arrayPlayerAPosition_y = [12, 14, 16, 18]
+        self.score.arrayPlayerBPosition_x = [21, 23, 25, 27]
+        self.score.arrayPlayerBPosition_y = [22, 24, 26, 28]
+        self.score.arrayHitPlayer = ["A", "A", "B", "A"]
+        self.score.arrayBounceHit = ["Bounce", "Hit", "Bounce", "Hit"]
+        self.score.arrayForeBack = ["Fore", "Back", "Back", "Back"]
+        self.score.arrayDirection = ["Cross", "Cross", "Cross", "Cross"]
+        self.score.array_x1 = [1, 2, 3, 4]
+        self.score.array_y1 = [3, 4, 5, 6]
+        self.score.array_x2 = [5, 6, 7, 8]
+        self.score.array_y2 = [7, 8, 9, 10]
+        self.score.array_x3 = [9, 10, 11, 12]
+        self.score.array_y3 = [11, 12, 13, 14]
+        self.score.array_x4 = [13, 14, 15, 16]
+        self.score.array_y4 = [15, 16, 17, 18]
+
+        frame = 100
+        x_c, y_c = 1, 2
+        self.score.insert_position_xy_a(frame, x_c, y_c)
+        self.assertEqual([11, 1, 15, 17], self.score.arrayPlayerAPosition_x)
+        self.score.insert_position_xy_b(frame, x_c, y_c)
+        self.assertEqual([21, 1, 25, 27], self.score.arrayPlayerBPosition_x)

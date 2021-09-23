@@ -1,4 +1,4 @@
 ,point,frame,ballx,bally,playerAx,playerAy,playerBx,playerBy,hitplayer,bouncehit,foreback,direction,x1,y1,x2,y2,x3,y3,x4,y4
-0,1,1296.0,5.42,17.15,4.57,-1.97,1.27,-8.95,Nishioka,Hit,Fore,Cross,1,1,1,1,1,1,1,1
-1,2,1730.0,9.26,16.21,4.57,-1.97,1.27,-8.95,Nishioka,Bounce,,Cross,2,2,2,2,2,2,2,2
-2,2,1742.0,13.96,24.5,4.57,-1.97,1.27,-8.95,Nishioka,Hit,Fore,Cross,3,3,3,3,3,3,3,3
+0,1296,1296,5.42,17.15,4.57,-1.97,1.27,-8.95,Nishioka,Bounce,,Cross,2,2,2,2,2,2,2,2
+1,1730,1730,9.26,16.21,4.57,-1.97,1.27,-8.95,Nishioka,Hit,Fore,Cross,3,3,3,3,3,3,3,3
+2,1742,1742,13.96,24.5,4.57,-1.97,1.27,-8.95,Nishioka,Bounce,,Cross,4,4,4,4,4,4,4,4
