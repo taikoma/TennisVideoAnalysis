@@ -33,13 +33,13 @@ class Score:
         self.firstSecondString = ["", "1st", "2nd"]
 
         self.pointXYNum = 0
-        self.arrayPointXY = []  # コート4点のXY座標 [[x1,y1],[x2,y2],[x3,y3],[x4,y4]]　表示画面サイズ
+        self.arrayPointXY = []  # 選択したポイントのコート4点のXY座標 [[x1,y1],[x2,y2],[x3,y3],[x4,y4]]　表示画面サイズ
         self.arrayPointXY.append([0, 0])
         self.arrayPointXY.append([0, 0])
         self.arrayPointXY.append([0, 0])
         self.arrayPointXY.append([0, 0])
 
-        self.arrayCourt = [[], [], [], []]  #
+        self.arrayCourt = [[], [], [], []]  # 配列 コート4点のXY座標 [[x1,y1],[x2,y2],[x3,y3],[x4,y4]]　
         self.arrayCourt[0].append([0, 0])
         self.arrayCourt[1].append([0, 0])
         self.arrayCourt[2].append([0, 0])
@@ -886,11 +886,6 @@ class Score:
         self.array_x4.pop(i)
         self.array_y4.pop(i)
 
-        # for j in range(len(self.array_ball_position_shot[num])):
-        #     self.array_ball_position_shot[num][j][0] = j + 1
-        #     self.arrayPlayerAPosition[num][j][0] = j + 1
-        #     self.arrayPlayerBPosition[num][j][0] = j + 1
-
     def delete_tree_shot_shift(self, start_shot, end_shot):
         for i in reversed(range(start_shot, end_shot + 1)):  # 1,2
             self.delete_position_data(i)
@@ -998,7 +993,7 @@ class Score:
 
         return shot_index
 
-    def get_index_shot(self, num_point, shot_index):
+    def get_index_array_shot(self, num_point, shot_index):
         shot_index_np = np.array(shot_index)
         display_shot_index = np.where(shot_index_np == num_point)
         if len(display_shot_index) > 0:
@@ -1006,6 +1001,11 @@ class Score:
         else:
             display_shot_index = []
         return display_shot_index
+
+    def get_index_shot(self, num_point, num_shot, shot_index):
+        shot_index_array = self.get_index_array_shot(num_point, shot_index)
+        index = shot_index_array[0] + num_shot
+        return index
 
     def insert_tree_point(self):
         i = self.number
@@ -1050,7 +1050,7 @@ class Score:
         """
         index = -1
         for i in range(len(array_frame)):
-            if frame > array_frame[i]:
+            if frame >= array_frame[i]:
                 index = i
             else:
                 # index = i
@@ -1117,6 +1117,37 @@ class Score:
         index = self.get_index_frame(frame, self.shot_frame)
         self.arrayPlayerBPosition_x[index] = x_c
         self.arrayPlayerBPosition_y[index] = y_c
+
+    def insert_position_xy_ball(self, frame, x_c, y_c):
+        """frameに合わせてコート位置情報を格納する
+        """
+        index = self.get_index_frame(frame, self.shot_frame)
+        self.array_ball_position_shot_x[index] = x_c
+        self.array_ball_position_shot_y[index] = y_c
+
+    # def insert_court_right_up(self, frame, x_c, y_c):
+    #     """frameに合わせてコート位置情報を格納する
+    #     """
+    #     index = self.get_index_frame(frame, self.shot_frame)
+    #     self.array_x1[index] = x_c
+    #     self.array_y1[index] = y_c
+
+    def insert_court(self, frame, x_c, y_c, i):
+        """frameに合わせてコート位置情報を格納する
+        """
+        index = self.get_index_frame(frame, self.shot_frame)
+        if i == 0:
+            self.array_x1[index] = x_c
+            self.array_y1[index] = y_c
+        elif i == 1:
+            self.array_x2[index] = x_c
+            self.array_y2[index] = y_c
+        elif i == 2:
+            self.array_x3[index] = x_c
+            self.array_y3[index] = y_c
+        elif i == 3:
+            self.array_x4[index] = x_c
+            self.array_y4[index] = y_c
 
     def divide_track_data(
         self,

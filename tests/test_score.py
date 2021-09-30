@@ -1414,17 +1414,29 @@ class TestScore(unittest.TestCase):
             ["B", "B", "B", "B", "A", "A", "A", "A", "B", "B", "B", "B"], array_server
         )
 
+    def test_get_index_array_shot(self):
+        shot_index = [0, 0, 1, 1, 2, 3, 4]
+        num_point = 1
+        self.assertEqual([2, 3], self.score.get_index_array_shot(num_point, shot_index))
+        num_point = 10
+        self.assertEqual([], self.score.get_index_array_shot(num_point, shot_index))
+
     def test_get_index_shot(self):
         shot_index = [0, 0, 1, 1, 2, 3, 4]
         num_point = 1
-        self.assertEqual([2, 3], self.score.get_index_shot(num_point, shot_index))
-        num_point = 10
-        self.assertEqual([], self.score.get_index_shot(num_point, shot_index))
+        num_shot = 1
+        self.assertEqual(3, self.score.get_index_shot(num_point, num_shot, shot_index))
+
+
 
     def test_get_index_frame(self):
         shot_frame = [11, 51, 101, 201]
         frame = 100
         self.assertEqual(1, self.score.get_index_frame(frame, shot_frame))
+
+        shot_frame = [11, 51, 101, 201]
+        frame = 101
+        self.assertEqual(2, self.score.get_index_frame(frame, shot_frame))
 
     def test_insert_tree_shot(self):
         self.score.shot_index = [0, 0, 1, 2]
@@ -1482,3 +1494,6 @@ class TestScore(unittest.TestCase):
         self.assertEqual([11, 1, 15, 17], self.score.arrayPlayerAPosition_x)
         self.score.insert_position_xy_b(frame, x_c, y_c)
         self.assertEqual([21, 1, 25, 27], self.score.arrayPlayerBPosition_x)
+
+        self.score.insert_position_xy_ball(frame, x_c, y_c)
+        self.assertEqual([1, 1, 5, 7], self.score.array_ball_position_shot_x)
