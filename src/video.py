@@ -67,4 +67,4 @@ class Video():  # ビデオファイルの読み込み
             else:
                 return(False, None)
         else:
-            return(ret, None)
+            return(False, None)

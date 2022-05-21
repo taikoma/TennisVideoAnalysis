@@ -938,7 +938,7 @@ class Application(tkinter.Frame):
             self.pos_seek.get(),
         )
 
-    def calc_hit_shot(self, gimg, img_copy, serve_return):
+    def calc_hit_shot(self, gimg, serve_return):
         """
         transform court position
         disp player position on court
@@ -1083,112 +1083,27 @@ class Application(tkinter.Frame):
         """
         if self.video:
             if self.click_select_score_range_active:  # スコア領域の作成
-                gimg = self.read_resized_image(self.pos_seek.get())
-                img_copy = np.copy(gimg)
+                ok, img_copy = self.read_resized_image(self.pos_seek.get())
+                # img_copy = np.copy(gimg)
                 # h, w = img_copy.shape[0], img_copy.shape[1]
-                x = event.x
-                y = event.y
-                xmin = min(x, self.sx1)
-                ymin = min(y, self.sy1)
-                xmax = max(x, self.sx1)
-                ymax = max(y, self.sy1)
-                cv2.rectangle(
-                    img_copy, (xmin, ymin), (xmax, ymax), (0, 0, 255), thickness=2
-                )
-                self.image_change(img_copy)
-            # else:  # コート点を修正
-            # elif not self.move_active:
-            #     if (  # p1近辺のとき
-            #         self.is_in_point(
-            #             event.x,
-            #             event.y,
-            #             self.array_court_xy[0][0],
-            #             self.array_court_xy[0][1],
-            #         )
-            #         and self.mouse_hover == 4
-            #     ):
-            #         self.en_large(0)
-            #     elif (  # p2近辺のとき
-            #         self.is_in_point(
-            #             event.x,
-            #             event.y,
-            #             self.array_court_xy[1][0],
-            #             self.array_court_xy[1][1],
-            #         )
-            #         and self.mouse_hover == 4
-            #     ):
-            #         self.en_large(1)
-            #     elif (  # p3近辺のとき
-            #         self.is_in_point(
-            #             event.x,
-            #             event.y,
-            #             self.array_court_xy[2][0],
-            #             self.array_court_xy[2][1],
-            #         )
-            #         and self.mouse_hover == 4
-            #     ):
-            #         self.en_large(2)
-            #     elif (  # p4近辺のとき
-            #         self.is_in_point(
-            #             event.x,
-            #             event.y,
-            #             self.array_court_xy[3][0],
-            #             self.array_court_xy[3][1],
-            #         )
-            #         and self.mouse_hover == 4
-            #     ):
-            #         self.en_large(3)
-            #     elif (
-            #         (
-            #             self.is_in_point(
-            #                 event.x,
-            #                 event.y,
-            #                 self.array_court_xy[0][0],
-            #                 self.array_court_xy[0][1],
-            #             )
-            #             == False
-            #         )
-            #         and (
-            #             self.is_in_point(
-            #                 event.x,
-            #                 event.y,
-            #                 self.array_court_xy[1][0],
-            #                 self.array_court_xy[1][1],
-            #             )
-            #             == False
-            #         )
-            #         and (
-            #             self.is_in_point(
-            #                 event.x,
-            #                 event.y,
-            #                 self.array_court_xy[2][0],
-            #                 self.array_court_xy[2][1],
-            #             )
-            #             == False
-            #         )
-            #         and (
-            #             self.is_in_point(
-            #                 event.x,
-            #                 event.y,
-            #                 self.array_court_xy[3][0],
-            #                 self.array_court_xy[3][1],
-            #             )
-            #             == False
-            #         )
-            #         and self.mouse_hover < 4
-            #     ):
-            #         gimg = self.read_resized_image(self.pos_seek.get())
-            #         img_copy = np.copy(gimg)
-            #         img_copy = self.plot_point_on_image(img_copy, self.array_court_xy)
-            #         self.image_change(img_copy)
-            #         self.mouse_hover = 4
+                if ok:
+                    x = event.x
+                    y = event.y
+                    xmin = min(x, self.sx1)
+                    ymin = min(y, self.sy1)
+                    xmax = max(x, self.sx1)
+                    ymax = max(y, self.sy1)
+                    cv2.rectangle(
+                        img_copy, (xmin, ymin), (xmax, ymax), (0, 0, 255), thickness=2
+                    )
+                    self.image_change(img_copy)
 
     def en_large(self, num):
-        gimg = self.read_resized_image(self.pos_seek.get())
-        img_copy = np.copy(gimg)
-        img_copy = self.plot_point_on_image(img_copy, self.array_court_xy, num)
-        self.image_change(img_copy)
-        self.mouse_hover = num
+        ok, img_copy = self.read_resized_image(self.pos_seek.get())
+        if ok:
+            img_copy = self.plot_point_on_image(img_copy, self.array_court_xy, num)
+            self.image_change(img_copy)
+            self.mouse_hover = num
 
     def is_in_point(self, mx, my, px, py):
         """マウス位置がサーブポイント近辺かどうかを検知"""
@@ -1368,7 +1283,7 @@ class Application(tkinter.Frame):
 
         elif self.mode_predict:  # 予測モード
             resized_image = self.read_resized_image(self.pos_seek.get())
-            resized_image_copy = np.copy(resized_image)
+            # resized_image_copy = np.copy(resized_image)
             self.xball, self.yball = self.detect_ball(event)  # ボールを検出
             self.predictTransformMatrix(resized_image)  # テニスコート4点予測し変換行列を作成
             self.xball_c, self.yball_c = self.track_data.transform_position(
@@ -1376,9 +1291,9 @@ class Application(tkinter.Frame):
             )  # clicked position to court position
             r = self.score.rally
 
-            self.calc_hit_shot(resized_image, resized_image_copy, 0)
+            self.calc_hit_shot(resized_image, 0)
 
-            self.disp_position_on_image_court(resized_image_copy)
+            self.disp_position_on_image_court(resized_image)
             self.score.rally = self.score.rally + 1
             self.set_shot_tree()
 
@@ -1420,7 +1335,11 @@ class Application(tkinter.Frame):
         """return the resized frameindex image"""
         self.video.set(cv2.CAP_PROP_POS_FRAMES, int(frameIndex))
         ok, frame = self.video.read()
-        return cv2.resize(frame, (self.w, self.h))
+        if ok:
+            image = cv2.resize(frame, (self.w, self.h))
+        else:
+            image = None
+        return ok, image
 
     def plot_position(self, x, y, color="#ffff00"):
         """
@@ -1429,8 +1348,6 @@ class Application(tkinter.Frame):
         s = self.courtsize
         r = 2
         out = 5 * s
-        # single=1.37*s
-        # net=0.914*s
         x0 = out
         y0 = out
         x = x * s + x0
@@ -1444,30 +1361,30 @@ class Application(tkinter.Frame):
         現在のシーク位置の画像を表示する
 
         """
-        if self.video:
-            gimg = self.read_resized_image(self.pos_seek.get())
-            img_copy = np.copy(gimg)
+        if self.video and self.frame_count > 0:
+            ok, img_copy = self.read_resized_image(self.pos_seek.get())
             # スコア選択領域を表示する
-            cv2.rectangle(
-                img_copy,
-                (self.sx1, self.sy1),
-                (self.sx2, self.sy2),
-                (0, 0, 255),
-                thickness=2,
-            )
-            if (
-                self.pos_seek.get() in self.track_data.frame_array
-            ):  # トラッキングボールデータが存在すればボール位置を表示する
-                index = self.track_data.frame_array.index(self.pos_seek.get())
-                x = self.track_data.all_track_ball_x[index]
-                y = self.track_data.all_track_ball_y[index]
-                x, y = self.resize_xy_origin2disp(x, y)
-                cv2.circle(img_copy, (x, y), 2, (0, 255, 255), 1)
-            img_copy = self.plot_point_on_image(
-                img_copy, self.array_court_xy
-            )  # コート座標を表示する
+            if ok:
+                cv2.rectangle(
+                    img_copy,
+                    (self.sx1, self.sy1),
+                    (self.sx2, self.sy2),
+                    (0, 0, 255),
+                    thickness=2,
+                )
+                if (
+                    self.pos_seek.get() in self.track_data.frame_array
+                ):  # トラッキングボールデータが存在すればボール位置を表示する
+                    index = self.track_data.frame_array.index(self.pos_seek.get())
+                    x = self.track_data.all_track_ball_x[index]
+                    y = self.track_data.all_track_ball_y[index]
+                    x, y = self.resize_xy_origin2disp(x, y)
+                    cv2.circle(img_copy, (x, y), 2, (0, 255, 255), 1)
+                img_copy = self.plot_point_on_image(
+                    img_copy, self.array_court_xy
+                )  # コート座標を表示する
 
-            self.image_change(img_copy)
+                self.image_change(img_copy)
 
     def resize_xy_origin2disp(self, x, y):
         # x=int(x/self.w*self.vid.width)
@@ -2879,83 +2796,82 @@ class Application(tkinter.Frame):
         座標変換して映像画面とテニスコート画面のプロット位置を表示する
         ビデオ画像にテニスコート線
         """
-        risized_image = self.read_resized_image(self.pos_seek.get())
-        resized_image_copy = np.copy(risized_image)
-
-        kx = self.w / self.vid.width
-        ky = self.h / self.vid.height
-        j = self.num_shot
-        index_shot = self.score.get_index_array_shot(
-            self.score.number, self.score.shot_index
-        )
-
-        # コート座標が4つ存在するときに計算　コート座標(中心基準)⇒変換行列⇒コート座標に変換
-        # 保存されているデータがコート中心座標なので、
-        if (
-            self.score.array_x1[index_shot[j]]
-            or self.score.array_x2[index_shot[j]]
-            or self.score.array_x3[index_shot[j]]
-            or self.score.array_x4[index_shot[j]]
-        ):
-            self.score.arrayPointXY[0] = [
-                self.score.array_x1[index_shot[j]] * kx,
-                self.score.array_y1[index_shot[j]] * ky,
-            ]
-            self.score.arrayPointXY[1] = [
-                self.score.array_x2[index_shot[j]] * kx,
-                self.score.array_y2[index_shot[j]] * ky,
-            ]
-            self.score.arrayPointXY[2] = [
-                self.score.array_x3[index_shot[j]] * kx,
-                self.score.array_y3[index_shot[j]] * ky,
-            ]
-            self.score.arrayPointXY[3] = [
-                self.score.array_x4[index_shot[j]] * kx,
-                self.score.array_y4[index_shot[j]] * ky,
-            ]
-            self.array2invM()
-            self.draw_court_line(
-                self.pts, resized_image_copy, self.inv_M
-            )  # テニスコートラインを描画
-
-            # xy2leftup　コート中心座標をコート左上座標に変換
-            self.xa_c, self.ya_c = self.track_data.xy2leftup(
-                self.score.arrayPlayerAPosition_x[index_shot[j]],
-                self.score.arrayPlayerAPosition_y[index_shot[j]],
-            )
-            self.xb_c, self.yb_c = self.track_data.xy2leftup(
-                self.score.arrayPlayerBPosition_x[index_shot[j]],
-                self.score.arrayPlayerBPosition_y[index_shot[j]],
+        ok, resized_image_copy = self.read_resized_image(self.pos_seek.get())
+        if ok:
+            kx = self.w / self.vid.width
+            ky = self.h / self.vid.height
+            j = self.num_shot
+            index_shot = self.score.get_index_array_shot(
+                self.score.number, self.score.shot_index
             )
 
-            self.xball_c, self.yball_c = self.track_data.xy2leftup(
-                self.score.array_ball_position_shot_x[index_shot[j]],
-                self.score.array_ball_position_shot_y[index_shot[j]],
-            )
+            # コート座標が4つ存在するときに計算　コート座標(中心基準)⇒変換行列⇒コート座標に変換
+            # 保存されているデータがコート中心座標なので、
+            if (
+                self.score.array_x1[index_shot[j]]
+                or self.score.array_x2[index_shot[j]]
+                or self.score.array_x3[index_shot[j]]
+                or self.score.array_x4[index_shot[j]]
+            ):
+                self.score.arrayPointXY[0] = [
+                    self.score.array_x1[index_shot[j]] * kx,
+                    self.score.array_y1[index_shot[j]] * ky,
+                ]
+                self.score.arrayPointXY[1] = [
+                    self.score.array_x2[index_shot[j]] * kx,
+                    self.score.array_y2[index_shot[j]] * ky,
+                ]
+                self.score.arrayPointXY[2] = [
+                    self.score.array_x3[index_shot[j]] * kx,
+                    self.score.array_y3[index_shot[j]] * ky,
+                ]
+                self.score.arrayPointXY[3] = [
+                    self.score.array_x4[index_shot[j]] * kx,
+                    self.score.array_y4[index_shot[j]] * ky,
+                ]
+                self.array2invM()
+                self.draw_court_line(
+                    self.pts, resized_image_copy, self.inv_M
+                )  # テニスコートラインを描画
 
-            # コート座標を映像座標に変換する
-            pts = np.array([[[float(self.xa_c), float(self.ya_c)]]])
-            dst = cv2.perspectiveTransform(pts, self.inv_M)  # self.M
-            hx = dst[0][0][0]
-            hy = dst[0][0][1]
-            self.xa = hx
-            self.ya = hy
+                # xy2leftup　コート中心座標をコート左上座標に変換
+                self.xa_c, self.ya_c = self.track_data.xy2leftup(
+                    self.score.arrayPlayerAPosition_x[index_shot[j]],
+                    self.score.arrayPlayerAPosition_y[index_shot[j]],
+                )
+                self.xb_c, self.yb_c = self.track_data.xy2leftup(
+                    self.score.arrayPlayerBPosition_x[index_shot[j]],
+                    self.score.arrayPlayerBPosition_y[index_shot[j]],
+                )
 
-            pts = np.array([[[float(self.xb_c), float(self.yb_c)]]])
-            dst = cv2.perspectiveTransform(pts, self.inv_M)  # self.M
-            hx = dst[0][0][0]
-            hy = dst[0][0][1]
-            self.xb = hx
-            self.yb = hy
+                self.xball_c, self.yball_c = self.track_data.xy2leftup(
+                    self.score.array_ball_position_shot_x[index_shot[j]],
+                    self.score.array_ball_position_shot_y[index_shot[j]],
+                )
 
-            pts = np.array([[[float(self.xball_c), float(self.yball_c)]]])
-            dst = cv2.perspectiveTransform(pts, self.inv_M)  # self.M
-            hx = dst[0][0][0]
-            hy = dst[0][0][1]
-            self.xball = hx
-            self.yball = hy
+                # コート座標を映像座標に変換する
+                pts = np.array([[[float(self.xa_c), float(self.ya_c)]]])
+                dst = cv2.perspectiveTransform(pts, self.inv_M)  # self.M
+                hx = dst[0][0][0]
+                hy = dst[0][0][1]
+                self.xa = hx
+                self.ya = hy
 
-            self.disp_position_on_image_court(resized_image_copy)
+                pts = np.array([[[float(self.xb_c), float(self.yb_c)]]])
+                dst = cv2.perspectiveTransform(pts, self.inv_M)  # self.M
+                hx = dst[0][0][0]
+                hy = dst[0][0][1]
+                self.xb = hx
+                self.yb = hy
+
+                pts = np.array([[[float(self.xball_c), float(self.yball_c)]]])
+                dst = cv2.perspectiveTransform(pts, self.inv_M)  # self.M
+                hx = dst[0][0][0]
+                hy = dst[0][0][1]
+                self.xball = hx
+                self.yball = hy
+
+                self.disp_position_on_image_court(resized_image_copy)
 
     def disp_edit_tree(self, i):
         print("disp_edit_tree")
