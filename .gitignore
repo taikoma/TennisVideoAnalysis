@@ -16,7 +16,7 @@ analysis/.ipynb_checkpoints/*
 *.ipynb
 /src/predict/*
 /memo/*
-*.png
+/image/*
 /dev/*
 /temp/*
 

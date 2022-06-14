@@ -143,6 +143,8 @@ class Application(tkinter.Frame):
         self.clickCourtLeftDown = False
 
     def load_video(self, vid):
+        """ load the video and set the tree 
+        """
         self.vid = vid
         self.video = vid.video
         self.frame_count = vid.frame_count
@@ -2700,6 +2702,8 @@ class Application(tkinter.Frame):
             )
 
     def set_tree(self):
+        """ set the data to all rows
+        """
         for i, t in enumerate(self.tree.get_children()):
             self.tree.delete(t)
         for i in range(len(self.score.array_frame_start)):
@@ -2763,6 +2767,8 @@ class Application(tkinter.Frame):
         self.disp_edit_tree(self.score.number)
 
     def shift_select(self, event):
+        """ shift select
+        """
         print("shift")
         # tree = event.widget
 
@@ -2778,7 +2784,7 @@ class Application(tkinter.Frame):
 
     def select_shot(self, event):
         """
-        when select shot tree
+        when select shot tree in the row
         """
         curItem = self.shot_tree.focus()
         self.pos_seek.set(int(self.shot_tree.item(curItem)["values"][2]))
@@ -2874,6 +2880,12 @@ class Application(tkinter.Frame):
                 self.disp_position_on_image_court(resized_image_copy)
 
     def disp_edit_tree(self, i):
+        """
+        display the data[i] on edit columns
+        Parameters
+        ----------
+        i:index of data
+        """
         print("disp_edit_tree")
         self.entry_edit_start.delete(0, tkinter.END)
         self.entry_edit_end.delete(0, tkinter.END)
