@@ -1497,3 +1497,7 @@ class TestScore(unittest.TestCase):
 
         self.score.insert_position_xy_ball(frame, x_c, y_c)
         self.assertEqual([1, 1, 5, 7], self.score.array_ball_position_shot_x)
+
+    def test_next_append(self):
+        self.score = score.Score(0)
+        self.assertEqual([])

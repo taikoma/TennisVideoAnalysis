@@ -2303,50 +2303,13 @@ class Application(tkinter.Frame):
 
     def button_end(self, event):
         if self.pos_seek.get() > self.score.array_frame_start[self.score.number]:
-            end = self.score.array_frame_end[
-                self.score.number
-            ]  # 次のフレームに行く前に終了フレームを一時記憶
-            self.score.array_frame_end[self.score.number] = int(
-                self.pos_seek.get() - 1
-            )  # 終了フレーム
-            # normalPatternButton()
             if self.score.faultFlug == 1:
                 self.Button_fault["text"] = "ダブルフォルト"
             else:
                 self.Button_fault["text"] = "フォルト"
-
-            # number.set(number.get() + 1)  # 次のシーン
-            self.score.number += 1
-            self.score.array_frame_start.insert(
-                self.score.number, int(self.pos_seek.get())
-            )  # 開始フレーム
-            self.score.array_frame_end.insert(self.score.number, end)
-            self.score.arrayPointPattern.insert(self.score.number, "")  # パターン
-            self.score.arrayPointWinner.insert(self.score.number, "")  # ポイント勝者+
-            self.score.pointWin[0].insert(self.score.number, 2)
-            self.score.pointWin[1].insert(self.score.number, 2)
-            self.score.arraySet.insert(self.score.number, "")  # スコア
-            self.score.arrayGame.insert(self.score.number, "")  # スコア
-            self.score.arrayScore.insert(self.score.number, "")  # スコア
-            self.score.arrayScoreResult.insert(self.score.number, "")  # スコア
-            self.score.arrayFirstSecond.insert(self.score.number, 0)  # 1st2nd
-            self.score.arrayServer.insert(self.score.number, "")  # サーバー
-            # self.score.arrayForeBack.insert(self.score.number, "")  # フォアバック
-            self.score.arrayCourt[0].insert(self.score.number, [0, 0])
-            self.score.arrayCourt[1].insert(self.score.number, [0, 0])
-            self.score.arrayCourt[2].insert(self.score.number, [0, 0])
-            self.score.arrayCourt[3].insert(self.score.number, [0, 0])
-            self.score.arrayContactServe.insert(self.score.number, [0, 0])
-            print(
-                "self.score.array_ball_position_shot:",
-                self.score.array_ball_position_shot,
-            )
-            self.score.arrayFault.insert(self.score.number, 0)
-            self.score.nextAppend()
+            self.score.next_append(self.pos_seek.get())
             self.setButtonFault()
-
             self.score.mode = 1
-
             self.set_tree()
 
     def change_state(self):

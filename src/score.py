@@ -123,11 +123,46 @@ class Score:
         array.append([])
         return array
 
-    def nextAppend(self):  # button_endで呼び出される
+    def next_append(self, pos_seek):  # button_endで呼び出される
+        end = self.array_frame_end[
+                self.number
+            ]  # 次のフレームに行く前に終了フレームを一時記憶
+
+        self.number += 1
+        self.array_frame_start.insert(
+            self.number, int(pos_seek)
+        )  # 開始フレーム
+        self.array_frame_end[self.number] = int(
+                self.pos_seek.get() - 1
+            )  # 終了フレーム
+
+        self.array_frame_end.insert(self.number, end)
+
+        self.arrayPointPattern.insert(self.number, "")  # パターン
+        self.arrayPointWinner.insert(self.number, "")  # ポイント勝者+
+        self.pointWin[0].insert(self.number, 2)
+        self.pointWin[1].insert(self.number, 2)
+        self.arraySet.insert(self.number, "")  # スコア
+        self.arrayGame.insert(self.number, "")  # スコア
+        self.arrayScore.insert(self.number, "")  # スコア
+        self.arrayScoreResult.insert(self.number, "")  # スコア
+        self.arrayFirstSecond.insert(self.number, 0)  # 1st2nd
+        self.arrayServer.insert(self.number, "")  # サーバー
+        # self.arrayForeBack.insert(self.number, "")  # フォアバック
+        self.arrayCourt[0].insert(self.number, [0, 0])
+        self.arrayCourt[1].insert(self.number, [0, 0])
+        self.arrayCourt[2].insert(self.number, [0, 0])
+        self.arrayCourt[3].insert(self.number, [0, 0])
+        self.arrayContactServe.insert(self.number, [0, 0])
+        self.arrayFault.insert(self.number, 0)
+
         self.rally = 0
-        self.arrayPlayerAPosition.append([])
-        self.arrayPlayerBPosition.append([])
-        self.array_ball_position_shot.append([])
+        self.arrayPlayerAPosition_x.append([])
+        self.arrayPlayerAPosition_y.append([])
+        self.arrayPlayerBPosition_x.append([])
+        self.arrayPlayerBPosition_y.append([])
+        self.array_ball_position_shot_x.append([])
+        self.array_ball_position_shot_y.append([])
         self.arrayHitPlayer.append([])
         self.arrayBounceHit.append([])
         self.arrayForeBack.append([])
