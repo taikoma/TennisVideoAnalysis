@@ -33,13 +33,20 @@ class Score:
         self.firstSecondString = ["", "1st", "2nd"]
 
         self.pointXYNum = 0
-        self.arrayPointXY = []  # 選択したポイントのコート4点のXY座標 [[x1,y1],[x2,y2],[x3,y3],[x4,y4]]　表示画面サイズ
+        self.arrayPointXY = (
+            []
+        )  # 選択したポイントのコート4点のXY座標 [[x1,y1],[x2,y2],[x3,y3],[x4,y4]]　表示画面サイズ
         self.arrayPointXY.append([0, 0])
         self.arrayPointXY.append([0, 0])
         self.arrayPointXY.append([0, 0])
         self.arrayPointXY.append([0, 0])
 
-        self.arrayCourt = [[], [], [], []]  # 配列 コート4点のXY座標 [[x1,y1],[x2,y2],[x3,y3],[x4,y4]]　
+        self.arrayCourt = [
+            [],
+            [],
+            [],
+            [],
+        ]  # 配列 コート4点のXY座標 [[x1,y1],[x2,y2],[x3,y3],[x4,y4]]
         self.arrayCourt[0].append([0, 0])
         self.arrayCourt[1].append([0, 0])
         self.arrayCourt[2].append([0, 0])
@@ -47,38 +54,27 @@ class Score:
         self.arrayContactServe = []  # [[0, 0],[1, 1],[2, 2],[3, 3]]
         self.arrayContactServe.append([0, 0])
 
-        self.array_frame_start = []
-        self.array_frame_start.append(0)
-        self.array_frame_end = []
-        self.array_frame_end.append(0)
-        self.arraySet = []  # セット
-        self.arraySet.append("")
-        self.arrayGame = []  # ゲーム
-        self.arrayGame.append("")
-        self.arrayScore = []  # スコア
-        self.arrayScore.append("")
-        self.arrayScoreResult = []  # スコア結果
-        self.arrayScoreResult.append("")
-        self.arrayServer = []  # サーバー
-        self.arrayServer.append("")
-        self.arrayPointWinner = []  # ウィナーの名前
-        self.arrayPointWinner.append("")
+        self.array_frame_start = [0]
+        self.array_frame_end = [0]
+        self.arraySet = [""]  # セット
+        self.arrayGame = [""]  # ゲーム
+        self.arrayScore = [""]  # スコア
+        self.arrayScoreResult = [""]  # スコア結果
+        self.arrayServer = [""]  # サーバー
+        self.arrayPointWinner = [""]  # ウィナーの名前
 
         self.pointWin = []  # 0 1:won
         self.pointA = []
         self.pointB = []
-        self.pointA.append(0)
-        self.pointB.append(0)
+        self.pointA.append(2)
+        self.pointB.append(2)
         self.pointWin.append(self.pointA)  # pointA 勝ったら1を格納
         self.pointWin.append(self.pointB)  # pointB 勝ったら1を格納
 
-        self.arrayPointPattern = []  # ポイントパターン
-        self.arrayPointPattern.append("")
-        self.arrayFirstSecond = []  # 0:not fault    1:1st fault    2:2nd fault
-        self.arrayFirstSecond.append(0)
+        self.arrayPointPattern = [""]  # ポイントパターン
+        self.arrayFirstSecond = [0]  # 0:not fault    1:1st fault    2:2nd fault
 
-        self.arrayFault = []  # フォルト
-        self.arrayFault.append(0)
+        self.arrayFault = [0]  # フォルト
 
         self.faultFlug = 0
         self.number = 0
@@ -123,59 +119,40 @@ class Score:
         array.append([])
         return array
 
-    def next_append(self, pos_seek):  # button_endで呼び出される
-        end = self.array_frame_end[
-                self.number
-            ]  # 次のフレームに行く前に終了フレームを一時記憶
+    def add_new_tree_point(self, current_frame):
+        """if new frame added, append new array"""
+        end = self.array_frame_end[len(self.array_frame_end)-1]#終了フレームを一時記憶
+        if current_frame < end:
+            self.array_frame_start.append(current_frame)             
+            self.array_frame_end.insert(len(self.array_frame_end)-1,current_frame-1)
 
-        self.number += 1
-        self.array_frame_start.insert(
-            self.number, int(pos_seek)
-        )  # 開始フレーム
-        self.array_frame_end[self.number] = int(
-                self.pos_seek.get() - 1
-            )  # 終了フレーム
+            self.arrayPointPattern.append("")
+            self.arrayPointWinner.append("")
+            self.pointWin[0].append(2)
+            self.pointWin[1].append(2)
+            self.arraySet.append("")
+            self.arrayGame.append("")
+            self.arrayScore.append("")
+            self.arrayScoreResult.append("")
+            self.arrayFirstSecond.append(0)
+            self.arrayServer.append("")
 
-        self.array_frame_end.insert(self.number, end)
+            self.arrayCourt[0].append([0, 0])
+            self.arrayCourt[1].append([0, 0])
+            self.arrayCourt[2].append([0, 0])
+            self.arrayCourt[3].append([0, 0])
+            self.arrayContactServe.append([0, 0])
+            self.arrayFault.append(0)
 
-        self.arrayPointPattern.insert(self.number, "")  # パターン
-        self.arrayPointWinner.insert(self.number, "")  # ポイント勝者+
-        self.pointWin[0].insert(self.number, 2)
-        self.pointWin[1].insert(self.number, 2)
-        self.arraySet.insert(self.number, "")  # スコア
-        self.arrayGame.insert(self.number, "")  # スコア
-        self.arrayScore.insert(self.number, "")  # スコア
-        self.arrayScoreResult.insert(self.number, "")  # スコア
-        self.arrayFirstSecond.insert(self.number, 0)  # 1st2nd
-        self.arrayServer.insert(self.number, "")  # サーバー
-        # self.arrayForeBack.insert(self.number, "")  # フォアバック
-        self.arrayCourt[0].insert(self.number, [0, 0])
-        self.arrayCourt[1].insert(self.number, [0, 0])
-        self.arrayCourt[2].insert(self.number, [0, 0])
-        self.arrayCourt[3].insert(self.number, [0, 0])
-        self.arrayContactServe.insert(self.number, [0, 0])
-        self.arrayFault.insert(self.number, 0)
-
-        self.rally = 0
-        self.arrayPlayerAPosition_x.append([])
-        self.arrayPlayerAPosition_y.append([])
-        self.arrayPlayerBPosition_x.append([])
-        self.arrayPlayerBPosition_y.append([])
-        self.array_ball_position_shot_x.append([])
-        self.array_ball_position_shot_y.append([])
-        self.arrayHitPlayer.append([])
-        self.arrayBounceHit.append([])
-        self.arrayForeBack.append([])
-        self.arrayDirection.append([])
-
-        self.array_x1.append([])
-        self.array_y1.append([])
-        self.array_x2.append([])
-        self.array_y2.append([])
-        self.array_x3.append([])
-        self.array_y3.append([])
-        self.array_x4.append([])
-        self.array_y4.append([])
+    # def next_append(self, pos_seek):
+    #     """if new next point frame added, """
+    #     end = self.array_frame_end[self.number]  # 次のフレームに行く前に終了フレームを一時記憶
+    #     self.array_frame_end.insert(self.number, end)
+    #     self.number += 1
+    #     self.add_new_tree_point() #新フレーム群を追加
+    #     self.array_frame_start.append(int(pos_seek))
+    #     self.array_frame_end[self.number] = int(pos_seek) - 1  # 終了フレーム
+    #     self.rally = 0
 
     def load_scene(self, num_scene):
         self.array_ball_position_shot = [
@@ -733,162 +710,6 @@ class Score:
             server_array.append(self.playerName[(self.firstServer + totalGame) % 2])
         return server_array
 
-    # def position_data2array_insert(
-    #     self,
-    #     xball,
-    #     yball,
-    #     xa,
-    #     ya,
-    #     xb,
-    #     yb,
-    #     servereturn,
-    #     hitBounce,
-    #     foreback,
-    #     crossstreat,
-    #     x1,
-    #     y1,
-    #     x2,
-    #     y2,
-    #     x3,
-    #     y3,
-    #     x4,
-    #     y4,
-    #     pos_seek,
-    # ):
-    #     num = self.number
-    #     j = 0
-    #     for i in range(len(self.array_ball_position_shot[num])):
-    #         print("pos_seek", pos_seek)
-    #         print("array_ball_position_shot", self.array_ball_position_shot[num][i][1])
-    #         if pos_seek > self.array_ball_position_shot[num][i][1]:
-    #             j = i + 1
-
-    #     self.array_ball_position_shot[num].insert(j, [num, pos_seek, xball, yball])
-    #     self.arrayPlayerAPosition[num].insert(j, [num, pos_seek, xa, ya])
-    #     self.arrayPlayerBPosition[num].insert(j, [num, pos_seek, xb, yb])
-    #     self.arrayHitPlayer[num].insert(
-    #         j, self.playerName[(self.firstServer + servereturn + self.totalGame) % 2]
-    #     )
-    #     self.arrayBounceHit[num].insert(j, hitBounce)
-    #     self.arrayForeBack[num].insert(j, foreback)
-    #     self.arrayDirection[num].insert(j, crossstreat)
-    #     self.array_x1[num].insert(j, x1)
-    #     self.array_y1[num].insert(j, y1)
-    #     self.array_x2[num].insert(j, x2)
-    #     self.array_y2[num].insert(j, y2)
-    #     self.array_x3[num].insert(j, x3)
-    #     self.array_y3[num].insert(j, y3)
-    #     self.array_x4[num].insert(j, x4)
-    #     self.array_y4[num].insert(j, y4)
-
-    #     for j in range(len(self.array_ball_position_shot[num])):
-    #         self.array_ball_position_shot[num][j][0] = j + 1
-
-    # def position_data2array(
-    #     self,
-    #     xball,
-    #     yball,
-    #     xa,
-    #     ya,
-    #     xb,
-    #     yb,
-    #     servereturn,
-    #     hitBounce,
-    #     foreback,
-    #     crossstreat,
-    #     x1,
-    #     y1,
-    #     x2,
-    #     y2,
-    #     x3,
-    #     y3,
-    #     x4,
-    #     y4,
-    #     pos_seek,
-    # ):
-    #     """
-    #     position_data2array array[num].append([*,*]) num is self.number
-
-    #     Parameters
-    #     ----------
-    #     xball:int
-    #     yball:int
-    #     xa:
-    #     ya:
-    #     xb:
-    #     yb:
-    #     servereturn:int which player hitting server or returner 0:server 1:returner
-    #     hitBounce
-    #     foreback
-    #     cressstreat
-    #     ----------
-
-    #     Returns
-    #     ----------
-
-    #     ----------
-    #     """
-    #     num = self.number
-    #     self.array_ball_position_shot[num].append([num, pos_seek, xball, yball])
-    #     self.arrayPlayerAPosition[num].append([num, pos_seek, xa, ya])
-    #     self.arrayPlayerBPosition[num].append([num, pos_seek, xb, yb])
-    #     self.arrayHitPlayer[num].append(
-    #         self.playerName[(self.firstServer + servereturn + self.totalGame) % 2]
-    #     )
-    #     self.arrayBounceHit[num].append(hitBounce)
-    #     self.arrayForeBack[num].append(foreback)
-    #     self.arrayDirection[num].append(crossstreat)
-    #     self.array_x1[num].append(x1)
-    #     self.array_y1[num].append(y1)
-    #     self.array_x2[num].append(x2)
-    #     self.array_y2[num].append(y2)
-    #     self.array_x3[num].append(x3)
-    #     self.array_y3[num].append(y3)
-    #     self.array_x4[num].append(x4)
-    #     self.array_y4[num].append(y4)
-
-    # def position_data2array_fix(
-    #     self,
-    #     xball,
-    #     yball,
-    #     xa,
-    #     ya,
-    #     xb,
-    #     yb,
-    #     servereturn,
-    #     hitBounce,
-    #     foreback,
-    #     crossstreat,
-    #     x1,
-    #     y1,
-    #     x2,
-    #     y2,
-    #     x3,
-    #     y3,
-    #     x4,
-    #     y4,
-    #     pos_seek,
-    # ):  # (self,xball,yball,xa,ya,xb,yb,servereturn,y1,y2):
-    #     num = self.number
-    #     rally = self.rally
-    #     self.array_ball_position_shot[num][rally - 1] = [num, pos_seek, xball, yball]
-    #     self.arrayPlayerAPosition[num][rally - 1] = [num, pos_seek, xa, ya]
-    #     self.arrayPlayerBPosition[num][rally - 1] = [num, pos_seek, xb, yb]
-    #     self.arrayHitPlayer[num][rally - 1] = self.playerName[
-    #         (self.firstServer + servereturn + self.totalGame) % 2
-    #     ]
-    #     self.arrayBounceHit[num][rally - 1] = hitBounce
-    #     self.arrayForeBack[num][rally - 1] = foreback
-    #     self.arrayDirection[num][rally - 1] = crossstreat
-    #     self.array_x1[num][rally - 1] = x1
-    #     self.array_y1[num][rally - 1] = y1
-    #     self.array_x2[num][rally - 1] = x2
-    #     self.array_y2[num][rally - 1] = y2
-    #     self.array_x3[num][rally - 1] = x3
-    #     self.array_y3[num][rally - 1] = y3
-    #     self.array_x4[num][rally - 1] = x4
-    #     self.array_y4[num][rally - 1] = y4
-
     def delete_position_data(self, i):
         """
         delete position data which is selected tree data
@@ -951,28 +772,7 @@ class Score:
         self.arrayCourt[2].pop(i)
         self.arrayCourt[3].pop(i)
 
-        self.shot_index = self.index_shot(self.array_frame_start, self.shot_frame)
-
-        # delete shot all
-        # self.array_ball_position_shot_x.pop(i)
-        # self.array_ball_position_shot_y.pop(i)
-        # self.arrayPlayerAPosition_x.pop(i)
-        # self.arrayPlayerAPosition_y.pop(i)
-        # self.arrayPlayerBPosition_x.pop(i)
-        # self.arrayPlayerBPosition_y.pop(i)
-        # self.arrayHitPlayer.pop(i)
-        # self.arrayBounceHit.pop(i)
-        # self.arrayForeBack.pop(i)
-        # self.arrayDirection.pop(i)
-
-        # self.array_x1.pop(i)
-        # self.array_y1.pop(i)
-        # self.array_x2.pop(i)
-        # self.array_y2.pop(i)
-        # self.array_x3.pop(i)
-        # self.array_y3.pop(i)
-        # self.array_x4.pop(i)
-        # self.array_y4.pop(i)
+        self.shot_index = self.create_index_shot(self.array_frame_start, self.shot_frame)
 
     def delete_after_end(self, num, end):
         # num=self.number
@@ -1008,8 +808,10 @@ class Score:
 
             # self.array_ball_position_shot
 
-    def index_shot(self, score_frame, shot_frame):
+    def create_index_shot(self, score_frame, shot_frame):
         """scoreフレームとshotフレームを比較してshotのindexを作成
+        score_frameが変化したときにshotのindexを振りなおす
+        各shot_frameが何番目のframeに存在するかのindexを作成
         Parameters
         -----------
         score_frame:[int] [0, 100, 200, 300, 400, 500]
@@ -1043,12 +845,12 @@ class Score:
         return index
 
     def insert_tree_point(self):
+        """右クリックでinsertを選択したときに行を挿入する"""
         i = self.number
         start = self.array_frame_start[i]
-        # end = self.score.array_frame_end[i]
         self.array_frame_start.insert(i, start)
         self.array_frame_end.insert(i, start + 1)
-        self.array_frame_start[i + 1] = start + 2
+        self.array_frame_start[i + 1] = start + 2#次のポイントのstartを
         self.arraySet.insert(i, "")
         self.arrayGame.insert(i, "")
         self.arrayScore.insert(i, "")
@@ -1060,24 +862,22 @@ class Score:
         self.pointWin[1].insert(i, 0)
         self.arrayPointPattern.insert(i, "")
         self.arrayFault.insert(i, 0)
-
         self.arrayContactServe.insert(i, [0, 0])
-
         self.arrayCourt[0].insert(i, [0, 0])
         self.arrayCourt[1].insert(i, [0, 0])
         self.arrayCourt[2].insert(i, [0, 0])
         self.arrayCourt[3].insert(i, [0, 0])
 
-        self.shot_index = self.index_shot(self.array_frame_start, self.shot_frame)
+        self.shot_index = self.create_index_shot(self.array_frame_start, self.shot_frame)
 
     def get_index_frame(self, frame, array_frame):
         """現在のフレーム位置から、array_frameのインデックスを返す
         Parameters
         -----
         frame:int
-        array_frame:[int] 
+        array_frame:[int]
         frameが100であれば、array_frame[11, 51, 101,201]の51から101の間のため、index=1を返す
-        
+
         Returns
         -----
         index:int
@@ -1099,25 +899,29 @@ class Score:
         self.shot_index.insert(i, self.number)
         self.shot_frame.insert(i, frame)
         if i > 0:
-            self.array_ball_position_shot_x.insert(i, self.array_ball_position_shot_x[i-1])
-            self.array_ball_position_shot_y.insert(i, self.array_ball_position_shot_y[i-1])
-            self.arrayPlayerAPosition_x.insert(i, self.arrayPlayerAPosition_x[i-1])
-            self.arrayPlayerAPosition_y.insert(i, self.arrayPlayerAPosition_y[i-1])
-            self.arrayPlayerBPosition_x.insert(i, self.arrayPlayerBPosition_x[i-1])
-            self.arrayPlayerBPosition_y.insert(i, self.arrayPlayerBPosition_y[i-1])
-            self.arrayHitPlayer.insert(i, self.arrayHitPlayer[i-1])
-            self.arrayBounceHit.insert(i, self.arrayBounceHit[i-1])
-            self.arrayForeBack.insert(i, self.arrayForeBack[i-1])
-            self.arrayDirection.insert(i, self.arrayDirection[i-1])
+            self.array_ball_position_shot_x.insert(
+                i, self.array_ball_position_shot_x[i - 1]
+            )
+            self.array_ball_position_shot_y.insert(
+                i, self.array_ball_position_shot_y[i - 1]
+            )
+            self.arrayPlayerAPosition_x.insert(i, self.arrayPlayerAPosition_x[i - 1])
+            self.arrayPlayerAPosition_y.insert(i, self.arrayPlayerAPosition_y[i - 1])
+            self.arrayPlayerBPosition_x.insert(i, self.arrayPlayerBPosition_x[i - 1])
+            self.arrayPlayerBPosition_y.insert(i, self.arrayPlayerBPosition_y[i - 1])
+            self.arrayHitPlayer.insert(i, self.arrayHitPlayer[i - 1])
+            self.arrayBounceHit.insert(i, self.arrayBounceHit[i - 1])
+            self.arrayForeBack.insert(i, self.arrayForeBack[i - 1])
+            self.arrayDirection.insert(i, self.arrayDirection[i - 1])
 
-            self.array_x1.insert(i, self.array_x1[i-1])
-            self.array_y1.insert(i, self.array_y1[i-1])
-            self.array_x2.insert(i, self.array_x2[i-1])
-            self.array_y2.insert(i, self.array_y2[i-1])
-            self.array_x3.insert(i, self.array_x3[i-1])
-            self.array_y3.insert(i, self.array_y3[i-1])
-            self.array_x4.insert(i, self.array_x4[i-1])
-            self.array_y4.insert(i, self.array_y4[i-1])
+            self.array_x1.insert(i, self.array_x1[i - 1])
+            self.array_y1.insert(i, self.array_y1[i - 1])
+            self.array_x2.insert(i, self.array_x2[i - 1])
+            self.array_y2.insert(i, self.array_y2[i - 1])
+            self.array_x3.insert(i, self.array_x3[i - 1])
+            self.array_y3.insert(i, self.array_y3[i - 1])
+            self.array_x4.insert(i, self.array_x4[i - 1])
+            self.array_y4.insert(i, self.array_y4[i - 1])
         else:
             self.array_ball_position_shot_x.insert(i, 0)
             self.array_ball_position_shot_y.insert(i, 0)
@@ -1140,22 +944,19 @@ class Score:
             self.array_y4.insert(i, 0)
 
     def insert_position_xy_a(self, frame, x_c, y_c):
-        """frameに合わせてコート位置情報を格納する
-        """
+        """frameに合わせてコート位置情報を格納する"""
         index = self.get_index_frame(frame, self.shot_frame)
         self.arrayPlayerAPosition_x[index] = x_c
         self.arrayPlayerAPosition_y[index] = y_c
 
     def insert_position_xy_b(self, frame, x_c, y_c):
-        """frameに合わせてコート位置情報を格納する
-        """
+        """frameに合わせてコート位置情報を格納する"""
         index = self.get_index_frame(frame, self.shot_frame)
         self.arrayPlayerBPosition_x[index] = x_c
         self.arrayPlayerBPosition_y[index] = y_c
 
     def insert_position_xy_ball(self, frame, x_c, y_c):
-        """frameに合わせてコート位置情報を格納する
-        """
+        """frameに合わせてコート位置情報を格納する"""
         index = self.get_index_frame(frame, self.shot_frame)
         self.array_ball_position_shot_x[index] = x_c
         self.array_ball_position_shot_y[index] = y_c
@@ -1168,8 +969,7 @@ class Score:
     #     self.array_y1[index] = y_c
 
     def insert_court(self, frame, x_c, y_c, i):
-        """frameに合わせてコート位置情報を格納する
-        """
+        """frameに合わせてコート位置情報を格納する"""
         index = self.get_index_frame(frame, self.shot_frame)
         if i == 0:
             self.array_x1[index] = x_c

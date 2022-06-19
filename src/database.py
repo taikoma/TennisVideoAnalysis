@@ -682,6 +682,7 @@ class Database:
         self.score.array_ball_position_shot_x = self.array_ball_position_shot_x
         self.score.array_ball_position_shot_y = self.array_ball_position_shot_y
         self.score.arrayPlayerAPosition_x = self.arrayPlayerAPosition_x
+        print(self.score.arrayPlayerAPosition_x)
         self.score.arrayPlayerAPosition_y = self.arrayPlayerAPosition_y
         self.score.arrayPlayerBPosition_x = self.arrayPlayerBPosition_x
         self.score.arrayPlayerBPosition_y = self.arrayPlayerBPosition_y
@@ -700,7 +701,7 @@ class Database:
         self.score.array_y4 = self.array_y4
 
         self.score.array_frame_start = self.arrayFrameStart
-        self.score.shot_index = self.score.index_shot(
+        self.score.shot_index = self.score.create_index_shot(
             self.score.array_frame_start, self.score.shot_frame
         )
 

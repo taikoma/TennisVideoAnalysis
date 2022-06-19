@@ -2,7 +2,7 @@
     "playerA": "Tsitsipas",
     "playerB": "Nishikori",
     "firstServer": 0,
-    "videoFile": "",
+    "videoFile": "C:/Users/taku/Documents/Python/TennisVideoAnalysis/video/test/input.avi",
     "database": "",
     "sx1": 0,
     "sy1": 0,

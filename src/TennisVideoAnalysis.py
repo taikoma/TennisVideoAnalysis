@@ -63,6 +63,7 @@ class Application(tkinter.Frame):
         self.courtsize = 360 / 27.77 * 0.8
 
         self.pts = np.array([[0, 0]], dtype=int)
+        self.vid = None
         self.video = None
         self.clickPlayerA = False
         self.clickPlayerB = False
@@ -78,7 +79,7 @@ class Application(tkinter.Frame):
         self.mouse_hover = 4
         self.move_active = False
 
-        self.fld = "data.db"
+        self.fld = None
 
         self.mode_predict = mode_predict_court
         self.mode_predictPlayer = mode_predict_player
@@ -638,6 +639,11 @@ class Application(tkinter.Frame):
 
     def delete_tree_point(self):
         self.score.delete_tree_point()
+        self.set_tree()
+        self.active_select()
+
+    def add_new_tree_point(self):
+        self.score.add_new_tree_point(self.pos_seek.get())
         self.set_tree()
         self.active_select()
 
@@ -1660,7 +1666,7 @@ class Application(tkinter.Frame):
         curItem = self.tree.get_children()[score.number]
         self.pos_seek.set(int(self.tree.item(curItem)["values"][1]))
 
-    def save_data(self):
+    def save_data(self, event):
         """
         前回保存したファイル名で保存する
         ファイル名が存在しなければ選択画面を開く
@@ -1672,13 +1678,18 @@ class Application(tkinter.Frame):
             self.fld = filedialog.asksaveasfilename(
                 initialdir=dir, filetypes=[("Db Files", (".db"))]
             )
+        if not self.vid:
+            video_file_name = ""
+        else:
+            video_file_name = self.vid.videoFileName
         if self.fld:
             settings = setting.Setting()
             settings.save_data(
                 self.score.playerA,
                 self.score.playerB,
                 self.score.firstServer,
-                self.vid.videoFileName,
+                self.fld,
+                video_file_name,
                 self.sx1,
                 self.sy1,
                 self.sx2,
@@ -2137,6 +2148,10 @@ class Application(tkinter.Frame):
 
         self.menu_top_tree.add_command(
             label="Delete", underline=5, command=self.delete_tree_point
+        )
+
+        self.menu_top_tree.add_command(
+            label="Add New Row", underline=5, command=self.add_new_tree_point
         )
 
         self.menu_top_tree.add_command(
@@ -2708,19 +2723,19 @@ class Application(tkinter.Frame):
         self.disp_edit_tree(self.score.number)
 
     def select(self, event):
-        print("tree_select")
         curItem = self.tree.focus()
-        self.score.number = int(self.tree.item(curItem)["values"][0])
-        print(self.score.number)
-        self.pos_seek.set(int(self.tree.item(curItem)["values"][1]))  # フレーム位置変更
-        self.key_activate()
-        self.set_shot_tree()  # 追加
-        self.disp_edit_tree(self.score.number)
-        # self.playerName = [self.playerA, self.playerB]
-        print("winner:",self.score.arrayPointWinner[self.score.number])
-        which = self.score.playerName.index(self.score.arrayPointWinner[self.score.number])
-        print("which:",which)
-        self.change_radio_button(which)#ラジオボタンを切り替え
+        if curItem:
+            self.score.number = int(self.tree.item(curItem)["values"][0])
+            print(self.score.number)
+            self.pos_seek.set(int(self.tree.item(curItem)["values"][1]))  # フレーム位置変更
+            self.key_activate()
+            self.set_shot_tree()  # 追加
+            self.disp_edit_tree(self.score.number)
+            # self.playerName = [self.playerA, self.playerB]
+            print("winner:",self.score.arrayPointWinner[self.score.number])
+            which = self.score.playerName.index(self.score.arrayPointWinner[self.score.number])
+            print("which:",which)
+            self.change_radio_button(which)#ラジオボタンを切り替え
 
     def active_select(self):
         curItem = self.tree.get_children()[score.number]

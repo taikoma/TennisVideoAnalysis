@@ -1361,18 +1361,20 @@ class TestScore(unittest.TestCase):
             self.score.array_ball_position_shot_y,
         )
 
-    def test_index_shot(self):
+    def test_create_index_shot(self):
+        """各shot_frameが何番目のscoreに存在するかのindexを作成する"""
         score_frame = [0, 100, 200, 300, 400, 500]
         shot_frame = [50, 80, 130, 250, 450, 550, 1000, 3200]
-        shot_index = self.score.index_shot(score_frame, shot_frame)
+        shot_index = self.score.create_index_shot(score_frame, shot_frame)
         self.assertEqual([0, 0, 1, 2, 4, 5, 5, 5], shot_index)
 
     def test_insert_tree_point(self):
+        """1番目のポイント行に空白行データを挿入する
+        startはそのまま endはstart+1 旧ポイントデータはstartはstart+2"""
         self.score.shot_frame = [50, 80, 130, 250, 450, 550, 1000, 3200]
-
         self.score.array_frame_start = [100, 200, 300, 400]
         self.score.array_frame_end = [199, 299, 399, 499]
-        self.score.number = 1  # insert 1th row
+        self.score.number = 1
         self.score.insert_tree_point()
         self.assertEqual([100, 200, 202, 300, 400], self.score.array_frame_start)
         self.assertEqual([199, 201, 299, 399, 499], self.score.array_frame_end)
@@ -1426,8 +1428,6 @@ class TestScore(unittest.TestCase):
         num_point = 1
         num_shot = 1
         self.assertEqual(3, self.score.get_index_shot(num_point, num_shot, shot_index))
-
-
 
     def test_get_index_frame(self):
         shot_frame = [11, 51, 101, 201]
@@ -1498,6 +1498,41 @@ class TestScore(unittest.TestCase):
         self.score.insert_position_xy_ball(frame, x_c, y_c)
         self.assertEqual([1, 1, 5, 7], self.score.array_ball_position_shot_x)
 
-    def test_next_append(self):
+    def test_add_new_tree_point_0(self):
         self.score = score.Score(0)
-        self.assertEqual([])
+        self.score.array_frame_start = [0]
+        self.score.array_frame_end = [0]
+
+        self.score.add_new_tree_point(0)
+
+        self.assertEqual(self.score.array_frame_start, [0])
+        self.assertEqual(self.score.array_frame_end, [0])
+
+
+    def test_add_new_tree_point_last(self):
+        self.score = score.Score(0)
+        self.score.array_frame_start = [0, 100, 200]
+        self.score.array_frame_end = [50, 150, 250]
+
+        self.score.add_new_tree_point(220)
+
+        self.assertEqual(self.score.array_frame_start, [0, 100, 200, 220])
+        self.assertEqual(self.score.array_frame_end, [50, 150, 219, 250])
+
+        self.assertEqual(self.score.arrayPointPattern, ["", ""])
+        self.assertEqual(self.score.arrayPointWinner, ["", ""])
+        self.assertEqual(self.score.pointWin[0], [2, 2])
+        self.assertEqual(self.score.pointWin[1], [2, 2])
+        self.assertEqual(self.score.arraySet, ["", ""])
+        self.assertEqual(self.score.arrayGame, ["", ""])
+        self.assertEqual(self.score.arrayScore, ["", ""])
+        self.assertEqual(self.score.arrayScoreResult, ["", ""])
+        self.assertEqual(self.score.arrayFirstSecond, [0, 0])
+        self.assertEqual(self.score.arrayServer, ["", ""])
+
+        self.assertEqual(self.score.arrayCourt[0], [[0, 0], [0, 0]])
+        self.assertEqual(self.score.arrayCourt[1], [[0, 0], [0, 0]])
+        self.assertEqual(self.score.arrayCourt[2], [[0, 0], [0, 0]])
+        self.assertEqual(self.score.arrayCourt[3], [[0, 0], [0, 0]])
+        self.assertEqual(self.score.arrayContactServe, [[0, 0], [0, 0]])
+        self.assertEqual(self.score.arrayFault, [0, 0])
