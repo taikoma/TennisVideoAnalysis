@@ -212,8 +212,8 @@ class TestDatabase(unittest.TestCase):
         self.assertEqual(1, db.load_database_score(db_name))  # 初期scoreテーブル
 
     def test_load_database_score(self):
-        db_name = "./data/test.db"
-        self.assertEqual(3, self.db.load_database_score(db_name))
+        self.create_temp_data_score()
+        self.assertEqual(3, self.db.load_database_score(self.db_name))
 
     def test_load_database_shot_init(self):
         sc = score.Score(0)
@@ -224,8 +224,9 @@ class TestDatabase(unittest.TestCase):
 
     def test_load_database_shot(self):
         # レコード数3つのデータ
-        db_name = "./data/test.db"
-        self.assertEqual(3, self.db.load_database_shot(db_name))
+        # self.create_temp_data_score()
+        self.create_temp_data_shot()
+        self.assertEqual(3, self.db.load_database_shot(self.db_name))
 
     def test_load_database_basic(self):
         sc = score.Score(0)
