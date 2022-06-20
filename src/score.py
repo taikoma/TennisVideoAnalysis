@@ -121,10 +121,12 @@ class Score:
 
     def add_new_tree_point(self, current_frame):
         """if new frame added, append new array"""
-        end = self.array_frame_end[len(self.array_frame_end)-1]#終了フレームを一時記憶
+        end = self.array_frame_end[len(self.array_frame_end) - 1]  # 終了フレームを一時記憶
         if current_frame < end:
-            self.array_frame_start.append(current_frame)             
-            self.array_frame_end.insert(len(self.array_frame_end)-1,current_frame-1)
+            self.array_frame_start.append(current_frame)
+            self.array_frame_end.insert(
+                len(self.array_frame_end) - 1, current_frame - 1
+            )
 
             self.arrayPointPattern.append("")
             self.arrayPointWinner.append("")
@@ -772,7 +774,9 @@ class Score:
         self.arrayCourt[2].pop(i)
         self.arrayCourt[3].pop(i)
 
-        self.shot_index = self.create_index_shot(self.array_frame_start, self.shot_frame)
+        self.shot_index = self.create_index_shot(
+            self.array_frame_start, self.shot_frame
+        )
 
     def delete_after_end(self, num, end):
         # num=self.number
@@ -850,7 +854,7 @@ class Score:
         start = self.array_frame_start[i]
         self.array_frame_start.insert(i, start)
         self.array_frame_end.insert(i, start + 1)
-        self.array_frame_start[i + 1] = start + 2#次のポイントのstartを
+        self.array_frame_start[i + 1] = start + 2  # 次のポイントのstartを
         self.arraySet.insert(i, "")
         self.arrayGame.insert(i, "")
         self.arrayScore.insert(i, "")
@@ -868,7 +872,9 @@ class Score:
         self.arrayCourt[2].insert(i, [0, 0])
         self.arrayCourt[3].insert(i, [0, 0])
 
-        self.shot_index = self.create_index_shot(self.array_frame_start, self.shot_frame)
+        self.shot_index = self.create_index_shot(
+            self.array_frame_start, self.shot_frame
+        )
 
     def get_index_frame(self, frame, array_frame):
         """現在のフレーム位置から、array_frameのインデックスを返す

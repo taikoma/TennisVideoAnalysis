@@ -144,8 +144,7 @@ class Application(tkinter.Frame):
         self.clickCourtLeftDown = False
 
     def load_video(self, vid):
-        """ load the video and set the tree 
-        """
+        """load the video and set the tree"""
         self.vid = vid
         self.video = vid.video
         self.frame_count = vid.frame_count
@@ -1188,23 +1187,23 @@ class Application(tkinter.Frame):
 
     def reselect_right_up(self, event):
         self.clickCourtRightUp = False
-        self.reselect_common(event, 0)#0は右上
+        self.reselect_common(event, 0)  # 0は右上
 
     def reselect_left_up(self, event):
         self.clickCourtLeftUp = False
-        self.reselect_common(event, 1)#1は左上
-       
+        self.reselect_common(event, 1)  # 1は左上
+
     def reselect_left_down(self, event):
         self.clickCourtLeftDown = False
-        self.reselect_common(event, 2)#2は左下
+        self.reselect_common(event, 2)  # 2は左下
 
     def reselect_right_down(self, event):
         self.clickCourtRightDown = False
-        self.reselect_common(event, 3)#2は左下
+        self.reselect_common(event, 3)  # 2は左下
 
     def reselect_common(self, event, i):
         self.score.arrayPointXY[i] = [event.x, event.y]
-        self.array2invM()#self.Mを再計算
+        self.array2invM()  # self.Mを再計算
         # コート座標に変換
         xa_c, ya_c = self.track_data.transform_position(self.xa, self.ya, self.M)
         xb_c, yb_c = self.track_data.transform_position(self.xb, self.yb, self.M)
@@ -1221,7 +1220,7 @@ class Application(tkinter.Frame):
         x1 = self.score.arrayPointXY[i][0] * kx
         y1 = self.score.arrayPointXY[i][1] * ky
         self.score.insert_court(frame, x1, y1, i)
-         # 画像表示
+        # 画像表示
         self.disp_position_court_video()
 
     def option_serve(self, *args):
@@ -1273,7 +1272,7 @@ class Application(tkinter.Frame):
             self.reselect_ball(event)
             self.shot_tree.selection_set(self.shot_tree.get_children()[self.num_shot])
 
-        elif self.clickCourtRightUp:#コート右上
+        elif self.clickCourtRightUp:  # コート右上
             self.reselect_right_up(event)
             self.shot_tree.selection_set(self.shot_tree.get_children()[self.num_shot])
 
@@ -1983,7 +1982,7 @@ class Application(tkinter.Frame):
         if i == 0:
             self.radio1.select()
             self.radio2.deselect()
-            
+
         else:
             self.radio2.select()
             self.radio1.deselect()
@@ -1997,26 +1996,25 @@ class Application(tkinter.Frame):
         self.pw1_4.add(self.pw1_4_3)
 
         self.Button1 = ttk.Button(text=u"サービスエース(1)", width=20)
-        # self.Button1 = ttk.Button(self.pw1_4_1, text=u"サービスエース(1)", width=20)
-        self.Button1.bind("<Button-1>", self.button1_clicked)
+        self.Button1.bind("<ButtonRelease-1>", self.button1_clicked)
         self.pw1_4_1.add(self.Button1)
         self.Button4 = ttk.Button(text=u"リターンエラー(4)", width=20)
-        self.Button4.bind("<Button-1>", self.button4_clicked)
+        self.Button4.bind("<ButtonRelease-1>", self.button4_clicked)
         self.pw1_4_1.add(self.Button4)
 
         self.Button2 = ttk.Button(text=u"ストロークウィナー(2)", width=20)
-        self.Button2.bind("<Button-1>", self.button2_clicked)
+        self.Button2.bind("<ButtonRelease-1>", self.button2_clicked)
         self.pw1_4_2.add(self.Button2)
         self.Button5 = ttk.Button(text=u"ストロークエラー(5)", width=20)
-        self.Button5.bind("<Button-1>", self.button5_clicked)
+        self.Button5.bind("<ButtonRelease-1>", self.button5_clicked)
         self.pw1_4_2.add(self.Button5)
 
         self.Button3 = ttk.Button(text=u"ボレーウィナー(3)", width=20)
-        self.Button3.bind("<Button-1>", self.button3_clicked)
+        self.Button3.bind("<ButtonRelease-1>", self.button3_clicked)
         self.pw1_4_3.add(self.Button3)
 
         self.Button6 = ttk.Button(text=u"ボレーエラー(6)", width=20)
-        self.Button6.bind("<Button-1>", self.button6_clicked)
+        self.Button6.bind("<ButtonRelease-1>", self.button6_clicked)
         self.pw1_4_3.add(self.Button6)
 
     def updata_button(self):
@@ -2551,13 +2549,12 @@ class Application(tkinter.Frame):
             # self.setPattern2(pattern)
 
     def setPattern(self, pattern):
-        # self.setScore()
+        print("setPattern")
         if self.score.arrayPointPattern[self.score.number] == "":
             self.setPattern2(pattern)
         else:
             msg = tkinter.messagebox.askyesno("data", "データを上書きしますか？")
             if msg == 1:
-                # self.master.after(1 ,self.show_pattern_message(pattern))
                 self.setPattern2(pattern)
 
     def setPattern2(self, pattern):
@@ -2680,8 +2677,7 @@ class Application(tkinter.Frame):
             )
 
     def set_tree(self):
-        """ set the data to all rows
-        """
+        """set the data to all rows"""
         for i, t in enumerate(self.tree.get_children()):
             self.tree.delete(t)
         for i in range(len(self.score.array_frame_start)):
@@ -2732,10 +2728,12 @@ class Application(tkinter.Frame):
             self.set_shot_tree()  # 追加
             self.disp_edit_tree(self.score.number)
             # self.playerName = [self.playerA, self.playerB]
-            print("winner:",self.score.arrayPointWinner[self.score.number])
-            which = self.score.playerName.index(self.score.arrayPointWinner[self.score.number])
-            print("which:",which)
-            self.change_radio_button(which)#ラジオボタンを切り替え
+            print("winner:", self.score.arrayPointWinner[self.score.number])
+            which = self.score.playerName.index(
+                self.score.arrayPointWinner[self.score.number]
+            )
+            print("which:", which)
+            self.change_radio_button(which)  # ラジオボタンを切り替え
 
     def active_select(self):
         curItem = self.tree.get_children()[score.number]
@@ -2745,8 +2743,7 @@ class Application(tkinter.Frame):
         self.disp_edit_tree(self.score.number)
 
     def shift_select(self, event):
-        """ shift select
-        """
+        """shift select"""
         print("shift")
         # tree = event.widget
 
@@ -2756,7 +2753,6 @@ class Application(tkinter.Frame):
         self.start_shot = min(i, j)
         self.end_shot = max(i, j)
 
-        
         for i in range(self.start_shot, self.end_shot):
             self.shot_tree.selection_add(self.shot_tree.get_children()[i])
 
