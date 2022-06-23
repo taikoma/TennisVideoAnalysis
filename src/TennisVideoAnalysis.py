@@ -1445,19 +1445,19 @@ class Application(tkinter.Frame):
         out = 5 * s
         net = 0.914 * s
         w = 0.5
-        for i in range(1, len(self.score.array_ball_position_shot[self.score.number])):
+        for i in range(1, len(self.score.array_ball_position_shot_x[self.score.number])):
             if (
                 i % 2 == 0
                 and self.score.arrayBounceHit[self.score.number][i] == "Bounce"
             ):
-                xball_c_pre = self.score.array_ball_position_shot[self.score.number][
+                xball_c_pre = self.score.array_ball_position_shot_x[self.score.number][
                     i - 1
-                ][2]
-                yball_c_pre = self.score.array_ball_position_shot[self.score.number][
+                ]
+                yball_c_pre = self.score.array_ball_position_shot_y[self.score.number][
                     i - 1
-                ][3]
-                xball_c = self.score.array_ball_position_shot[self.score.number][i][2]
-                yball_c = self.score.array_ball_position_shot[self.score.number][i][3]
+                ]
+                xball_c = self.score.array_ball_position_shot_x[self.score.number][i]
+                yball_c = self.score.array_ball_position_shot_y[self.score.number][i]
                 self.canvas1.create_line(
                     xball_c_pre * s + out,
                     yball_c_pre * s + out,
@@ -1476,7 +1476,7 @@ class Application(tkinter.Frame):
         self.canvas1.delete("all")
         self.create_court(self.canvas1, self.courtsize, self.pw_right_up_left)
         self.plot_ball_line()
-        for i in range(len(self.score.array_ball_position_shot[self.score.number])):
+        for i in range(len(self.score.array_ball_position_shot_x[self.score.number])):
             self.disp_track_data_court(i)
 
     def disp_track_data_court_one(self, i):
@@ -2320,7 +2320,7 @@ class Application(tkinter.Frame):
                 self.Button_fault["text"] = "ダブルフォルト"
             else:
                 self.Button_fault["text"] = "フォルト"
-            self.score.next_append(self.pos_seek.get())
+            self.score.add_new_tree_point(self.pos_seek.get())
             self.setButtonFault()
             self.score.mode = 1
             self.set_tree()
@@ -2416,7 +2416,8 @@ class Application(tkinter.Frame):
         print("delete_last_shot")
         if self.score.rally > 0:
             self.score.rally = self.score.rally - 1
-            self.score.array_ball_position_shot[self.score.number].pop(-1)
+            self.score.array_ball_position_shot_x[self.score.number].pop(-1)
+            self.score.array_ball_position_shot_y[self.score.number].pop(-1)
             self.score.arrayPlayerAPosition[self.score.number].pop(-1)
             self.score.arrayPlayerBPosition[self.score.number].pop(-1)
             self.score.arrayHitPlayer[self.score.number].pop(-1)

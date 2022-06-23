@@ -1134,10 +1134,11 @@ class TestScore(unittest.TestCase):
         )
 
     def test_delete_after_end(self):
+        #3ポイント目
         self.score.array_ball_position_shot = [
             [],
             [],
-            [[1, 11, 1, 2], [2, 51, 3, 4], [3, 101, 5, 6], [4, 201, 7, 8]],
+            [1,11,13,15,16],
             [],
         ]
         self.score.arrayPlayerAPosition = [

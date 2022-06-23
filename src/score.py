@@ -98,8 +98,8 @@ class Score:
         self.arrayBounceHit = []
         self.arrayForeBack = []
         self.arrayDirection = []
-        self.array_ball_position_shot_x = []  # [num,pos_seek,xball,yball]
-        self.array_ball_position_shot_y = []  # [num,pos_seek,xball,yball]
+        self.array_ball_position_shot_x = []  # [num,pos_seek,xball]
+        self.array_ball_position_shot_y = []  # [num,pos_seek,yball]
         self.arrayPlayerAPosition_x = []
         self.arrayPlayerAPosition_y = []
         self.arrayPlayerBPosition_x = []
@@ -779,21 +779,17 @@ class Score:
         )
 
     def delete_after_end(self, num, end):
-        # num=self.number
-        # print(
-        #     "len(self.array_ball_position_shot[num])",
-        #     len(self.array_ball_position_shot[num]),
-        # )
-        # print("self.array_ball_position_shot[num]", self.array_ball_position_shot[num])
+        """end以降のデータを削除する
+        """
         array = []
-        for i in range(len(self.array_ball_position_shot[num])):
-            print(self.array_ball_position_shot[num][i])
+        for i in range(len(self.array_ball_position_shot_x[num])):
             if len(self.array_ball_position_shot[num][i]) > 0:
-                if end < self.array_ball_position_shot[num][i][1]:
+                if end < self.array_ball_position_shot_x[num][i][1]:
                     array.append(i)
 
         for i in sorted(array, reverse=True):
-            self.array_ball_position_shot[num].pop(i)
+            self.array_ball_position_shot_x[num].pop(i)
+            self.array_ball_position_shot_y[num].pop(i)
             self.arrayPlayerAPosition[num].pop(i)
             self.arrayPlayerBPosition[num].pop(i)
             self.arrayHitPlayer[num].pop(i)
