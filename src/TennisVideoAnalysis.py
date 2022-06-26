@@ -676,14 +676,14 @@ class Application(tkinter.Frame):
         else:
             tkinter.messagebox.showinfo("Error", "データが選択されていません")
 
-    def delete_tree_shot_after_end(self):
-        """
-        選択行から最後のショットまでのデータを削除
-        """
-        num = self.score.number
-        end = self.score.array_frame_end[num]
-        self.score.delete_after_end(num, end)
-        self.set_shot_tree()
+    # def delete_tree_shot_after_end(self):
+    #     """
+    #     選択行から最後のショットまでのデータを削除
+    #     """
+    #     num = self.score.number
+    #     end = self.score.array_frame_end[num]
+    #     self.score.delete_after_end(num, end)
+    #     self.set_shot_tree()
 
     def delete_tree_shot_after_end_all(self):
         """"""
@@ -2171,11 +2171,11 @@ class Application(tkinter.Frame):
             label="データ挿入", underline=5, command=self.insert_tree_shot
         )
 
-        self.menu_top_tree_point.add_command(
-            label="Endフレーム以降のデータ削除",
-            underline=5,
-            command=self.delete_tree_shot_after_end,
-        )
+        # self.menu_top_tree_point.add_command(
+        #     label="Endフレーム以降のデータ削除",
+        #     underline=5,
+        #     command=self.delete_tree_shot_after_end,
+        # )
 
         self.menu_top_tree_point.add_command(
             label="No Bounce", underline=5, command=self.no_bound
@@ -2656,13 +2656,12 @@ class Application(tkinter.Frame):
 
     def set_shot_tree(self):
         print("self.score.number:", self.score.number)
-        # print("len(self.score.array_ball_position_shot[self.score.number]):",len(self.score.array_ball_position_shot[self.score.number]))
-        for i, t in enumerate(self.shot_tree.get_children()):
+        for i, t in enumerate(self.shot_tree.get_children()):#表示されているshot_treeを削除
             self.shot_tree.delete(t)
 
         index_shot = self.score.get_index_array_shot(
             self.score.number, self.score.shot_index
-        )
+        )#shot_index(全ショットインデックス)からscore.numberに合致するindexを返す
         for i in range(len(index_shot)):
             self.shot_tree.insert(
                 "",
@@ -2728,13 +2727,14 @@ class Application(tkinter.Frame):
             self.key_activate()
             self.set_shot_tree()  # 追加
             self.disp_edit_tree(self.score.number)
-            # self.playerName = [self.playerA, self.playerB]
-            print("winner:", self.score.arrayPointWinner[self.score.number])
-            which = self.score.playerName.index(
-                self.score.arrayPointWinner[self.score.number]
-            )
-            print("which:", which)
-            self.change_radio_button(which)  # ラジオボタンを切り替え
+            
+            winner = self.score.arrayPointWinner[self.score.number]
+            if winner in self.score.playerName:
+                which = self.score.playerName.index(
+                    self.score.arrayPointWinner[self.score.number]#ValueError: '' is not in list
+                )
+                print("which:", which)
+                self.change_radio_button(which)  # ラジオボタンを切り替え
 
     def active_select(self):
         curItem = self.tree.get_children()[score.number]

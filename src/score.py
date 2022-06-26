@@ -99,7 +99,7 @@ class Score:
         self.arrayForeBack = []
         self.arrayDirection = []
         self.array_ball_position_shot_x = []  # [num,pos_seek,xball]
-        self.array_ball_position_shot_y = []  # [num,pos_seek,yball]
+        self.array_ball_position_shot_y = []  # [num,pos_seek,xball,yball]
         self.arrayPlayerAPosition_x = []
         self.arrayPlayerAPosition_y = []
         self.arrayPlayerBPosition_x = []
@@ -778,33 +778,41 @@ class Score:
             self.array_frame_start, self.shot_frame
         )
 
-    def delete_after_end(self, num, end):
-        """end以降のデータを削除する
-        """
-        array = []
-        for i in range(len(self.array_ball_position_shot_x[num])):
-            if len(self.array_ball_position_shot[num][i]) > 0:
-                if end < self.array_ball_position_shot_x[num][i][1]:
-                    array.append(i)
+    # def delete_after_end(self, num, end):
+    #     """end以降のデータを削除する
+    #     """
+        
+    #     index_shot = self.get_index_array_shot(
+    #         self.number, self.shot_index
+    #     )#shot_index(全ショットインデックス)からscore.numberに合致するindexを返す
 
-        for i in sorted(array, reverse=True):
-            self.array_ball_position_shot_x[num].pop(i)
-            self.array_ball_position_shot_y[num].pop(i)
-            self.arrayPlayerAPosition[num].pop(i)
-            self.arrayPlayerBPosition[num].pop(i)
-            self.arrayHitPlayer[num].pop(i)
-            self.arrayBounceHit[num].pop(i)
-            self.arrayForeBack[num].pop(i)
-            self.arrayDirection[num].pop(i)
+    #     #end以降のframeのindexをarrayに格納する
+    #     array = []
+    #     for i in range(len(self.shot_frame[num])):
+    #         if end < self.shot_frame[num][i]:
+    #             array.append(i)
 
-            self.array_x1[num].pop(i)
-            self.array_y1[num].pop(i)
-            self.array_x2[num].pop(i)
-            self.array_y2[num].pop(i)
-            self.array_x3[num].pop(i)
-            self.array_y3[num].pop(i)
-            self.array_x4[num].pop(i)
-            self.array_y4[num].pop(i)
+    #     #array内に存在するindexに対応するデータを削除する
+    #     for i in sorted(array, reverse=True):
+    #         self.array_ball_position_shot_x[num].pop(i)
+    #         self.array_ball_position_shot_y[num].pop(i)
+    #         self.arrayPlayerAPosition_x[num].pop(i)
+    #         self.arrayPlayerAPosition_y[num].pop(i)
+    #         self.arrayPlayerBPosition_x[num].pop(i)
+    #         self.arrayPlayerBPosition_y[num].pop(i)
+    #         self.arrayHitPlayer[num].pop(i)
+    #         self.arrayBounceHit[num].pop(i)
+    #         self.arrayForeBack[num].pop(i)
+    #         self.arrayDirection[num].pop(i)
+
+    #         self.array_x1[num].pop(i)
+    #         self.array_y1[num].pop(i)
+    #         self.array_x2[num].pop(i)
+    #         self.array_y2[num].pop(i)
+    #         self.array_x3[num].pop(i)
+    #         self.array_y3[num].pop(i)
+    #         self.array_x4[num].pop(i)
+    #         self.array_y4[num].pop(i)
 
             # self.array_ball_position_shot
 

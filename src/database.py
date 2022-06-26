@@ -457,29 +457,6 @@ class Database:
         self.arrayPlayerBPosition_x.extend(pbx)
         self.arrayPlayerBPosition_y.extend(pby)
 
-        # self.array_ball_position_shot.extend(
-        #     self.array2arrays(frame, ballx, bally)
-        # )
-        # self.arrayPlayerAPosition.extend(self.array2arrays(frame, pax, pax))
-        # self.arrayPlayerBPosition.extend(self.array2arrays(frame, pbx, pby))
-
-        # print(x1)
-
-        # (
-        #     array_hit,
-        #     array_bouncehit,
-        #     array_foreback,
-        #     array_direction,
-        #     array_x1,
-        #     array_y1,
-        #     array_x2,
-        #     array_y2,
-        #     array_x3,
-        #     array_y3,
-        #     array_x4,
-        #     array_y4,
-        # ) = self.array2arrays2(point, hit, bh, fb, d, x1, y1, x2, y2, x3, y3, x4, y4)
-
         self.arrayHitPlayer.extend(hit)
         self.arrayBounceHit.extend(bh)
         self.arrayForeBack.extend(fb)
@@ -552,19 +529,21 @@ class Database:
 
     def array2arrays(self, frame, ballx, bally):
         """convert array to arrays by point num
-        example
-        # point=[1,2,3,3,4,4,4,4]
-        hit=["A","B","A","B","A","B","A","B"]
-        array_hit=[[], ['A'], ['B'], ['A', 'B'], ['A', 'B', 'A', 'B']]
+        
+        Parameter:
+        frame = [861, 1296, 1730, 1742]
+        ballx = [12.2, 5.42, 9.26, 13.96]
+        bally = [23.47, 17.15, 16.21, 24.5]
+
+        Return:
+        [
+            [861, 12.2, 23.47],
+            [1296, 5.42, 17.15],
+            [1730, 9.26, 16.21],
+            [1742, 13.96, 24.5],
+        ]
         """
-        # if len(frame) > 0:
-        #     lastP = frame[len(frame) - 1] + 1
-        # else:
-        #     lastP = 0
-        # # print("lastP:",lastP)
         r = []
-        # for i in range(lastP):
-        #     r.append([])
         for i in range(len(frame)):
             temp = []
             temp.append(frame[i])

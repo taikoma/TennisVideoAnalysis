@@ -105,38 +105,32 @@ class TestDatabase(unittest.TestCase):
         self.db.faultFlug = 1
 
     def test_save_database_score(self):
-        self.assertEqual(1, self.db.save_database_score(self.db_name))  # 初期データ　1
-
+        """3ポイントのスコアデータをデータベースに保存したときの保存数が合っているか"""
+        self.assertEqual(1, self.db.save_database_score(self.db_name))
         self.create_temp_data_score()
-        self.assertEqual(3, self.db.save_database_score(self.db_name))  # 仮データ 3
+        self.assertEqual(3, self.db.save_database_score(self.db_name))
 
     def test_save_database_shot(self):
         """calc length of saved dataframe"""
         self.assertEqual(0, self.db.save_database_shot(self.db_name))  # 初期データ　0
-
         self.create_temp_data_shot()
         self.assertEqual(3, self.db.save_database_shot(self.db_name))  # 仮データ 3
 
     def test_save_database_basic(self):
-        self.assertEqual(1, self.db.save_database_basic(self.db_name))  # 初期データ　1
-
+        """basicデータ"""
+        self.assertEqual(1, self.db.save_database_basic(self.db_name))
         self.create_temp_data_basic()
-        self.assertEqual(1, self.db.save_database_basic(self.db_name))  # 仮データ 1
+        self.assertEqual(1, self.db.save_database_basic(self.db_name))
 
     def test_array2arrays(self):
-        print("test_array2arrays")
+        """frame ballx ballyの3つの配列を1つの配列にする"""
         frame, ballx, bally = [], [], []
-        self.assertEqual([], self.db.array2arrays(frame, ballx, bally))  # 初期データ
+        self.assertEqual([], self.db.array2arrays(frame, ballx, bally))
 
         # point = [1, 2, 3, 4]
         frame = [861, 1296, 1730, 1742]
         ballx = [12.2, 5.42, 9.26, 13.96]
         bally = [23.47, 17.15, 16.21, 24.5]
-        # r = self.db.array2arrays(frame, ballx, bally)
-        # for i in range(len(point)):
-        #     self.assertEqual(
-        #         [[point[i], frame[i], ballx[i], bally[i]]], r[i + 1]
-        #     )  # 仮データ
 
         self.assertEqual(
             [
