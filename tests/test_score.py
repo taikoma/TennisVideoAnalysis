@@ -10,7 +10,7 @@ import src.const as const
 
 
 class TestScore(unittest.TestCase):
-    def setUp(self):  # 設定 save_temp_db
+    def setUp(self):
         self.score = score.Score(0)
 
     def test_convert_set(self):
@@ -1141,14 +1141,14 @@ class TestScore(unittest.TestCase):
     #         [1, 2, 3, 4],
     #         [],
     #     ]
-        
+
     #     self.score.shot_frame = [
     #         [],
     #         [],
     #         [11, 51, 101, 201],
     #         [],
     #     ]
-        
+
     #     self.score.array_ball_position_shot_x = [
     #         [],
     #         [],
@@ -1584,3 +1584,11 @@ class TestScore(unittest.TestCase):
         self.assertEqual(self.score.arrayCourt[3], [[0, 0], [0, 0]])
         self.assertEqual(self.score.arrayContactServe, [[0, 0], [0, 0]])
         self.assertEqual(self.score.arrayFault, [0, 0])
+
+    def test_calc_fault_all(self):
+        self.score = score.Score(0)
+        self.score.arrayFirstSecond = [10, 10, 10, 10, 10, 10, 10]
+        self.score.arrayFault = [1, 0, 0, 1, 1, "1",'']
+        self.score.calc_fault_all()
+        self.assertEqual(self.score.arrayFirstSecond, [10, 1, 10, 10, 10, 10, 0])
+        self.assertEqual(self.score.arrayFault, [1, 0, 0, 1, 2, 1, ''])

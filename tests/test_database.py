@@ -13,10 +13,10 @@ import src.const as const
 
 
 class TestDatabase(unittest.TestCase):
-    def setUp(self):  # 設定 save_temp_db
+    def setUp(self):
         print("setUp")
         self.pattern = const.PATTERN
-        self.db_name = "./data/test.db"
+        self.db_name = "./data/test.db"  # test用のdbファイルを作成
         self.score = score.Score(0)
         self.db = database.Database(self.db_name, self.score)
 
@@ -112,9 +112,9 @@ class TestDatabase(unittest.TestCase):
 
     def test_save_database_shot(self):
         """calc length of saved dataframe"""
-        self.assertEqual(0, self.db.save_database_shot(self.db_name))  # 初期データ　0
+        self.assertEqual(0, self.db.save_database_shot(self.db_name))
         self.create_temp_data_shot()
-        self.assertEqual(3, self.db.save_database_shot(self.db_name))  # 仮データ 3
+        self.assertEqual(3, self.db.save_database_shot(self.db_name))
 
     def test_save_database_basic(self):
         """basicデータ"""
@@ -286,6 +286,10 @@ class TestDatabase(unittest.TestCase):
         self.assertEqual(self.db.array_y3, self.db.score.array_y3)
         self.assertEqual(self.db.array_x4, self.db.score.array_x4)
         self.assertEqual(self.db.array_y4, self.db.score.array_y4)
-        self.assertEqual([2,2,2],self.db.score.shot_index)
+        self.assertEqual([2, 2, 2], self.db.score.shot_index)
 
+    # def test_db2df(self):
+    #     sc = score.Score(0)
+    #     db_name = "./data/test.db"
+    #     db = database.Database(db_name, sc)
 

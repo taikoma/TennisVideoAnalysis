@@ -49,6 +49,7 @@ class Database:
         self.faultFlug = score.faultFlug
         self.arrayFault = score.arrayFault
 
+        self.shot_index = score.shot_index
         self.shot_frame = score.shot_frame
         self.array_ball_position_shot_x = score.array_ball_position_shot_x
         self.array_ball_position_shot_y = score.array_ball_position_shot_y
@@ -155,59 +156,12 @@ class Database:
         r = 0
         conn = sqlite3.connect(self.dbName)
 
-        # point = []
-        # frame = []
-        # bx = []
-        # by = []
-        # pax = []
-        # pay = []
-        # pbx = []
-        # pby = []
-        # h = []
-        # bh = []
-        # fb = []
-        # d = []
-        # x1 = []
-        # y1 = []
-        # x2 = []
-        # y2 = []
-        # x3 = []
-        # y3 = []
-        # x4 = []
-        # y4 = []
-        # try:
-        #     for i in range(len(self.array_ball_position_shot)):
-        #         for j in range(len(self.array_ball_position_shot[i])):
-        #             # print(i, j)
-        #             point.append(self.array_ball_position_shot[i][j][0])#num
-        #             frame.append(self.array_ball_position_shot[i][j][1])#pos_seek
-        #             bx.append(self.array_ball_position_shot[i][j][2])
-        #             by.append(self.array_ball_position_shot[i][j][3])
-        #             pax.append(self.arrayPlayerAPosition[i][j][2])
-        #             pay.append(self.arrayPlayerAPosition[i][j][3])
-        #             pbx.append(self.arrayPlayerBPosition[i][j][2])
-        #             pby.append(self.arrayPlayerBPosition[i][j][3])
-        #             h.append(self.arrayHitPlayer[i][j])
-        #             bh.append(self.arrayBounceHit[i][j])
-        #             fb.append(self.arrayForeBack[i][j])  # arrayDirection
-        #             d.append(self.arrayDirection[i][j])
-        #             x1.append(self.array_x1[i][j])
-        #             y1.append(self.array_y1[i][j])
-        #             x2.append(self.array_x2[i][j])
-        #             y2.append(self.array_y2[i][j])
-        #             x3.append(self.array_x3[i][j])
-        #             y3.append(self.array_y3[i][j])
-        #             x4.append(self.array_x4[i][j])
-        #             y4.append(self.array_y4[i][j])
-
-        # except IndexError as e:
-        #     print("Error Shot", e)
         print(self.shot_frame)
         try:
             if len(self.shot_frame) > 0:
                 df_shot = pd.DataFrame(
                     {
-                        "point": self.shot_frame,
+                        "point": self.shot_index,
                         "frame": self.shot_frame,
                         "ballx": self.array_ball_position_shot_x,
                         "bally": self.array_ball_position_shot_y,

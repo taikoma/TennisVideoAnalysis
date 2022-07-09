@@ -778,43 +778,6 @@ class Score:
             self.array_frame_start, self.shot_frame
         )
 
-    # def delete_after_end(self, num, end):
-    #     """end以降のデータを削除する
-    #     """
-        
-    #     index_shot = self.get_index_array_shot(
-    #         self.number, self.shot_index
-    #     )#shot_index(全ショットインデックス)からscore.numberに合致するindexを返す
-
-    #     #end以降のframeのindexをarrayに格納する
-    #     array = []
-    #     for i in range(len(self.shot_frame[num])):
-    #         if end < self.shot_frame[num][i]:
-    #             array.append(i)
-
-    #     #array内に存在するindexに対応するデータを削除する
-    #     for i in sorted(array, reverse=True):
-    #         self.array_ball_position_shot_x[num].pop(i)
-    #         self.array_ball_position_shot_y[num].pop(i)
-    #         self.arrayPlayerAPosition_x[num].pop(i)
-    #         self.arrayPlayerAPosition_y[num].pop(i)
-    #         self.arrayPlayerBPosition_x[num].pop(i)
-    #         self.arrayPlayerBPosition_y[num].pop(i)
-    #         self.arrayHitPlayer[num].pop(i)
-    #         self.arrayBounceHit[num].pop(i)
-    #         self.arrayForeBack[num].pop(i)
-    #         self.arrayDirection[num].pop(i)
-
-    #         self.array_x1[num].pop(i)
-    #         self.array_y1[num].pop(i)
-    #         self.array_x2[num].pop(i)
-    #         self.array_y2[num].pop(i)
-    #         self.array_x3[num].pop(i)
-    #         self.array_y3[num].pop(i)
-    #         self.array_x4[num].pop(i)
-    #         self.array_y4[num].pop(i)
-
-            # self.array_ball_position_shot
 
     def create_index_shot(self, score_frame, shot_frame):
         """scoreフレームとshotフレームを比較してshotのindexを作成
@@ -1066,13 +1029,43 @@ class Score:
             elif self.arrayHitPlayer[i] == "Down":
                 self.array_ball_position_shot_y[i] = self.arrayPlayerBPosition_y[i]
 
-            # for j in range(len(self.array_ball_position_shot[i])):
-            #     if self.arrayHitPlayer[i][j] == "Up":
-            #         # self.array_ball_position_shot[i][j][3] = self.arrayPlayerAPosition[
-            #         #     i
-            #         # ][j][3]
-            #         self.array_ball_position_shot[i][j][3] = self.arrayPlayerAPosition_x[i][j][3]
-            #     elif self.arrayHitPlayer[i][j] == "Down":
-            #         self.array_ball_position_shot[i][j][3] = self.arrayPlayerBPosition[
-            #             i
-            #         ][j][3]
+    def calc_fault_all(self):
+        """calc all point arrayFault[i] which 0,1,2 by pre point
+        0:not fault
+        1:fault
+        2:double fault
+
+        pre,current
+        1  ,0      ->arrayFirstSecond[i] = 1
+        1  ,1 2    ->arrayFault[i] = 2 doublefault
+        0  ,0      ->
+        0  ,1 2    ->arrayFault[i] = 1
+        """
+
+        pre = None
+        current = None
+        for i in range(len(self.arrayFault)):
+            if i > 0:
+                if self.arrayFault[i - 1] != None:
+                    pre = self.arrayFault[i - 1]
+                if self.arrayFault[i] != None:
+                    current = self.arrayFault[i]
+
+                if pre != None and current != None and pre != '' and current != '':
+                    pre = int(pre)
+                    current = int(current)
+                    if pre == 1:  # 前のポイントがフォルト
+                        if current == 0:  # 現在ポイントがフォルト以外
+                            self.arrayFirstSecond[i] = 1  # 0じゃない？
+                        elif current > 0:  # 現在ポイントがフォルトorダブルフォルト
+                            self.arrayFault[i] = 2  # ダブルフォルトにする
+                    else:  # 前のポイントがフォルト以外
+                        if current == 0:  # 現在ポイントがフォルト以外
+                            pass
+                        elif current > 0:  # 現在ポイントがフォルトorダブルフォルト
+                            self.arrayFault[i] = 1
+                else:
+                    if self.arrayFault[i - 1] == None or self.arrayFault[i - 1] == '':
+                        self.arrayFirstSecond[i - 1] = 0
+                    if self.arrayFault[i] == None or self.arrayFault[i] == '':
+                        self.arrayFirstSecond[i] = 0

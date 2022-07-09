@@ -1711,6 +1711,7 @@ class Application(tkinter.Frame):
                 self.score.playerA,
                 self.score.playerB,
                 self.score.firstServer,
+                self.fld,
                 self.vid.videoFileName,
                 self.sx1,
                 self.sy1,
@@ -2235,54 +2236,54 @@ class Application(tkinter.Frame):
             else:
                 self.first_fault()
 
-        self.calc_fault_all()
+        self.score.calc_fault_all()
         self.score.calcScore()
         self.set_tree()
 
-    def calc_fault_all(self):
-        """calc all point arrayFault[i] which 0,1,2 by pre point
-        0:not fault
-        1:fault
-        2:double fault
+    # def calc_fault_all(self):
+    #     """calc all point arrayFault[i] which 0,1,2 by pre point
+    #     0:not fault
+    #     1:fault
+    #     2:double fault
 
-        pre,current
-        1  ,0      ->arrayFirstSecond[i] = 1
-        1  ,1 2    ->arrayFault[i] = 2 doublefault
-        0  ,0      ->
-        0  ,1 2    ->arrayFault[i] = 1
-        """
+    #     pre,current
+    #     1  ,0      ->arrayFirstSecond[i] = 1
+    #     1  ,1 2    ->arrayFault[i] = 2 doublefault
+    #     0  ,0      ->
+    #     0  ,1 2    ->arrayFault[i] = 1
+    #     """
 
-        # todo Noneや""の場合は、飛ばして次の計算をするようにしたい
-        print("self.score.arrayFault:", self.score.arrayFault)
-        pre = None
-        current = None
-        for i in range(len(self.score.arrayFault)):
-            if i > 0:
-                if self.score.arrayFault[i - 1] != None:
-                    pre = self.score.arrayFault[i - 1]
-                if self.score.arrayFault[i] != None:
-                    current = self.score.arrayFault[i]
-                if pre != None and current != None:
-                    if pre == 1:  # 前のポイントがフォルト
-                        if current == 0:  # 現在ポイントがフォルト以外
-                            # print("1")
-                            self.score.arrayFirstSecond[i] = 1  # 0じゃない？
-                        # else:  # 現在ポイントがフォルトorダブルフォルト
-                        elif current > 0:  # 現在ポイントがフォルトorダブルフォルト
-                            # print("2")
-                            self.score.arrayFault[i] = 2  # ダブルフォルトにする
-                    else:  # 前のポイントがフォルト以外
-                        if current == 0:  # 現在ポイントがフォルト以外
-                            print("3")
-                        # else:  # 現在ポイントがフォルトorダブルフォルト
-                        elif current > 0:  # 現在ポイントがフォルトorダブルフォルト
-                            # print("4")
-                            self.score.arrayFault[i] = 1
-                else:
-                    if self.score.arrayFault[i - 1] == None:
-                        self.score.arrayFirstSecond[i - 1] = 0
-                    if self.score.arrayFault[i] == None:
-                        self.score.arrayFirstSecond[i] = 0
+    #     # todo Noneや""の場合は、飛ばして次の計算をするようにしたい
+    #     print("self.score.arrayFault:", self.score.arrayFault)
+    #     pre = None
+    #     current = None
+    #     for i in range(len(self.score.arrayFault)):
+    #         if i > 0:
+    #             if self.score.arrayFault[i - 1] != None:
+    #                 pre = self.score.arrayFault[i - 1]
+    #             if self.score.arrayFault[i] != None:
+    #                 current = self.score.arrayFault[i]
+    #             if pre != None and current != None:
+    #                 if pre == 1:  # 前のポイントがフォルト
+    #                     if current == 0:  # 現在ポイントがフォルト以外
+    #                         # print("1")
+    #                         self.score.arrayFirstSecond[i] = 1  # 0じゃない？
+    #                     # else:  # 現在ポイントがフォルトorダブルフォルト
+    #                     elif current > 0:  # 現在ポイントがフォルトorダブルフォルト
+    #                         # print("2")
+    #                         self.score.arrayFault[i] = 2  # ダブルフォルトにする
+    #                 else:  # 前のポイントがフォルト以外
+    #                     if current == 0:  # 現在ポイントがフォルト以外
+    #                         print("3")
+    #                     # else:  # 現在ポイントがフォルトorダブルフォルト
+    #                     elif current > 0:  # 現在ポイントがフォルトorダブルフォルト
+    #                         # print("4")
+    #                         self.score.arrayFault[i] = 1
+    #             else:
+    #                 if self.score.arrayFault[i - 1] == None:
+    #                     self.score.arrayFirstSecond[i - 1] = 0
+    #                 if self.score.arrayFault[i] == None:
+    #                     self.score.arrayFirstSecond[i] = 0
 
     def first_fault(self):
         print("firstFault")

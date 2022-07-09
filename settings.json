@@ -3,7 +3,7 @@
     "playerB": "Nishikori",
     "firstServer": 0,
     "videoFile": "C:/Users/taku/Documents/Python/TennisVideoAnalysis/video/test/input.avi",
-    "database": "",
+    "database": "C:/Users/taku/Documents/Python/TennisVideoAnalysis/data/scene-nishikori-delete-autoscore-calcscore-insert-6_test.db",
     "sx1": 0,
     "sy1": 0,
     "sx2": 0,
